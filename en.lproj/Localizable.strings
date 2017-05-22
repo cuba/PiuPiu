@@ -1,0 +1,23 @@
+/* 
+  Localizable.strings
+  NetworkKit
+
+  Created by Jacob Sikorski on 2017-05-22.
+  Copyright © 2017 Jacob Sikorski. All rights reserved.
+*/
+
+// Request Error
+"RequestError.Description.InvalidURL" = "The request you are trying to make is invalid.";
+
+// Response Error
+"ResponseError.Description.InvalidURL" = "The request is invalid. If this issue persists, please contact technical support.";
+"ResponseError.Description.Unauthorized" = "You are not authenticated. Please log in to continue.";
+"ResponseError.Description.Forbidden" = "You are not authorized to perform this action.";
+"ResponseError.Description.NotFound" = "The resouce you requested is not found.";
+"ResponseError.Description.Conflict" = "An unknown network error has occured. Please try your request at a later time.";
+"ResponseError.Description.UnprocessableEntity" = "There were errors with your submission.";
+"ResponseError.Description.InternalServerError" = "An unknown network error has occured. Please try your request at a later time.";
+"ResponseError.Description.Unknown" = "An unknown network error has occured. Please try your request at a later time.";
+
+// SerializationError
+"SerializationError.Description.InvalidObject" = "The request is invalid. If this issue persists, please contact technical support.";
