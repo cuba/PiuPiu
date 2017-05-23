@@ -89,4 +89,4 @@ NetworkKit is owned and maintained by Jacob Sikorski.
 
 ## License
 
-NetworkKit is released under the MIT license.
+NetworkKit is released under the MIT license. [See LICENSE](https://github.com/cuba/NetworkKit/blob/master/LICENSE) for details
