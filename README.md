@@ -1,5 +1,11 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Credits](#credits)
+- [License](#license)
+
 ## Features
 
 - [x] A wrapper around Alamofire
@@ -80,3 +86,7 @@ serializer.send(request, successHandler: { (posts: [Posts]) in
 ## Credits
 
 NetworkKit is owned and maintained by Jacob Sikorski.
+
+## License
+
+NetworkKit is released under the MIT license.
