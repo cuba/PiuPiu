@@ -1,6 +1,6 @@
 [![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=592348f0b74ee700016fbbe6&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg?style=flat)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
+[![Platform](platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-lightgray.svg?style=flat)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
 
 - [Features](#features)
 - [Installation](#installation)
