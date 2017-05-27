@@ -97,6 +97,7 @@ public protocol Request {
     var path:   String { get }
     var queryItems: [URLQueryItem]? { get }
     var parameters: [String : Any]? { get }
+    var headers: [String : String]? { get }
 }
 
 public struct JSONRequest: Request {
@@ -104,12 +105,14 @@ public struct JSONRequest: Request {
     public var path:   String
     public var queryItems: [URLQueryItem]?
     public var parameters: [String: Any]?
+    public var headers: [String: String]?
     
-    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, parameters: [String: Any]? = nil) {
+    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, parameters: [String: Any]? = nil, headers: [String: String]? = nil) {
         self.method = method
         self.path = path
         self.queryItems = queryItems
         self.parameters = parameters
+        self.headers = headers
     }
 }
 
@@ -171,7 +174,7 @@ open class NetworkDispatcher {
         do {
             let url = try self.url(from: request)
             let method = self.method(from: request)
-            return Alamofire.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: nil)
+            return Alamofire.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
         } catch let error {
             throw RequestError.invalidURL(cause: error)
         }
