@@ -33,8 +33,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8CC507EC1ED35A8E00C19524"
-               BuildableName = "NetworkKitTests.xctest"
-               BlueprintName = "NetworkKitTests"
+               BuildableName = "NetworkKit iOS Tests.xctest"
+               BlueprintName = "NetworkKit iOS Tests"
                ReferencedContainer = "container:NetworkKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
