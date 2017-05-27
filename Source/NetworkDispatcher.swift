@@ -213,12 +213,16 @@ open class NetworkDispatcher {
         guard let request = dataRequest.request else { return }
         let method = request.httpMethod ?? "?"
         let url = request.url?.absoluteString ?? "UNKNOWN URL"
+        
+        print("")
+        print("===============================================")
         print("REQUEST: [\(method)] \(url)")
         
         // Print headers
         if let headers = request.allHTTPHeaderFields {
             printHeaders(headers)
         }
+        print("===============================================")
     }
     
     func printResponse(_ dataResponse: Alamofire.DataResponse<Any>) {
@@ -228,6 +232,8 @@ open class NetworkDispatcher {
         let url = request.url?.absoluteString ?? "UNKNOWN URL"
         let statusCode = response.statusCode
         
+        print("")
+        print("===============================================")
         print("RESPONSE: (\(statusCode)) [\(method)] \(url)")
         
         // Print headers
@@ -238,6 +244,8 @@ open class NetworkDispatcher {
         } else {
             print("DATA: [EMPTY]")
         }
+        
+        print("===============================================")
     }
     
     func printHeaders(_ headers: [AnyHashable: Any]) {
