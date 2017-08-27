@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8C077BD51ED95795007BCCFC /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC5085B1ED3641500C19524 /* Alamofire.framework */; };
 		8C077BD61ED9579E007BCCFC /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC5085C1ED3641500C19524 /* ObjectMapper.framework */; };
+		8C4BAEC41F5295AA00D03976 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4BAEC31F5295AA00D03976 /* Logger.swift */; };
 		8CC507EE1ED35A8E00C19524 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC507E41ED35A8D00C19524 /* NetworkKit.framework */; };
 		8CC507F31ED35A8E00C19524 /* NetworkKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507F21ED35A8E00C19524 /* NetworkKitTests.swift */; };
 		8CC507F51ED35A8E00C19524 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -37,6 +38,7 @@
 		8C077C161ED95AEC007BCCFC /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/watchOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		8C077C191ED95AFB007BCCFC /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/tvOS/Alamofire.framework; sourceTree = "<group>"; };
 		8C077C1A1ED95AFB007BCCFC /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/tvOS/ObjectMapper.framework; sourceTree = "<group>"; };
+		8C4BAEC31F5295AA00D03976 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		8CC507E41ED35A8D00C19524 /* NetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC507E71ED35A8D00C19524 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkKit.h; path = Source/NetworkKit.h; sourceTree = "<group>"; };
 		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
@@ -75,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8C4BAEC51F5295AF00D03976 /* Utilties */ = {
+			isa = PBXGroup;
+			children = (
+				8C4BAEC31F5295AA00D03976 /* Logger.swift */,
+			);
+			name = Utilties;
+			sourceTree = "<group>";
+		};
 		8CC507DA1ED35A8D00C19524 = {
 			isa = PBXGroup;
 			children = (
@@ -98,6 +108,7 @@
 		8CC507E61ED35A8D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				8C4BAEC51F5295AF00D03976 /* Utilties */,
 				8CC508A61ED3740800C19524 /* Extensions */,
 				8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */,
 				8CC507FF1ED35AA900C19524 /* NetworkSerializer.swift */,
@@ -212,6 +223,7 @@
 				TargetAttributes = {
 					8CC507E31ED35A8D00C19524 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = 5P99QDD6WR;
 						LastSwiftMigration = 0830;
 						ProvisioningStyle = Manual;
 					};
@@ -264,6 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */,
+				8C4BAEC41F5295AA00D03976 /* Logger.swift in Sources */,
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,
 				8CC508021ED35AA900C19524 /* NetworkSerializer.swift in Sources */,
 				8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */,
@@ -408,8 +421,9 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -436,8 +450,9 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

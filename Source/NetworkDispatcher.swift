@@ -24,18 +24,31 @@ public enum HTTPMethod: String {
     case delete  = "DELETE"
     case trace   = "TRACE"
     case connect = "CONNECT"
+    
+    var alamofireMethod: Alamofire.HTTPMethod {
+        switch self {
+        case .options:  return .options
+        case .get:      return .get
+        case .head:     return .head
+        case .post:     return .post
+        case .put:      return .put
+        case .patch:    return .patch
+        case .delete:   return .delete
+        case .trace:    return .trace
+        case .connect:  return .connect
+        }
+    }
 }
 
 public enum StatusCode: Int {
-    case ok = 200
-    case created = 201
-    case noData = 204
-    
-    case badRequest = 400
-    case unauthorized = 401
-    case forbidden = 403
-    case notFound = 404
-    case conflict = 409
+    case ok             = 200
+    case created        = 201
+    case noData         = 204
+    case badRequest     = 400
+    case unauthorized   = 401
+    case forbidden      = 403
+    case notFound       = 404
+    case conflict       = 409
     
     case unprocessableEntity = 422
     case internalServerError = 500
@@ -80,14 +93,14 @@ public enum ResponseError: Error {
 extension ResponseError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .badRequest: return "ResponseError.Description.InvalidURL".localized
-        case .unauthorized: return "ResponseError.Description.Unauthorized".localized
-        case .forbidden: return "ResponseError.Description.Forbidden".localized
-        case .notFound: return "ResponseError.Description.NotFound".localized
-        case .conflict: return "ResponseError.Description.Conflict".localized
-        case .unprocessableEntity: return "ResponseError.Description.UnprocessableEntity".localized
-        case .internalServerError: return "ResponseError.Description.InternalServerError".localized
-        case .unknown: return "ResponseError.Description.Unknown".localized
+        case .badRequest:           return "ResponseError.Description.InvalidURL".localized
+        case .unauthorized:         return "ResponseError.Description.Unauthorized".localized
+        case .forbidden:            return "ResponseError.Description.Forbidden".localized
+        case .notFound:             return "ResponseError.Description.NotFound".localized
+        case .conflict:             return "ResponseError.Description.Conflict".localized
+        case .unprocessableEntity:  return "ResponseError.Description.UnprocessableEntity".localized
+        case .internalServerError:  return "ResponseError.Description.InternalServerError".localized
+        case .unknown:              return "ResponseError.Description.Unknown".localized
         }
     }
 }
@@ -136,14 +149,14 @@ open class NetworkDispatcher {
     open func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
         
         #if DEBUG
-            self.printRequest(alamofireRequest)
+        Logger.log(alamofireRequest)
         #endif
         
         alamofireRequest.validate().responseJSON { dataResponse in
             let result = dataResponse.result
             
             #if DEBUG
-                self.printResponse(dataResponse)
+            Logger.log(dataResponse)
             #endif
             
             // Ensure there is a status code (ex: 200)
@@ -173,7 +186,7 @@ open class NetworkDispatcher {
         
         do {
             let url = try self.url(from: request)
-            let method = self.method(from: request)
+            let method = request.method.alamofireMethod
             return Alamofire.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
         } catch let error {
             throw RequestError.invalidURL(cause: error)
@@ -192,65 +205,4 @@ open class NetworkDispatcher {
             throw URLError(.badURL)
         }
     }
-    
-    private func method(from request: Request) -> Alamofire.HTTPMethod {
-        
-        switch request.method {
-        case .options:  return .options
-        case .get:      return .get
-        case .head:     return .head
-        case .post:     return .post
-        case .put:      return .put
-        case .patch:    return .patch
-        case .delete:   return .delete
-        case .trace:    return .trace
-        case .connect:  return .connect
-        }
-    }
-    
-    #if DEBUG
-    func printRequest(_ dataRequest: Alamofire.DataRequest) {
-        guard let request = dataRequest.request else { return }
-        let method = request.httpMethod ?? "?"
-        let url = request.url?.absoluteString ?? "UNKNOWN URL"
-        
-        print("")
-        print("===============================================")
-        print("REQUEST: [\(method)] \(url)")
-        
-        // Print headers
-        if let headers = request.allHTTPHeaderFields {
-            printHeaders(headers)
-        }
-        print("===============================================")
-    }
-    
-    func printResponse(_ dataResponse: Alamofire.DataResponse<Any>) {
-        guard let request = dataResponse.request else { return }
-        guard let response = dataResponse.response else { return }
-        let method = request.httpMethod ?? "?"
-        let url = request.url?.absoluteString ?? "UNKNOWN URL"
-        let statusCode = response.statusCode
-        
-        print("")
-        print("===============================================")
-        print("RESPONSE: (\(statusCode)) [\(method)] \(url)")
-        
-        // Print headers
-        printHeaders(response.allHeaderFields)
-        
-        if let value = dataResponse.result.value {
-            print("DATA: \(value)")
-        } else {
-            print("DATA: [EMPTY]")
-        }
-        
-        print("===============================================")
-    }
-    
-    func printHeaders(_ headers: [AnyHashable: Any]) {
-        print("HEADERS:")
-        headers.forEach { (key, value) in print("\(key): \(value)") }
-    }
-    #endif
 }

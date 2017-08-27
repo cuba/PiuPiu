@@ -73,6 +73,19 @@ open class NetworkSerializer {
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
+    open func send(_ request: Request, successHandler: @escaping ([String: String]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+        
+        self.send(request, successHandler: { (jsonObject: Any?) in
+            guard let object = jsonObject as? [String: String] else {
+                let error = SerializationError.invalidObject(cause: nil)
+                errorHandler(error)
+                return
+            }
+            
+            successHandler(object)
+        }, errorHandler: errorHandler, completionHandler: completionHandler)
+    }
+    
     open func send(_ request: Request, successHandler: @escaping () -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
