@@ -22,7 +22,7 @@ extension SerializationError: LocalizedError {
 }
 
 open class NetworkSerializer {
-    var dispatcher: NetworkDispatcher
+    public var dispatcher: NetworkDispatcher
     
     public init(dispatcher: NetworkDispatcher) {
         self.dispatcher = dispatcher
