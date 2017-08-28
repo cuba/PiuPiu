@@ -131,9 +131,12 @@ public struct JSONRequest: Request {
 
 open class NetworkDispatcher {
     var serverProvider: ServerProvider
+    var sessionManager: SessionManager
     
-    public init(serverProvider: ServerProvider) {
+    public init(serverProvider: ServerProvider, requestAdapter: RequestAdapter? = nil) {
         self.serverProvider = serverProvider
+        self.sessionManager = SessionManager()
+        sessionManager.adapter = requestAdapter
     }
     
     open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
@@ -187,7 +190,7 @@ open class NetworkDispatcher {
         do {
             let url = try self.url(from: request)
             let method = request.method.alamofireMethod
-            return Alamofire.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
+            return sessionManager.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
         } catch let error {
             throw RequestError.invalidURL(cause: error)
         }
