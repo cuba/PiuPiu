@@ -140,17 +140,17 @@ open class NetworkDispatcher {
         sessionManager.retrier = requestRetrier
     }
     
-    open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
+    open func send(_ request: Request, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
         
         do {
             let alamofireRequest = try self.alamofireRequest(from: request)
-            send(alamofireRequest, responseHandler: responseHandler)
+            send(alamofireRequest, responseHandler: responseHandler, completionHandler: completionHandler)
         } catch let error {
             responseHandler(nil, error)
         }
     }
     
-    open func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
+    open func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
         
         #if DEBUG
         Logger.log(alamofireRequest)

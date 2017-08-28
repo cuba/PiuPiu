@@ -116,6 +116,6 @@ open class NetworkSerializer {
             } else {
                 successHandler(jsonObject)
             }
-        })
+        }, completionHandler: completionHandler)
     }
 }
