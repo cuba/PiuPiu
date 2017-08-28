@@ -73,6 +73,21 @@ open class NetworkSerializer {
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
+    open func send<T: Mappable>(_ request: Request, successHandler: @escaping ([String: [T]]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+        
+        self.send(request, successHandler: { (jsonObject: Any?) in
+            let mapper = Mapper<T>()
+            
+            guard let object: [String: [T]] = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
+                let error = SerializationError.invalidObject(cause: nil)
+                errorHandler(error)
+                return
+            }
+            
+            successHandler(object)
+        }, errorHandler: errorHandler, completionHandler: completionHandler)
+    }
+    
     open func send(_ request: Request, successHandler: @escaping ([String: String]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
