@@ -130,13 +130,14 @@ public struct JSONRequest: Request {
 }
 
 open class NetworkDispatcher {
-    var serverProvider: ServerProvider
-    var sessionManager: SessionManager
+    public var serverProvider: ServerProvider
+    public var sessionManager: SessionManager
     
-    public init(serverProvider: ServerProvider, requestAdapter: RequestAdapter? = nil) {
+    public init(serverProvider: ServerProvider, requestAdapter: RequestAdapter? = nil, requestRetrier: RequestRetrier? = nil) {
         self.serverProvider = serverProvider
         self.sessionManager = SessionManager()
         sessionManager.adapter = requestAdapter
+        sessionManager.retrier = requestRetrier
     }
     
     open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
