@@ -14,6 +14,7 @@ class Logger {
         guard let request = dataRequest.request else { return }
         let method = request.httpMethod ?? "?"
         let url = request.url?.absoluteString ?? "UNKNOWN URL"
+        let httpBody = request.httpBody
         
         print("")
         print("===============================================")
@@ -22,6 +23,22 @@ class Logger {
         // Print headers
         if let headers = request.allHTTPHeaderFields {
             log(headers: headers)
+        }
+        
+        if let body = httpBody {
+            if let string = NSString(data: body, encoding: String.Encoding.utf8.rawValue) {
+                print("REQUEST BODY: \(string)")
+            } else {
+                do {
+                    if let jsonData = try getJsonObject(body) {
+                        print("REQUEST BODY: \(jsonData)")
+                    }
+                } catch let error {
+                    print("REQUEST BODY: [PARSING FAILED: \(error.localizedDescription)]")
+                }
+            }
+        } else {
+            print("REQUEST BODY: [EMPTY]")
         }
         print("===============================================")
     }
@@ -47,6 +64,10 @@ class Logger {
         }
         
         print("===============================================")
+    }
+    
+    static func getJsonObject(_ jsonData: Data) throws -> Any? {
+        return try JSONSerialization.jsonObject(with: jsonData, options: JSONSerialization.ReadingOptions.mutableContainers)
     }
     
     static func log(headers: [AnyHashable: Any]) {
