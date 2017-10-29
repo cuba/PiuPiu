@@ -163,12 +163,11 @@ open class NetworkDispatcher {
             Logger.log(dataResponse)
             #endif
             
-            completionHandler?()
-            
             // Ensure there is a status code (ex: 200)
             guard let statusCode = dataResponse.response?.statusCode else {
                 let error = ResponseError.unknown(cause: dataResponse.error)
                 responseHandler(result, error)
+                completionHandler?()
                 return
             }
             
@@ -177,14 +176,17 @@ open class NetworkDispatcher {
                 guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.responseError(cause: dataResponse.error) else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
                     responseHandler(result, error)
+                    completionHandler?()
                     return
                 }
                 
                 responseHandler(result.value, responseError)
+                completionHandler?()
                 return
             }
             
             responseHandler(result.value, nil)
+            completionHandler?()
         }
     }
     
