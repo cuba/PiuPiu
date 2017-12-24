@@ -17,6 +17,13 @@
 		8CC508A91ED3741300C19524 /* Bundle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508A71ED3741300C19524 /* Bundle+Extensions.swift */; };
 		8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508A81ED3741300C19524 /* String+Extensions.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
+		DAE6F7331FEF013F0060AA80 /* NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */; };
+		DAE6F7361FEF022D0060AA80 /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7351FEF022D0060AA80 /* ServerError.swift */; };
+		DAE6F7381FEF023B0060AA80 /* ClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7371FEF023B0060AA80 /* ClientError.swift */; };
+		DAE6F73A1FEF02470060AA80 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7391FEF02470060AA80 /* NetworkError.swift */; };
+		DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
+		DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */; };
+		DAE6F7401FEF1D690060AA80 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73F1FEF1D690060AA80 /* BaseError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +51,13 @@
 		8CC508A71ED3741300C19524 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
 		8CC508A81ED3741300C19524 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8CC508AE1ED3745A00C19524 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityManager.swift; sourceTree = "<group>"; };
+		DAE6F7351FEF022D0060AA80 /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
+		DAE6F7371FEF023B0060AA80 /* ClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientError.swift; sourceTree = "<group>"; };
+		DAE6F7391FEF02470060AA80 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
+		DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializationError.swift; sourceTree = "<group>"; };
+		DAE6F73F1FEF1D690060AA80 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,11 +110,13 @@
 		8CC507E61ED35A8D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DAE6F7341FEF020B0060AA80 /* Errors */,
 				8C4BAEC51F5295AF00D03976 /* Utilties */,
 				8CC508A61ED3740800C19524 /* Extensions */,
 				8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */,
 				8CC507FF1ED35AA900C19524 /* NetworkSerializer.swift */,
 				8CC508001ED35AA900C19524 /* ServerProvider.swift */,
+				DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -139,6 +155,19 @@
 				8CC508A81ED3741300C19524 /* String+Extensions.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		DAE6F7341FEF020B0060AA80 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				DAE6F73F1FEF1D690060AA80 /* BaseError.swift */,
+				DAE6F7371FEF023B0060AA80 /* ClientError.swift */,
+				DAE6F7351FEF022D0060AA80 /* ServerError.swift */,
+				DAE6F7391FEF02470060AA80 /* NetworkError.swift */,
+				DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */,
+				DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */,
+			);
+			name = Errors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,12 +285,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAE6F7331FEF013F0060AA80 /* NetworkReachabilityManager.swift in Sources */,
 				8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */,
 				8C4BAEC41F5295AA00D03976 /* Logger.swift in Sources */,
+				DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */,
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,
 				8CC508021ED35AA900C19524 /* NetworkSerializer.swift in Sources */,
+				DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */,
+				DAE6F7361FEF022D0060AA80 /* ServerError.swift in Sources */,
+				DAE6F7401FEF1D690060AA80 /* BaseError.swift in Sources */,
 				8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */,
 				8CC508A91ED3741300C19524 /* Bundle+Extensions.swift in Sources */,
+				DAE6F7381FEF023B0060AA80 /* ClientError.swift in Sources */,
+				DAE6F73A1FEF02470060AA80 /* NetworkError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

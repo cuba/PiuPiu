@@ -53,54 +53,16 @@ public enum StatusCode: Int {
     case unprocessableEntity = 422
     case internalServerError = 500
     
-    func responseError(cause: Error?) -> ResponseError? {
+    func error(cause: Error?) -> Error? {
         switch self {
-        case .badRequest:           return .badRequest(cause: cause)
-        case .unauthorized:         return .unauthorized(cause: cause)
-        case .forbidden:            return .forbidden(cause: cause)
-        case .notFound:             return .notFound(cause: cause)
-        case .conflict:             return .conflict(cause: cause)
-        case .unprocessableEntity:  return .unprocessableEntity(cause: cause)
-        case .internalServerError:  return .internalServerError(cause: cause)
+        case .badRequest:           return ClientError.badRequest(cause: cause)
+        case .unauthorized:         return ClientError.unauthorized(cause: cause)
+        case .forbidden:            return ClientError.forbidden(cause: cause)
+        case .notFound:             return ClientError.notFound(cause: cause)
+        case .conflict:             return ClientError.conflict(cause: cause)
+        case .unprocessableEntity:  return ClientError.unprocessableEntity(cause: cause)
+        case .internalServerError:  return ServerError.internalServerError(cause: cause)
         default:                    return nil
-        }
-    }
-}
-
-public enum RequestError: Error {
-    case invalidURL(cause: Error?)
-}
-
-extension RequestError: LocalizedError {
-    public var errorDescription: String? {
-        switch self {
-        case .invalidURL: return "RequestError.Description.InvalidURL".localized
-        }
-    }
-}
-
-public enum ResponseError: Error {
-    case badRequest(cause: Error?)
-    case unauthorized(cause: Error?)
-    case forbidden(cause: Error?)
-    case notFound(cause: Error?)
-    case conflict(cause: Error?)
-    case unprocessableEntity(cause: Error?)
-    case internalServerError(cause: Error?)
-    case unknown(cause: Error?)
-}
-
-extension ResponseError: LocalizedError {
-    public var errorDescription: String? {
-        switch self {
-        case .badRequest:           return "ResponseError.Description.InvalidURL".localized
-        case .unauthorized:         return "ResponseError.Description.Unauthorized".localized
-        case .forbidden:            return "ResponseError.Description.Forbidden".localized
-        case .notFound:             return "ResponseError.Description.NotFound".localized
-        case .conflict:             return "ResponseError.Description.Conflict".localized
-        case .unprocessableEntity:  return "ResponseError.Description.UnprocessableEntity".localized
-        case .internalServerError:  return "ResponseError.Description.InternalServerError".localized
-        case .unknown:              return "ResponseError.Description.Unknown".localized
         }
     }
 }
@@ -156,6 +118,11 @@ open class NetworkDispatcher {
         Logger.log(alamofireRequest)
         #endif
         
+        guard NetworkReachabilityManager.shared.isReachable else {
+            responseHandler(nil, NetworkError.noConnection)
+            return
+        }
+        
         alamofireRequest.validate().responseJSON { dataResponse in
             let result = dataResponse.result
             
@@ -173,7 +140,7 @@ open class NetworkDispatcher {
             
             // Ensure there are no errors. If there are, map them to our errors
             guard dataResponse.error == nil else {
-                guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.responseError(cause: dataResponse.error) else {
+                guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: dataResponse.error) else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
                     responseHandler(result, error)
                     completionHandler?()
@@ -197,7 +164,7 @@ open class NetworkDispatcher {
             let method = request.method.alamofireMethod
             return sessionManager.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
         } catch let error {
-            throw RequestError.invalidURL(cause: error)
+            throw ClientError.invalidURL(cause: error)
         }
     }
     

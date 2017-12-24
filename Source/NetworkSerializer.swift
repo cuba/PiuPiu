@@ -9,18 +9,6 @@
 import Foundation
 import ObjectMapper
 
-public enum SerializationError: Error {
-    case invalidObject(cause: Error?)
-}
-
-extension SerializationError: LocalizedError {
-    var localizedDescription: String {
-        switch self {
-        case .invalidObject: return "SerializationError.Description.InvalidObject".localized
-        }
-    }
-}
-
 open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
     

@@ -6,18 +6,17 @@
   Copyright © 2017 Jacob Sikorski. All rights reserved.
 */
 
-// Request Error
-"RequestError.Description.InvalidURL" = "The request you are trying to make is invalid.";
+// Reason
+"Error.Reason.InvalidRequest" = "The request is invalid.";
+"Error.Reason.NotAuthenticated" = "You are not authenticated.";
+"Error.Reason.NotAuthorized" = "You are not authorized to perform this action.";
+"Error.Reason.ResourceNotFound" = "The resouce you requested is not found.";
+"Error.Reason.SubmissionError" = "There were errors with your submission.";
+"Error.Reason.UnexpectedResponse" = "Got an unexpected response from the server.";
+"Error.Reason.UnknownNetworkError" = "An unknown network error has occured.";
+"Error.Reason.NoConnection" = "It appears that you do not have an internet connection.";
 
-// Response Error
-"ResponseError.Description.InvalidURL" = "The request is invalid. If this issue persists, please contact technical support.";
-"ResponseError.Description.Unauthorized" = "You are not authenticated. Please log in to continue.";
-"ResponseError.Description.Forbidden" = "You are not authorized to perform this action.";
-"ResponseError.Description.NotFound" = "The resouce you requested is not found.";
-"ResponseError.Description.Conflict" = "An unknown network error has occured. Please try your request at a later time.";
-"ResponseError.Description.UnprocessableEntity" = "There were errors with your submission.";
-"ResponseError.Description.InternalServerError" = "An unknown network error has occured. Please try your request at a later time.";
-"ResponseError.Description.Unknown" = "An unknown network error has occured. Please try your request at a later time.";
-
-// SerializationError
-"SerializationError.Description.InvalidObject" = "The request is invalid. If this issue persists, please contact technical support.";
+// Recovery Suggestion
+"Error.RecoverySuggestion.EstablishConnection" = "Connect to the internet and try your request again.";
+"Error.RecoverySuggestion.ContactSupport" = "If this issue persists, please contact technical support.";
+"Error.RecoverySuggestion.LogIn" = "Please log in to continue.";

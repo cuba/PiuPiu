@@ -12,31 +12,33 @@
 		8CC508191ED35E7D00C19524 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508171ED35E7D00C19524 /* Main.storyboard */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
-		8CC5084F1ED35F7A00C19524 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC508471ED35F1600C19524 /* NetworkKit.framework */; };
-		8CC508501ED35F7A00C19524 /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC508471ED35F1600C19524 /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DADDFF591FEF25BD005FEC56 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; };
+		DADDFF5A1FEF25BD005FEC56 /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DADDFF631FEF2659005FEC56 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF611FEF2659005FEC56 /* Alamofire.framework */; };
+		DADDFF641FEF2659005FEC56 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8CC508461ED35F1600C19524 /* PBXContainerItemProxy */ = {
+		DADDFF521FEF2578005FEC56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */;
+			containerPortal = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8CC507E41ED35A8D00C19524;
-			remoteInfo = NetworkKit;
+			remoteInfo = "NetworkKit iOS";
 		};
-		8CC508481ED35F1600C19524 /* PBXContainerItemProxy */ = {
+		DADDFF541FEF2578005FEC56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */;
+			containerPortal = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8CC507ED1ED35A8E00C19524;
-			remoteInfo = NetworkKitTests;
+			remoteInfo = "NetworkKit iOS Tests";
 		};
-		8CC508511ED35F7A00C19524 /* PBXContainerItemProxy */ = {
+		DADDFF5B1FEF25BD005FEC56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */;
+			containerPortal = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8CC507E31ED35A8D00C19524;
-			remoteInfo = NetworkKit;
+			remoteInfo = "NetworkKit iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -47,7 +49,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8CC508501ED35F7A00C19524 /* NetworkKit.framework in Embed Frameworks */,
+				DADDFF5A1FEF25BD005FEC56 /* NetworkKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -62,7 +64,9 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NetworkKit.xcodeproj; sourceTree = "<group>"; };
+		DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NetworkKit.xcodeproj; sourceTree = "<group>"; };
+		DADDFF611FEF2659005FEC56 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +74,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC5084F1ED35F7A00C19524 /* NetworkKit.framework in Frameworks */,
+				DADDFF641FEF2659005FEC56 /* ObjectMapper.framework in Frameworks */,
+				DADDFF591FEF25BD005FEC56 /* NetworkKit.framework in Frameworks */,
+				DADDFF631FEF2659005FEC56 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,9 +86,10 @@
 		8CC508071ED35E7D00C19524 = {
 			isa = PBXGroup;
 			children = (
-				8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */,
+				DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */,
 				8CC508121ED35E7D00C19524 /* Source */,
 				8CC508111ED35E7D00C19524 /* Products */,
+				DADDFF601FEF2631005FEC56 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -108,13 +115,22 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
-		8CC508421ED35F1600C19524 /* Products */ = {
+		DADDFF4E1FEF2578005FEC56 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8CC508471ED35F1600C19524 /* NetworkKit.framework */,
-				8CC508491ED35F1600C19524 /* NetworkKitTests.xctest */,
+				DADDFF531FEF2578005FEC56 /* NetworkKit.framework */,
+				DADDFF551FEF2578005FEC56 /* NetworkKit iOS Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DADDFF611FEF2659005FEC56 /* Alamofire.framework */,
+				DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,11 +144,12 @@
 				8CC5080D1ED35E7D00C19524 /* Frameworks */,
 				8CC5080E1ED35E7D00C19524 /* Resources */,
 				8CC508531ED35F7A00C19524 /* Embed Frameworks */,
+				DADDFF651FEF2676005FEC56 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				8CC508521ED35F7A00C19524 /* PBXTargetDependency */,
+				DADDFF5C1FEF25BD005FEC56 /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = Example;
@@ -169,8 +186,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8CC508421ED35F1600C19524 /* Products */;
-					ProjectRef = 8CC508411ED35F1600C19524 /* NetworkKit.xcodeproj */;
+					ProductGroup = DADDFF4E1FEF2578005FEC56 /* Products */;
+					ProjectRef = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -181,18 +198,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8CC508471ED35F1600C19524 /* NetworkKit.framework */ = {
+		DADDFF531FEF2578005FEC56 /* NetworkKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = NetworkKit.framework;
-			remoteRef = 8CC508461ED35F1600C19524 /* PBXContainerItemProxy */;
+			remoteRef = DADDFF521FEF2578005FEC56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		8CC508491ED35F1600C19524 /* NetworkKitTests.xctest */ = {
+		DADDFF551FEF2578005FEC56 /* NetworkKit iOS Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = NetworkKitTests.xctest;
-			remoteRef = 8CC508481ED35F1600C19524 /* PBXContainerItemProxy */;
+			path = "NetworkKit iOS Tests.xctest";
+			remoteRef = DADDFF541FEF2578005FEC56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -210,6 +227,24 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		DADDFF651FEF2676005FEC56 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ObjectMapper.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8CC5080C1ED35E7D00C19524 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -223,10 +258,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8CC508521ED35F7A00C19524 /* PBXTargetDependency */ = {
+		DADDFF5C1FEF25BD005FEC56 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = NetworkKit;
-			targetProxy = 8CC508511ED35F7A00C19524 /* PBXContainerItemProxy */;
+			name = "NetworkKit iOS";
+			targetProxy = DADDFF5B1FEF25BD005FEC56 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -351,6 +386,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.networkkit.example;
@@ -365,6 +404,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.networkkit.example;
