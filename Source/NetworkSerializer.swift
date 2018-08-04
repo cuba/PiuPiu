@@ -16,7 +16,7 @@ open class NetworkSerializer {
         self.dispatcher = dispatcher
     }
     
-    open func send<T: Mappable>(_ request: Request, successHandler: @escaping (T) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping (T) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
             let mapper = Mapper<T>()
@@ -31,7 +31,7 @@ open class NetworkSerializer {
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
-    open func send<T: Mappable>(_ request: Request, successHandler: @escaping ([T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
             let mapper = Mapper<T>()
@@ -46,7 +46,7 @@ open class NetworkSerializer {
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
-    open func send<T: Mappable>(_ request: Request, successHandler: @escaping ([String: T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
             let mapper = Mapper<T>()
@@ -61,7 +61,7 @@ open class NetworkSerializer {
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
-    open func send<T: Mappable>(_ request: Request, successHandler: @escaping ([String: [T]]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: [T]]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
         self.send(request, successHandler: { (jsonObject: Any?) in
             let mapper = Mapper<T>()
