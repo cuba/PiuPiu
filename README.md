@@ -58,12 +58,12 @@ Import NetworkKit into your file
 import NetworkKit
 ```
 
-Initialize the dispatcher. Make sure to hold a strong reference to your dispatcher:
+Initialize the dispatcher. Make sure to hold a strong reference to your dispatcher.
 ```swift
 self.dispatcher = NetworkDispatcher(serverProvider: self)
 ```
 
-Use the following in your code:
+Send your request.
 
 ```swift
 let request = JSONRequest(method: .get, path: "/posts/1")
@@ -87,14 +87,7 @@ import NetworkKit
 import ObjectMapper
 ```
 
-Initialize the serializer and dispatcher. Make sure to hold a strong reference to your serializer but not your dispatcher.
-
-```swift
-let dispatcher = NetworkDispatcher(serverProvider: self)
-self.serializer = NetworkSerializer(dispatcher: dispatcher)
-```
-
-Send requests in the following way:
+You will need a model object extending [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper)'s `Mappable` or `ImmutableMappable` protocol.
 
 ```swift
 struct Post: ImmutableMappable {
@@ -106,7 +99,18 @@ struct Post: ImmutableMappable {
         // Add mapping to json
     }
 }
+```
 
+Initialize the serializer and dispatcher. Make sure to hold a strong reference to your serializer but not your dispatcher. You can initialize these in your `viewDidLoad()` method or one of your initializers.
+
+```swift
+let dispatcher = NetworkDispatcher(serverProvider: self)
+self.serializer = NetworkSerializer(dispatcher: dispatcher)
+```
+
+Send your request.
+
+```swift
 let request = JSONRequest(method: .get, path: "/posts")
 
 serializer.send(request, successHandler: { (posts: [Post]) in
