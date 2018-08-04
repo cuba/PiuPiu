@@ -37,7 +37,7 @@ open class NetworkReachabilityManager {
     public init() {
         reachabilityManager?.listener = { status in
             // Filter out nil callbacks
-            self.callbacks = self.callbacks.flatMap({ return $0 })
+            self.callbacks = self.callbacks.compactMap({ return $0 })
             let newStatus = NetworkReachabilityStatus(status)
             self.callbacks.forEach({ $0?(newStatus) })
         }
@@ -45,7 +45,7 @@ open class NetworkReachabilityManager {
     
     public func callback(_ callback: @escaping NetworkReachabilityCallback) {
         // Filter out nil callbacks
-        self.callbacks = self.callbacks.flatMap({ return $0 })
+        self.callbacks = self.callbacks.compactMap({ return $0 })
         self.callbacks.append(callback)
     }
     
