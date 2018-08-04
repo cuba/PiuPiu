@@ -9,6 +9,9 @@
 import Foundation
 import ObjectMapper
 
+public typealias SuccessHandler = (Any?) -> Void
+public typealias ErrorHandler = (Error) -> Void
+
 open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
     

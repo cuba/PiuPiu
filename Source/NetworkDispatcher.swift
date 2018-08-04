@@ -9,8 +9,6 @@
 import Foundation
 import Alamofire
 
-public typealias SuccessHandler = (Any?) -> Void
-public typealias ErrorHandler = (Error) -> Void
 public typealias ResponseHandler = (Any?, Error?) -> Void
 public typealias CompletionHandler = () -> Void
 
@@ -25,7 +23,7 @@ public enum HTTPMethod: String {
     case trace   = "TRACE"
     case connect = "CONNECT"
     
-    var alamofireMethod: Alamofire.HTTPMethod {
+    fileprivate var alamofireMethod: Alamofire.HTTPMethod {
         switch self {
         case .options:  return .options
         case .get:      return .get
@@ -92,7 +90,7 @@ public struct JSONRequest: Request {
 }
 
 open class NetworkDispatcher {
-    public var serverProvider: ServerProvider
+    public weak var serverProvider: ServerProvider?
     public var sessionManager: SessionManager
     
     public init(serverProvider: ServerProvider, requestAdapter: RequestAdapter? = nil, requestRetrier: RequestRetrier? = nil) {
@@ -103,16 +101,17 @@ open class NetworkDispatcher {
     }
     
     open func send(_ request: Request, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
+        guard let serverProvider = self.serverProvider else { return }
         
         do {
-            let alamofireRequest = try self.alamofireRequest(from: request)
-            send(alamofireRequest, responseHandler: responseHandler, completionHandler: completionHandler)
+            let alamofireRequest = try self.alamofireRequest(from: request, serverProvider: serverProvider)
+            NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler, completionHandler: completionHandler)
         } catch let error {
             responseHandler(nil, error)
         }
     }
     
-    open func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
+    open static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
         
         #if DEBUG
         Logger.log(alamofireRequest)
@@ -157,27 +156,14 @@ open class NetworkDispatcher {
         }
     }
     
-    private func alamofireRequest(from request: Request) throws -> Alamofire.DataRequest {
+    private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {
         
         do {
-            let url = try self.url(from: request)
+            let url = try serverProvider.url(from: request)
             let method = request.method.alamofireMethod
             return sessionManager.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
         } catch let error {
             throw ClientError.invalidURL(cause: error)
-        }
-    }
-    
-    private func url(from request: Request) throws -> URL {
-        
-        var urlComponents = URLComponents(url: serverProvider.baseURL, resolvingAgainstBaseURL: true)
-        urlComponents?.queryItems = request.queryItems
-        urlComponents?.path = request.path
-        
-        if let url = try urlComponents?.asURL() {
-            return url
-        } else {
-            throw URLError(.badURL)
         }
     }
 }
