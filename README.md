@@ -40,6 +40,8 @@ Run `carthage update` to build the framework and drag the built `NetworkKit.fram
 
 ### Implementing the server provider
 
+The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController.
+
 ```swift
 extension ViewController: ServerProvider {
     var baseURL: URL {
@@ -48,14 +50,20 @@ extension ViewController: ServerProvider {
 }
 ```
 
-### Initialization
+### Basic usage (without serialization)
+
+Import NetworkKit into your file
 
 ```swift
-let dispatcher = NetworkDispatcher(serverProvider: self)
-serializer = NetworkSerializer(dispatcher: dispatcher)
+import NetworkKit
 ```
 
-### Basic usage (without serialization)
+Initialize the dispatcher. Make sure to hold a strong reference to your dispatcher:
+```swift
+self.dispatcher = NetworkDispatcher(serverProvider: self)
+```
+
+Use the following in your code:
 
 ```swift
 let request = JSONRequest(method: .get, path: "/posts/1")
@@ -70,12 +78,38 @@ serializer.send(request, successHandler: { (data: Any?) in
 })
 ```
 
-### Advanced usage
+### Advanced usage (with ObjectMapper serialization)
+
+Import the following libraries:
 
 ```swift
+import NetworkKit
+import ObjectMapper
+```
+
+Initialize the serializer and dispatcher. Make sure to hold a strong reference to your serializer but not your dispatcher.
+
+```swift
+let dispatcher = NetworkDispatcher(serverProvider: self)
+self.serializer = NetworkSerializer(dispatcher: dispatcher)
+```
+
+Send requests in the following way:
+
+```swift
+struct Post: ImmutableMappable {
+    init(map: Map) throws {
+        // Add mapping from json
+    }
+    
+    func mapping(map: Map) {
+        // Add mapping to json
+    }
+}
+
 let request = JSONRequest(method: .get, path: "/posts")
 
-serializer.send(request, successHandler: { (posts: [Posts]) in
+serializer.send(request, successHandler: { (posts: [Post]) in
     print(posts)
 }, errorHandler: { error in
     print(error.localizedDescription)
@@ -84,6 +118,10 @@ serializer.send(request, successHandler: { (posts: [Posts]) in
     // (Such as hide the activity indicator)
 })
 ```
+
+## Dependencies
+
+NetworkKit uses [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) for serialization and [Alamofire](https://github.com/Alamofire/Alamofire) for network requests.
 
 ## Credits
 
