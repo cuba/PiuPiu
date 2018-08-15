@@ -22,14 +22,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icon" translatesAutoresizingMaskIntoConstraints="NO" id="8OL-vD-TPf">
-                                <rect key="frame" x="100" y="-126.5" width="175" height="920"/>
+                                <rect key="frame" x="100" y="246" width="175" height="175"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.098039215686274508" green="0.58431372549019611" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="8OL-vD-TPf" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="N3W-31-BXs"/>
-                            <constraint firstItem="8OL-vD-TPf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="100" id="Yjt-94-HN7"/>
-                            <constraint firstAttribute="trailing" secondItem="8OL-vD-TPf" secondAttribute="trailing" constant="100" id="nwT-zL-w35"/>
+                            <constraint firstItem="8OL-vD-TPf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="i0K-Un-8qR"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -39,6 +38,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Icon" width="920" height="920"/>
+        <image name="Icon" width="175" height="175"/>
     </resources>
 </document>
