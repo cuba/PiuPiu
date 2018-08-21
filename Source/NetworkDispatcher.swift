@@ -69,11 +69,14 @@ public protocol Request {
     var method: HTTPMethod { get }
     var path:   String { get }
     var queryItems: [URLQueryItem]? { get }
-    var parameters: [String : Any]? { get }
-    var headers: [String : String]? { get }
+    var parameters: [String: Any]? { get }
+    var headers: [String: String]? { get }
+    var parameterEncoding: ParameterEncoding { get }
 }
 
 public struct JSONRequest: Request {
+    public let parameterEncoding: ParameterEncoding = JSONEncoding.default
+    
     public var method: HTTPMethod
     public var path:   String
     public var queryItems: [URLQueryItem]?
@@ -157,11 +160,10 @@ open class NetworkDispatcher {
     }
     
     private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {
-        
         do {
             let url = try serverProvider.url(from: request)
             let method = request.method.alamofireMethod
-            return sessionManager.request(url, method: method, parameters: request.parameters, encoding: URLEncoding.default, headers: request.headers)
+            return sessionManager.request(url, method: method, parameters: request.parameters, encoding: request.parameterEncoding, headers: request.headers)
         } catch let error {
             throw ClientError.invalidURL(cause: error)
         }
