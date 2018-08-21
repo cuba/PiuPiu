@@ -34,7 +34,7 @@ $ brew install carthage
 To integrate NetworkKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/NetworkKit" ~> 1.2
+github "cuba/NetworkKit" ~> 1.3
 ```
 
 Run `carthage update` to build the framework and drag the built `NetworkKit.framework` into your Xcode project.
