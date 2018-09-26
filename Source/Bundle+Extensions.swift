@@ -9,7 +9,7 @@
 import Foundation
 
 extension Bundle {
-    open static var networkKit: Bundle {
+    public static var networkKit: Bundle {
         return Bundle(identifier: "com.jacobsikorski.NetworkKit")!
     }
 }

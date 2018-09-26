@@ -114,7 +114,7 @@ open class NetworkDispatcher {
         }
     }
     
-    open static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
+    public static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
         
         #if DEBUG
         Logger.log(alamofireRequest)
