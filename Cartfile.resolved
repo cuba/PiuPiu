@@ -1,2 +1,3 @@
-github "Alamofire/Alamofire" "4.7.3"
-github "Hearst-DD/ObjectMapper" "3.3.0"
+github "Alamofire/Alamofire" "4.8.0"
+github "Hearst-DD/ObjectMapper" "3.4.1"
+github "cuba/MapCodable" "1.2.5"
