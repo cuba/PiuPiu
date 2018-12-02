@@ -66,7 +66,7 @@ class ViewController: UIViewController {
         let request = JSONRequest(method: .get, path: pathTextField.text ?? "")
         self.textView.text = ""
         
-        serializer.send(request, successHandler: { (data: Any?) in
+        serializer.send(request, successHandler: { (data: Any?, headers: [AnyHashable: Any]?) in
             if let data = data {
                 self.textView.text = "\(data)"
             } else {

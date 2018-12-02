@@ -9,8 +9,7 @@
 import Foundation
 import Alamofire
 
-public typealias ResponseHandler = (Any?, Error?) -> Void
-public typealias CompletionHandler = () -> Void
+public typealias ResponseHandler = (Any?, [AnyHashable: Any]?, Error?) -> Void
 
 open class NetworkDispatcher {
     public weak var serverProvider: ServerProvider?
@@ -23,25 +22,25 @@ open class NetworkDispatcher {
         sessionManager.retrier = requestRetrier
     }
     
-    open func send(_ request: Request, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
+    open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
         guard let serverProvider = self.serverProvider else { return }
         
         do {
             let alamofireRequest = try self.alamofireRequest(from: request, serverProvider: serverProvider)
-            NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler, completionHandler: completionHandler)
+            NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler)
         } catch let error {
-            responseHandler(nil, error)
+            responseHandler(nil, nil, error)
         }
     }
     
-    public static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler, completionHandler: CompletionHandler? = nil) {
+    public static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
         
         #if DEBUG
         Logger.log(alamofireRequest)
         #endif
         
         guard NetworkReachabilityManager.shared.isReachable else {
-            responseHandler(nil, NetworkError.noConnection)
+            responseHandler(nil, nil, NetworkError.noConnection)
             return
         }
         
@@ -55,8 +54,7 @@ open class NetworkDispatcher {
             // Ensure there is a status code (ex: 200)
             guard let statusCode = dataResponse.response?.statusCode else {
                 let error = ResponseError.unknown(cause: dataResponse.error)
-                responseHandler(result, error)
-                completionHandler?()
+                responseHandler(result, nil, error)
                 return
             }
             
@@ -64,18 +62,15 @@ open class NetworkDispatcher {
             guard dataResponse.error == nil else {
                 guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: dataResponse.error) else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
-                    responseHandler(result, error)
-                    completionHandler?()
+                    responseHandler(result, nil, error)
                     return
                 }
                 
-                responseHandler(result.value, responseError)
-                completionHandler?()
+                responseHandler(result.value, nil, responseError)
                 return
             }
             
-            responseHandler(result.value, nil)
-            completionHandler?()
+            responseHandler(result.value, nil, nil)
         }
     }
     

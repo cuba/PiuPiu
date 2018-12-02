@@ -9,8 +9,8 @@
 import Foundation
 import ObjectMapper
 
-public typealias SuccessHandler = (Any?) -> Void
 public typealias ErrorHandler = (Error) -> Void
+public typealias CompletionHandler = () -> Void
 
 open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
@@ -34,7 +34,7 @@ open class NetworkSerializer {
      */
     open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping (T) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
+        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
             let mapper = Mapper<T>()
             
             guard let object: T = mapper.map(JSONObject: jsonObject) else {
@@ -57,7 +57,7 @@ open class NetworkSerializer {
      */
     open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
+        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
             let mapper = Mapper<T>()
             
             guard let object: [T] = mapper.mapArray(JSONObject: jsonObject) else {
@@ -80,7 +80,7 @@ open class NetworkSerializer {
      */
     open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
+        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
             let mapper = Mapper<T>()
             
             guard let object: [String: T] = mapper.mapDictionary(JSONObject: jsonObject) else {
@@ -103,7 +103,7 @@ open class NetworkSerializer {
      */
     open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: [T]]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
+        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
             let mapper = Mapper<T>()
             
             guard let object: [String: [T]] = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
@@ -126,7 +126,7 @@ open class NetworkSerializer {
      */
     open func send(_ request: Request, successHandler: @escaping ([String: String]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
+        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
             guard let object = jsonObject as? [String: String] else {
                 let error = SerializationError.invalidObject(cause: nil)
                 errorHandler(error)
@@ -160,14 +160,16 @@ open class NetworkSerializer {
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
     */
-    open func send(_ request: Request, successHandler: @escaping (Any?) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send(_ request: Request, successHandler: @escaping (Any?, [AnyHashable: Any]?) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        dispatcher.send(request, responseHandler: { jsonObject, error in
+        dispatcher.send(request) { jsonObject, headers, error in
             if let error = error {
                 errorHandler(error)
             } else {
-                successHandler(jsonObject)
+                successHandler(jsonObject, headers)
             }
-        }, completionHandler: completionHandler)
+            
+            completionHandler()
+        }
     }
 }

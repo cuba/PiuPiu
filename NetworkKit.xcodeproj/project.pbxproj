@@ -90,6 +90,7 @@
 		8C4BAEC51F5295AF00D03976 /* Utilties */ = {
 			isa = PBXGroup;
 			children = (
+				DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */,
 				8C4BAEC31F5295AA00D03976 /* Logger.swift */,
 			);
 			name = Utilties;
@@ -119,15 +120,13 @@
 		8CC507E61ED35A8D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DA3E507821B4A250001450EC /* Network */,
 				DA3E506E21B45904001450EC /* Enums */,
 				DA3E506921B458BA001450EC /* Request */,
 				DAE6F7341FEF020B0060AA80 /* Errors */,
 				8C4BAEC51F5295AF00D03976 /* Utilties */,
 				8CC508A61ED3740800C19524 /* Extensions */,
-				8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */,
-				8CC507FF1ED35AA900C19524 /* NetworkSerializer.swift */,
 				8CC508001ED35AA900C19524 /* ServerProvider.swift */,
-				DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -184,6 +183,15 @@
 				DA3E507121B4595E001450EC /* HTTPMethod.swift */,
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		DA3E507821B4A250001450EC /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */,
+				8CC507FF1ED35AA900C19524 /* NetworkSerializer.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 		DAE6F7341FEF020B0060AA80 /* Errors */ = {
