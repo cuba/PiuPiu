@@ -20,7 +20,7 @@ public enum HTTPMethod: String {
     case trace   = "TRACE"
     case connect = "CONNECT"
     
-    fileprivate var alamofireMethod: Alamofire.HTTPMethod {
+    var alamofireMethod: Alamofire.HTTPMethod {
         switch self {
         case .options:  return .options
         case .get:      return .get
