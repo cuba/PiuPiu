@@ -8,6 +8,7 @@
 
 import UIKit
 import NetworkKit
+import MapCodableKit
 
 class ViewController: UIViewController {
     lazy var sendButton: UIButton = {
@@ -44,13 +45,14 @@ class ViewController: UIViewController {
     }()
     
     fileprivate var currentTextField: UITextField?
-    private var serializer: NetworkSerializer!
+    private var serializer: NetworkSerializer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
         title = "Example "
         setupLayout()
+        
         // Configure the NetworkKit
         let dispatcher = NetworkDispatcher(serverProvider: self)
         serializer = NetworkSerializer(dispatcher: dispatcher)
@@ -66,11 +68,12 @@ class ViewController: UIViewController {
         let request = JSONRequest(method: .get, path: pathTextField.text ?? "")
         self.textView.text = ""
         
-        serializer.send(request, successHandler: { (data: Any?, headers: [AnyHashable: Any]?) in
-            if let data = data {
-                self.textView.text = "\(data)"
-            } else {
-                self.textView.text = ""
+        serializer?.send(request, successHandler: { (map: Map, headers: [AnyHashable: Any]) in
+            do {
+                let jsonString = try map.jsonString()
+                self.textView.text = jsonString
+            } catch {
+                self.textView.text = error.localizedDescription
             }
         }, errorHandler: { error in
             self.textView.text = error.localizedDescription

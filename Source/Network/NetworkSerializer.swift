@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ObjectMapper
+import MapCodableKit
 
 public typealias ErrorHandler = (Error) -> Void
 public typealias CompletionHandler = () -> Void
@@ -16,7 +16,7 @@ open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
     
     /**
-     Send a request while expecting a single `BaseMappable` object
+     Send a request while expecting a single `MapDecodable` object
      
      - parameter dispatcher: The Network dispatcher that will be used to send this request
      */
@@ -25,115 +25,110 @@ open class NetworkSerializer {
     }
     
     /**
-     Send a request while expecting a single `BaseMappable` object
+     Send a request while expecting a single `MapDecodable` object
      
      - parameter request: The request object containing all the request data
      - parameter successHandler: The callback that will be triggered on a secessful response
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
-    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping (T) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
-            let mapper = Mapper<T>()
-            
-            guard let object: T = mapper.map(JSONObject: jsonObject) else {
+        self.send(request, successHandler: { (data: Data?, headers: [AnyHashable: Any]) in
+            guard let data = data else {
                 let error = SerializationError.invalidObject(cause: nil)
                 errorHandler(error)
                 return
             }
             
-            successHandler(object)
+            do {
+                let object = try T(jsonData: data)
+                successHandler(object, headers)
+            } catch {
+                errorHandler(error)
+                return
+            }
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
     /**
-     Send a request while expecting an array of `BaseMappable` objects
+     Send a request while expecting an array of `MapDecodable` objects
      
      - parameter request: The request object containing all the request data
      - parameter successHandler: The callback that will be triggered on a secessful response
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
-    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping ([T], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
-            let mapper = Mapper<T>()
-            
-            guard let object: [T] = mapper.mapArray(JSONObject: jsonObject) else {
+        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
+            guard let jsonData = jsonData else {
                 let error = SerializationError.invalidObject(cause: nil)
                 errorHandler(error)
                 return
             }
             
-            successHandler(object)
+            do {
+                let object = try T.parseArray(jsonData: jsonData)
+                successHandler(object, headers)
+            } catch {
+                errorHandler(error)
+                return
+            }
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
     /**
-     Send a request while expecting a dictionary of `String` to `BaseMappable`
+     Send a request while expecting a `Map` objects
      
      - parameter request: The request object containing all the request data
      - parameter successHandler: The callback that will be triggered on a secessful response
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
-    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: T]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send(_ request: Request, successHandler: @escaping (Map, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
-            let mapper = Mapper<T>()
-            
-            guard let object: [String: T] = mapper.mapDictionary(JSONObject: jsonObject) else {
+        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
+            guard let jsonData = jsonData else {
                 let error = SerializationError.invalidObject(cause: nil)
                 errorHandler(error)
                 return
             }
             
-            successHandler(object)
+            do {
+                let object = try Map(jsonData: jsonData)
+                successHandler(object, headers)
+            } catch {
+                errorHandler(error)
+                return
+            }
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
     /**
-     Send a request while expecting a dictionary of `String` to `BaseMappable` `Array`
+     Send a request while expecting an array of `Map` objects
      
      - parameter request: The request object containing all the request data
      - parameter successHandler: The callback that will be triggered on a secessful response
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
-    open func send<T: BaseMappable>(_ request: Request, successHandler: @escaping ([String: [T]]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send(_ request: Request, successHandler: @escaping ([Map], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
-            let mapper = Mapper<T>()
-            
-            guard let object: [String: [T]] = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
+        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
+            guard let jsonData = jsonData else {
                 let error = SerializationError.invalidObject(cause: nil)
                 errorHandler(error)
                 return
             }
             
-            successHandler(object)
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
-    }
-    
-    /**
-     Send a request while expecting a dictionary response
-     
-     - parameter request: The request object containing all the request data
-     - parameter successHandler: The callback that will be triggered on a secessful response
-     - parameter errorHandler: The callback that will be triggered on a error response or invalid request
-     - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
-     */
-    open func send(_ request: Request, successHandler: @escaping ([String: String]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (jsonObject: Any?, headers: [AnyHashable: Any]?) in
-            guard let object = jsonObject as? [String: String] else {
-                let error = SerializationError.invalidObject(cause: nil)
+            do {
+                let object = try Map.parseArray(jsonData: jsonData)
+                successHandler(object, headers)
+            } catch {
                 errorHandler(error)
                 return
             }
-            
-            successHandler(object)
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
@@ -145,10 +140,10 @@ open class NetworkSerializer {
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
-    open func send(_ request: Request, successHandler: @escaping () -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send(_ request: Request, successHandler: @escaping ([AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        self.send(request, successHandler: { (jsonObject: Any?) in
-            successHandler()
+        self.send(request, successHandler: { (data: Data?, headers: [AnyHashable: Any]) in
+            successHandler(headers)
         }, errorHandler: errorHandler, completionHandler: completionHandler)
     }
     
@@ -160,13 +155,13 @@ open class NetworkSerializer {
      - parameter errorHandler: The callback that will be triggered on a error response or invalid request
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
     */
-    open func send(_ request: Request, successHandler: @escaping (Any?, [AnyHashable: Any]?) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
+    open func send(_ request: Request, successHandler: @escaping (Data?, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         
-        dispatcher.send(request) { jsonObject, headers, error in
+        dispatcher.send(request) { data, headers, error in
             if let error = error {
                 errorHandler(error)
             } else {
-                successHandler(jsonObject, headers)
+                successHandler(data, headers ?? [:])
             }
             
             completionHandler()

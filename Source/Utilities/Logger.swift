@@ -43,7 +43,7 @@ class Logger {
         print("===============================================")
     }
     
-    static func log(_ dataResponse: Alamofire.DataResponse<Any>) {
+    static func log(_ dataResponse: Alamofire.DataResponse<Data>) {
         guard let request = dataResponse.request else { return }
         guard let response = dataResponse.response else { return }
         let method = request.httpMethod ?? "?"
@@ -57,10 +57,20 @@ class Logger {
         // Print headers
         log(headers: response.allHeaderFields)
         
-        if let value = dataResponse.result.value {
-            print("DATA: \(value)")
+        if let body = dataResponse.data {
+            if let string = NSString(data: body, encoding: String.Encoding.utf8.rawValue) {
+                print("RESPONSE BODY: \(string)")
+            } else {
+                do {
+                    if let jsonData = try getJsonObject(body) {
+                        print("RESPONSE BODY: \(jsonData)")
+                    }
+                } catch let error {
+                    print("RESPONSE BODY: [PARSING FAILED: \(error.localizedDescription)]")
+                }
+            }
         } else {
-            print("DATA: [EMPTY]")
+            print("REQUEST BODY: [EMPTY]")
         }
         
         print("===============================================")

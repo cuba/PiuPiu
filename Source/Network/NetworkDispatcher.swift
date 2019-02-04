@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-public typealias ResponseHandler = (Any?, [AnyHashable: Any]?, Error?) -> Void
+public typealias ResponseHandler = (Data?, [AnyHashable: Any]?, Error?) -> Void
 
 open class NetworkDispatcher {
     public weak var serverProvider: ServerProvider?
@@ -44,9 +44,7 @@ open class NetworkDispatcher {
             return
         }
         
-        alamofireRequest.validate().responseJSON { dataResponse in
-            let result = dataResponse.result
-            
+        alamofireRequest.validate().responseData(completionHandler: { dataResponse in
             #if DEBUG
             Logger.log(dataResponse)
             #endif
@@ -54,7 +52,7 @@ open class NetworkDispatcher {
             // Ensure there is a status code (ex: 200)
             guard let statusCode = dataResponse.response?.statusCode else {
                 let error = ResponseError.unknown(cause: dataResponse.error)
-                responseHandler(result, nil, error)
+                responseHandler(dataResponse.data, nil, error)
                 return
             }
             
@@ -62,16 +60,16 @@ open class NetworkDispatcher {
             guard dataResponse.error == nil else {
                 guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: dataResponse.error) else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
-                    responseHandler(result, nil, error)
+                    responseHandler(dataResponse.data, nil, error)
                     return
                 }
                 
-                responseHandler(result.value, nil, responseError)
+                responseHandler(dataResponse.data, nil, responseError)
                 return
             }
             
-            responseHandler(result.value, nil, nil)
-        }
+            responseHandler(dataResponse.data, nil, nil)
+        })
     }
     
     private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {

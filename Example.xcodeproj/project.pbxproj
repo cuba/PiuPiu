@@ -11,10 +11,10 @@
 		8CC508161ED35E7D00C19524 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* ViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
+		DA245C802207E4A100A92C1D /* MapCodableKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA245C7F2207E4A100A92C1D /* MapCodableKit.framework */; };
 		DADDFF591FEF25BD005FEC56 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; };
 		DADDFF5A1FEF25BD005FEC56 /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DADDFF631FEF2659005FEC56 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF611FEF2659005FEC56 /* Alamofire.framework */; };
-		DADDFF641FEF2659005FEC56 /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,9 +62,9 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA245C7F2207E4A100A92C1D /* MapCodableKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapCodableKit.framework; path = Carthage/Build/iOS/MapCodableKit.framework; sourceTree = "<group>"; };
 		DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NetworkKit.xcodeproj; sourceTree = "<group>"; };
 		DADDFF611FEF2659005FEC56 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,9 +72,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DADDFF641FEF2659005FEC56 /* ObjectMapper.framework in Frameworks */,
 				DADDFF591FEF25BD005FEC56 /* NetworkKit.framework in Frameworks */,
 				DADDFF631FEF2659005FEC56 /* Alamofire.framework in Frameworks */,
+				DA245C802207E4A100A92C1D /* MapCodableKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,8 +124,8 @@
 		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DA245C7F2207E4A100A92C1D /* MapCodableKit.framework */,
 				DADDFF611FEF2659005FEC56 /* Alamofire.framework */,
-				DADDFF621FEF2659005FEC56 /* ObjectMapper.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -231,8 +231,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/MapCodable.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ObjectMapper.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/MapCodableKit.framework",
 			);
 			outputPaths = (
 			);
