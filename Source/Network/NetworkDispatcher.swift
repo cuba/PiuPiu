@@ -76,7 +76,7 @@ open class NetworkDispatcher {
         do {
             let url = try serverProvider.url(from: request)
             let method = request.method.alamofireMethod
-            return sessionManager.request(url, method: method, parameters: request.parameters, encoding: request.parameterEncoding, headers: request.headers)
+            return sessionManager.request(url, method: method, parameters: request.body, encoding: request.parameterEncoding, headers: request.headers)
         } catch let error {
             throw ClientError.invalidURL(cause: error)
         }
