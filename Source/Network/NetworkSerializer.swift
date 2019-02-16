@@ -32,23 +32,19 @@ open class NetworkSerializer {
     
     open func data(from request: Request) -> Promise<SuccessResponse<Data>, ErrorResponse<Data?>> {
         return Promise<SuccessResponse<Data>, ErrorResponse>(action: { [weak self] promise in
-            self?.dispatcher.send(request) { data, headers, error in
-                if let error = error {
-                    // Check if we have an error
-                    // TODO: Allow the user to serialize an error object from the response
-                    promise.fail(with: (error, data, headers))
-                } else {
-                    // Check if we have the data we need
-                    guard let unwrappedData = data else {
-                        let error = SerializationError.emptyResponse
-                        promise.fail(with: (error, data, headers))
-                        return
-                    }
-                    
-                    // We have a response object. Let's return it.
-                    promise.succeed(with: (unwrappedData, headers ?? [:]))
+            self?.dispatcher.response(from: request).success({ response in
+                // Check if we have the data we need
+                guard let unwrappedData = response.data else {
+                    let error = SerializationError.emptyResponse
+                    promise.fail(with: (error, response.data, response.headers))
+                    return
                 }
-            }
+                
+                // We have a response object. Let's return it.
+                promise.succeed(with: (unwrappedData, response.headers))
+            }).error({ response in
+                promise.fail(with: response)
+            }).start()
         })
     }
     

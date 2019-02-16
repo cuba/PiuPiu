@@ -21,6 +21,21 @@ open class NetworkDispatcher {
         sessionManager.adapter = requestAdapter
         sessionManager.retrier = requestRetrier
     }
+
+    open func response(from request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<Data?>, ErrorResponse>(action: { [weak self] promise in
+            self?.send(request) { data, headers, error in
+                if let error = error {
+                    // Check if we have an error
+                    // TODO: Allow the user to serialize an error object from the response
+                    promise.fail(with: (error, data, headers))
+                } else {
+                    // We have a response object. Let's return it.
+                    promise.succeed(with: (data, headers ?? [:]))
+                }
+            }
+        })
+    }
     
     open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
         guard let serverProvider = self.serverProvider else { return }
@@ -44,7 +59,7 @@ open class NetworkDispatcher {
             return
         }
         
-        alamofireRequest.validate().responseData(completionHandler: { data in
+        alamofireRequest.validate().responseData() { data in
             #if DEBUG
             Logger.log(data)
             #endif
@@ -69,7 +84,7 @@ open class NetworkDispatcher {
             }
             
             responseHandler(data.data, nil, nil)
-        })
+        }
     }
     
     private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {
