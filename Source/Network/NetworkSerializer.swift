@@ -9,8 +9,14 @@
 import Foundation
 import MapCodableKit
 
+// Old handlers
 public typealias ErrorHandler = (Error) -> Void
 public typealias CompletionHandler = () -> Void
+
+// Response types
+public typealias SuccessResponse<T> = (data: T, headers: [AnyHashable: Any])
+public typealias ErrorResponse<T> = (error: Error, data: T, headers: [AnyHashable: Any]?)
+public typealias EmptyResponse = [AnyHashable: Any]
 
 open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
@@ -24,6 +30,96 @@ open class NetworkSerializer {
         self.dispatcher = dispatcher
     }
     
+    open func data(from request: Request) -> Promise<SuccessResponse<Data>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<Data>, ErrorResponse>(action: { [weak self] promise in
+            self?.dispatcher.send(request) { data, headers, error in
+                if let error = error {
+                    // Check if we have an error
+                    // TODO: Allow the user to serialize an error object from the response
+                    promise.fail(with: (error, data, headers))
+                } else {
+                    // Check if we have the data we need
+                    guard let unwrappedData = data else {
+                        let error = SerializationError.emptyResponse
+                        promise.fail(with: (error, data, headers))
+                        return
+                    }
+                    
+                    // We have a response object. Let's return it.
+                    promise.succeed(with: (unwrappedData, headers ?? [:]))
+                }
+            }
+        })
+    }
+    
+    open func decodable<T: MapDecodable>(of type: T.Type, from request: Request) -> Promise<SuccessResponse<T>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<T>, ErrorResponse>() { [weak self] promise in
+            // Nested promise that returns the data
+            self?.data(from: request).success({ response in
+                do {
+                    // Attempt to serialize the object into the specified type
+                    let object = try T(jsonData: response.data)
+                    promise.succeed(with: (object, response.headers))
+                } catch {
+                    promise.fail(with: (error, response.data, response.headers))
+                }
+            }).error({ response in
+                // TODO: Parse the error body
+                promise.fail(with: response)
+            }).start()
+        }
+    }
+    
+    open func decodable<T: MapDecodable>(of type: [T].Type, from request: Request) -> Promise<SuccessResponse<[T]>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<[T]>, ErrorResponse>() { [weak self] promise in
+            // Nested promise that returns the data
+            self?.data(from: request).success({ response in
+                do {
+                    // Attempt to serialize the object into the specified type
+                    let object = try T.parseArray(jsonData: response.data)
+                    promise.succeed(with: (object, response.headers))
+                } catch {
+                    promise.fail(with: (error, response.data, response.headers))
+                }
+            }).error({ response in
+                // TODO: Parse the error body
+                promise.fail(with: response)
+            }).start()
+        }
+    }
+    
+    open func decodable<T: Decodable>(of type: T.Type, from request: Request) -> Promise<SuccessResponse<T>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<T>, ErrorResponse>() { [weak self] promise in
+            // Nested promise that returns the data
+            self?.data(from: request).success({ response in
+                do {
+                    // Attempt to serialize the object into the specified type
+                    let object = try JSONDecoder().decode(T.self, from: response.data)
+                    promise.succeed(with: (object, response.headers))
+                } catch {
+                    promise.fail(with: (error, response.data, response.headers))
+                }
+            }).error({ response in
+                // TODO: Parse the error body
+                promise.fail(with: response)
+            }).start()
+        }
+    }
+    
+    open func emptyResponse(from request: Request) -> Promise<EmptyResponse, ErrorResponse<Data?>> {
+        return Promise<EmptyResponse, ErrorResponse>() { [weak self] promise in
+            self?.dispatcher.send(request) { data, headers, error in
+                if let error = error {
+                    // Check if we have an error
+                    // TODO: Allow the user to serialize an error object from the response
+                    promise.fail(with: (error, data, headers))
+                } else {
+                    promise.succeed(with: headers ?? [:])
+                }
+            }
+        }
+    }
+    
     /**
      Send a request while expecting a single `MapDecodable` object
      
@@ -33,22 +129,13 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (data: Data?, headers: [AnyHashable: Any]) in
-            guard let data = data else {
-                let error = SerializationError.invalidObject(cause: nil)
-                errorHandler(error)
-                return
-            }
-            
-            do {
-                let object = try T(jsonData: data)
-                successHandler(object, headers)
-            } catch {
-                errorHandler(error)
-                return
-            }
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
+        decodable(of: T.self, from: request).success({ response in
+            successHandler(response.data, response.headers)
+        }).error({ response in
+            errorHandler(response.error)
+        }).completion({
+            completionHandler()
+        }).start()
     }
     
     /**
@@ -60,76 +147,13 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping ([T], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
-            guard let jsonData = jsonData else {
-                let error = SerializationError.invalidObject(cause: nil)
-                errorHandler(error)
-                return
-            }
-            
-            do {
-                let object = try T.parseArray(jsonData: jsonData)
-                successHandler(object, headers)
-            } catch {
-                errorHandler(error)
-                return
-            }
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
-    }
-    
-    /**
-     Send a request while expecting a `Map` objects
-     
-     - parameter request: The request object containing all the request data
-     - parameter successHandler: The callback that will be triggered on a secessful response
-     - parameter errorHandler: The callback that will be triggered on a error response or invalid request
-     - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
-     */
-    open func send(_ request: Request, successHandler: @escaping (Map, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
-            guard let jsonData = jsonData else {
-                let error = SerializationError.invalidObject(cause: nil)
-                errorHandler(error)
-                return
-            }
-            
-            do {
-                let object = try Map(jsonData: jsonData)
-                successHandler(object, headers)
-            } catch {
-                errorHandler(error)
-                return
-            }
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
-    }
-    
-    /**
-     Send a request while expecting an array of `Map` objects
-     
-     - parameter request: The request object containing all the request data
-     - parameter successHandler: The callback that will be triggered on a secessful response
-     - parameter errorHandler: The callback that will be triggered on a error response or invalid request
-     - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
-     */
-    open func send(_ request: Request, successHandler: @escaping ([Map], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (jsonData: Data?, headers: [AnyHashable: Any]) in
-            guard let jsonData = jsonData else {
-                let error = SerializationError.invalidObject(cause: nil)
-                errorHandler(error)
-                return
-            }
-            
-            do {
-                let object = try Map.parseArray(jsonData: jsonData)
-                successHandler(object, headers)
-            } catch {
-                errorHandler(error)
-                return
-            }
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
+        decodable(of: [T].self, from: request).success({ response in
+            successHandler(response.data, response.headers)
+        }).error({ response in
+            errorHandler(response.error)
+        }).completion({
+            completionHandler()
+        }).start()
     }
     
     /**
@@ -141,30 +165,12 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send(_ request: Request, successHandler: @escaping ([AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        self.send(request, successHandler: { (data: Data?, headers: [AnyHashable: Any]) in
+        emptyResponse(from: request).success({ headers in
             successHandler(headers)
-        }, errorHandler: errorHandler, completionHandler: completionHandler)
-    }
-    
-    /**
-     Send a request while expecting a json response
-     
-     - parameter request: The request object containing all the request data
-     - parameter successHandler: The callback that will be triggered on a secessful response
-     - parameter errorHandler: The callback that will be triggered on a error response or invalid request
-     - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
-    */
-    open func send(_ request: Request, successHandler: @escaping (Data?, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        
-        dispatcher.send(request) { data, headers, error in
-            if let error = error {
-                errorHandler(error)
-            } else {
-                successHandler(data, headers ?? [:])
-            }
-            
+        }).error({ response in
+            errorHandler(response.error)
+        }).completion({
             completionHandler()
-        }
+        }).start()
     }
 }

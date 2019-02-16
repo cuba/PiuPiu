@@ -44,31 +44,31 @@ open class NetworkDispatcher {
             return
         }
         
-        alamofireRequest.validate().responseData(completionHandler: { dataResponse in
+        alamofireRequest.validate().responseData(completionHandler: { data in
             #if DEBUG
-            Logger.log(dataResponse)
+            Logger.log(data)
             #endif
             
             // Ensure there is a status code (ex: 200)
-            guard let statusCode = dataResponse.response?.statusCode else {
-                let error = ResponseError.unknown(cause: dataResponse.error)
-                responseHandler(dataResponse.data, nil, error)
+            guard let statusCode = data.response?.statusCode else {
+                let error = ResponseError.unknown(cause: data.error)
+                responseHandler(data.data, nil, error)
                 return
             }
             
             // Ensure there are no errors. If there are, map them to our errors
-            guard dataResponse.error == nil else {
-                guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: dataResponse.error) else {
-                    let error = ResponseError.unknown(cause: dataResponse.error)
-                    responseHandler(dataResponse.data, nil, error)
+            guard data.error == nil else {
+                guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: data.error) else {
+                    let error = ResponseError.unknown(cause: data.error)
+                    responseHandler(data.data, nil, error)
                     return
                 }
                 
-                responseHandler(dataResponse.data, nil, responseError)
+                responseHandler(data.data, nil, responseError)
                 return
             }
             
-            responseHandler(dataResponse.data, nil, nil)
+            responseHandler(data.data, nil, nil)
         })
     }
     

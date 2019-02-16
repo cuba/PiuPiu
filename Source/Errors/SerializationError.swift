@@ -9,11 +9,13 @@
 import Foundation
 
 public enum SerializationError: BaseNetworkError {
-    case invalidObject(cause: Error?)
+    case invalidObject
+    case emptyResponse
     
     public var key: String {
         switch self {
         case .invalidObject: return "InvalidObject"
+        case .emptyResponse: return "EmptyResponse"
         }
     }
 }
@@ -22,13 +24,19 @@ extension SerializationError: LocalizedError {
     
     public var failureReason: String? {
         switch self {
-        case .invalidObject: return "Error.Reason.UnexpectedResponse".localized
+        case .invalidObject:
+            return "Error.Reason.UnexpectedResponse".localized
+        case .emptyResponse:
+            return "Error.Reason.UnexpectedResponse".localized
         }
     }
     
     public var recoverySuggestion: String? {
         switch self {
-        case .invalidObject: return "Error.RecoverySuggestion.ContactSupport".localized
+        case .invalidObject:
+            return "Error.RecoverySuggestion.ContactSupport".localized
+        case .emptyResponse:
+            return "Error.RecoverySuggestion.ContactSupport".localized
         }
     }
 }
@@ -41,6 +49,7 @@ extension SerializationError: CustomNSError {
     public var errorCode: Int {
         switch self {
         case .invalidObject: return 0
+        case .emptyResponse: return 1
         }
     }
 }

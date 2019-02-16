@@ -43,9 +43,9 @@ class Logger {
         print("===============================================")
     }
     
-    static func log(_ dataResponse: Alamofire.DataResponse<Data>) {
-        guard let request = dataResponse.request else { return }
-        guard let response = dataResponse.response else { return }
+    static func log(_ data: Alamofire.DataResponse<Data>) {
+        guard let request = data.request else { return }
+        guard let response = data.response else { return }
         let method = request.httpMethod ?? "?"
         let url = request.url?.absoluteString ?? "UNKNOWN URL"
         let statusCode = response.statusCode
@@ -57,7 +57,7 @@ class Logger {
         // Print headers
         log(headers: response.allHeaderFields)
         
-        if let body = dataResponse.data {
+        if let body = data.data {
             if let string = NSString(data: body, encoding: String.Encoding.utf8.rawValue) {
                 print("RESPONSE BODY: \(string)")
             } else {

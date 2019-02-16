@@ -68,18 +68,12 @@ class ViewController: UIViewController {
         let request = JSONRequest(method: .get, path: pathTextField.text ?? "")
         self.textView.text = ""
         
-        serializer?.send(request, successHandler: { (map: Map, headers: [AnyHashable: Any]) in
-            do {
-                let jsonString = try map.jsonString()
-                self.textView.text = jsonString
-            } catch {
-                self.textView.text = error.localizedDescription
-            }
-        }, errorHandler: { error in
-            self.textView.text = error.localizedDescription
-        }, completionHandler: {
-            // Hide spinner
-        })
+        serializer?.data(from: request).success({ [weak self] response in
+            let jsonString = String(data: response.data, encoding: .utf8)
+            self?.textView.text = jsonString
+        }).error({ [weak self] response in
+            self?.textView.text = response.error.localizedDescription
+        }).start()
     }
     
     private func setupLayout() {
