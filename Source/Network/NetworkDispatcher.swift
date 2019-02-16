@@ -37,7 +37,7 @@ open class NetworkDispatcher {
         })
     }
     
-    open func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
+    private func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
         guard let serverProvider = self.serverProvider else { return }
         
         do {
@@ -48,7 +48,7 @@ open class NetworkDispatcher {
         }
     }
     
-    public static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
+    private static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
         
         #if DEBUG
         Logger.log(alamofireRequest)
