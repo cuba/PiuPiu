@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-public typealias ResponseHandler = (Data?, [AnyHashable: Any]?, Error?) -> Void
+public typealias ResponseHandler = (Data?, [AnyHashable: Any]?, BaseNetworkError?) -> Void
 
 open class NetworkDispatcher {
     public weak var serverProvider: ServerProvider?
@@ -22,9 +22,9 @@ open class NetworkDispatcher {
         sessionManager.retrier = requestRetrier
     }
 
-    open func response(from request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
-        return Promise<SuccessResponse<Data?>, ErrorResponse>(action: { [weak self] promise in
-            self?.send(request) { data, headers, error in
+    open func send(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { [weak self] promise in
+            try self?.send(request) { data, headers, error in
                 if let error = error {
                     // Check if we have an error
                     // TODO: Allow the user to serialize an error object from the response
@@ -34,18 +34,13 @@ open class NetworkDispatcher {
                     promise.succeed(with: (data, headers ?? [:]))
                 }
             }
-        })
+        }
     }
     
-    private func send(_ request: Request, responseHandler: @escaping ResponseHandler) {
+    private func send(_ request: Request, responseHandler: @escaping ResponseHandler) throws {
         guard let serverProvider = self.serverProvider else { return }
-        
-        do {
-            let alamofireRequest = try self.alamofireRequest(from: request, serverProvider: serverProvider)
-            NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler)
-        } catch let error {
-            responseHandler(nil, nil, error)
-        }
+        let alamofireRequest = try self.alamofireRequest(from: request, serverProvider: serverProvider)
+        NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler)
     }
     
     private static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
@@ -93,7 +88,7 @@ open class NetworkDispatcher {
             let method = request.method.alamofireMethod
             return sessionManager.request(url, method: method, parameters: request.body, encoding: request.parameterEncoding, headers: request.headers)
         } catch let error {
-            throw ClientError.invalidURL(cause: error)
+            throw RequestError.invalidURL(cause: error)
         }
     }
 }

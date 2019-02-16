@@ -9,29 +9,33 @@
 import Foundation
 
 public class Promise<T, E> {
-    public typealias ActionCallback = (Promise<T, E>) -> Void
-    public typealias SuccessHandler = (T) -> Void
-    public typealias ErrorHandler = (E) -> Void
+    public typealias ActionCallback = (Promise<T, E>) throws -> Void
+    public typealias SuccessHandler = (T) throws -> Void
+    public typealias FailureHandler = (E) -> Void
+    public typealias ErrorHandler = (Error) -> Void
     public typealias CompletionHandler = () -> Void
     
     public enum Status {
         case created
         case pending
-        case failed
+        case failure
         case success
+        case error
         
         var isComplete: Bool {
             switch self {
             case .pending   : return false
             case .created   : return false
-            case .failed    : return true
+            case .failure    : return true
             case .success   : return true
+            case .error     : return true
             }
         }
     }
     
     private let action: ActionCallback
     private var successHandler: SuccessHandler?
+    private var failureHandler: FailureHandler?
     private var errorHandler: ErrorHandler?
     private var completionHandler: CompletionHandler?
     
@@ -50,8 +54,14 @@ public class Promise<T, E> {
     ///
     /// - Parameter object: The succeeded object required by the promise success callback.
     public func succeed(with object: T) {
-        status = .success
-        successHandler?(object)
+        do {
+            try successHandler?(object)
+            status = .success
+        } catch {
+            errorHandler?(error)
+            status = .error
+        }
+        
         completionHandler?()
     }
     
@@ -59,8 +69,8 @@ public class Promise<T, E> {
     ///
     /// - Parameter object: The failed object required by the promise error callback.
     public func fail(with object: E) {
-        status = .failed
-        errorHandler?(object)
+        status = .failure
+        failureHandler?(object)
         completionHandler?()
     }
     
@@ -74,12 +84,22 @@ public class Promise<T, E> {
         return self
     }
     
-    /// Attach a error handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a failure handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
     ///
     /// - Parameter handler: The error handler that will be triggered after the `fail()` method is called.
     /// - Returns: This promise for chaining.
     @discardableResult
-    public func error(_ handler: @escaping ErrorHandler) -> Promise<T, E> {
+    public func failure(_ handler: @escaping FailureHandler) -> Promise<T, E> {
+        self.failureHandler = handler
+        return self
+    }
+    
+    /// Attach a error handler to this promise that handles . Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    ///
+    /// - Parameter handler: The error handler that will be triggered if anything is thrown inside the success callback.
+    /// - Returns: This promise for chaining.
+    @discardableResult
+    public func error(_ handler: @escaping (Error) -> Void) -> Promise<T, E> {
         self.errorHandler = handler
         return self
     }
@@ -97,7 +117,13 @@ public class Promise<T, E> {
     /// This method triggers the action method defined on this promise.
     @discardableResult
     public func start() -> Promise<T, E> {
-        action(self)
+        do {
+            try action(self)
+        } catch {
+            errorHandler?(error)
+            status = .error
+        }
+        
         return self
     }
 }

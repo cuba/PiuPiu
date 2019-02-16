@@ -21,7 +21,7 @@ public enum StatusCode: Int {
     case unprocessableEntity = 422
     case internalServerError = 500
     
-    func error(cause: Error?) -> Error? {
+    func error(cause: Error?) -> BaseNetworkError? {
         switch self {
         case .badRequest:           return ClientError.badRequest(cause: cause)
         case .unauthorized:         return ClientError.unauthorized(cause: cause)

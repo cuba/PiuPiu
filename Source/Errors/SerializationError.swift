@@ -9,13 +9,13 @@
 import Foundation
 
 public enum SerializationError: BaseNetworkError {
-    case invalidObject
-    case emptyResponse
+    case failedToDecodeResponseData(cause: Error)
+    case unexpectedEmptyResponse
     
-    public var key: String {
+    public var errorKey: String {
         switch self {
-        case .invalidObject: return "InvalidObject"
-        case .emptyResponse: return "EmptyResponse"
+        case .failedToDecodeResponseData: return "InvalidObject"
+        case .unexpectedEmptyResponse: return "EmptyResponse"
         }
     }
 }
@@ -24,19 +24,19 @@ extension SerializationError: LocalizedError {
     
     public var failureReason: String? {
         switch self {
-        case .invalidObject:
-            return "Error.Reason.UnexpectedResponse".localized
-        case .emptyResponse:
-            return "Error.Reason.UnexpectedResponse".localized
+        case .failedToDecodeResponseData:
+            return "ErrorReason.UnexpectedResponse".localized()
+        case .unexpectedEmptyResponse:
+            return "ErrorReason.EmptyResponse".localized()
         }
     }
     
     public var recoverySuggestion: String? {
         switch self {
-        case .invalidObject:
-            return "Error.RecoverySuggestion.ContactSupport".localized
-        case .emptyResponse:
-            return "Error.RecoverySuggestion.ContactSupport".localized
+        case .failedToDecodeResponseData:
+            return "RecoverySuggestion.UpdateVersion".localized()
+        case .unexpectedEmptyResponse:
+            return "RecoverySuggestion.UpdateVersion".localized()
         }
     }
 }
@@ -48,8 +48,8 @@ extension SerializationError: CustomNSError {
     
     public var errorCode: Int {
         switch self {
-        case .invalidObject: return 0
-        case .emptyResponse: return 1
+        case .failedToDecodeResponseData: return 0
+        case .unexpectedEmptyResponse: return 1
         }
     }
 }

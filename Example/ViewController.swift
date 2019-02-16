@@ -68,11 +68,13 @@ class ViewController: UIViewController {
         let request = JSONRequest(method: .get, path: pathTextField.text ?? "")
         self.textView.text = ""
         
-        serializer?.data(from: request).success({ [weak self] response in
+        serializer?.send(request).fetchedData({ [weak self] response in
             let jsonString = String(data: response.data, encoding: .utf8)
             self?.textView.text = jsonString
-        }).error({ [weak self] response in
+        }).failure({ [weak self] response in
             self?.textView.text = response.error.localizedDescription
+        }).error({ [weak self] error in
+            self?.textView.text = error.localizedDescription
         }).start()
     }
     

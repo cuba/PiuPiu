@@ -7,16 +7,19 @@
 */
 
 // Reason
-"Error.Reason.InvalidRequest" = "The request is invalid.";
-"Error.Reason.NotAuthenticated" = "You are not authenticated.";
-"Error.Reason.NotAuthorized" = "You are not authorized to perform this action.";
-"Error.Reason.ResourceNotFound" = "The resouce you requested is not found.";
-"Error.Reason.SubmissionError" = "There were errors with your submission.";
-"Error.Reason.UnexpectedResponse" = "Got an unexpected response from the server.";
-"Error.Reason.UnknownNetworkError" = "An unknown network error has occured.";
-"Error.Reason.NoConnection" = "It appears that you do not have an internet connection.";
+"ErrorReason.InvalidRequest" = "The request is invalid.";
+"ErrorReason.NotAuthenticated" = "You are not authenticated.";
+"ErrorReason.NotAuthorized" = "You are not authorized to perform this action.";
+"ErrorReason.ResourceNotFound" = "The resouce you requested is not found.";
+"ErrorReason.SubmissionError" = "There were errors with your submission.";
+"ErrorReason.UnexpectedResponse" = "Got an unexpected response from the server.";
+"ErrorReason.EmptyResponse" = "Got an empty response from the server.";
+"ErrorReason.UnknownNetworkError" = "An unknown network error has occured.";
+"ErrorReason.NoConnection" = "It appears that you do not have an internet connection.";
+"ErrorReason.Conflict" = "There is a conflict with your submission.";
 
 // Recovery Suggestion
-"Error.RecoverySuggestion.EstablishConnection" = "Connect to the internet and try your request again.";
-"Error.RecoverySuggestion.ContactSupport" = "If this issue persists, please contact technical support.";
-"Error.RecoverySuggestion.LogIn" = "Please log in to continue.";
+"RecoverySuggestion.EstablishConnection" = "Connect to the internet and try your request again.";
+"RecoverySuggestion.UpdateVersion" = "This issue might be solved by updating to the lastest version of the application. If you have the latest version of this application and this issue persists, please contact technical support.";
+"RecoverySuggestion.ContactSupport" = "If this issue persists, please contact technical support.";
+"RecoverySuggestion.LogIn" = "Please log in to continue.";

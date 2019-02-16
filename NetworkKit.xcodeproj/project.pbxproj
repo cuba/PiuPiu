@@ -18,6 +18,8 @@
 		8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508A81ED3741300C19524 /* String+Extensions.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
 		DA3D809D221784AE00D49CD0 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* Promise.swift */; };
+		DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */; };
+		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
 		DA3E506B21B458CB001450EC /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
 		DA3E506D21B458DD001450EC /* JSONRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* JSONRequest.swift */; };
 		DA3E507021B4590F001450EC /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
@@ -28,7 +30,7 @@
 		DAE6F73A1FEF02470060AA80 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7391FEF02470060AA80 /* NetworkError.swift */; };
 		DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
 		DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */; };
-		DAE6F7401FEF1D690060AA80 /* BaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73F1FEF1D690060AA80 /* BaseError.swift */; };
+		DAE6F7401FEF1D690060AA80 /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73F1FEF1D690060AA80 /* BaseNetworkError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,8 @@
 		8CC508A81ED3741300C19524 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8CC508AE1ED3745A00C19524 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
+		DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Extensions.swift"; sourceTree = "<group>"; };
+		DA3D80A32218AE7E00D49CD0 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
 		DA3E506A21B458CB001450EC /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		DA3E506C21B458DD001450EC /* JSONRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRequest.swift; sourceTree = "<group>"; };
 		DA3E506F21B4590F001450EC /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
@@ -67,7 +71,7 @@
 		DAE6F7391FEF02470060AA80 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
 		DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerializationError.swift; sourceTree = "<group>"; };
-		DAE6F73F1FEF1D690060AA80 /* BaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseError.swift; sourceTree = "<group>"; };
+		DAE6F73F1FEF1D690060AA80 /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +170,7 @@
 			children = (
 				8CC508A71ED3741300C19524 /* Bundle+Extensions.swift */,
 				8CC508A81ED3741300C19524 /* String+Extensions.swift */,
+				DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -200,12 +205,13 @@
 		DAE6F7341FEF020B0060AA80 /* Errors */ = {
 			isa = PBXGroup;
 			children = (
-				DAE6F73F1FEF1D690060AA80 /* BaseError.swift */,
+				DAE6F73F1FEF1D690060AA80 /* BaseNetworkError.swift */,
 				DAE6F7371FEF023B0060AA80 /* ClientError.swift */,
 				DAE6F7351FEF022D0060AA80 /* ServerError.swift */,
 				DAE6F7391FEF02470060AA80 /* NetworkError.swift */,
 				DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */,
 				DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */,
+				DA3D80A32218AE7E00D49CD0 /* RequestError.swift */,
 			);
 			path = Errors;
 			sourceTree = "<group>";
@@ -333,13 +339,15 @@
 				DA3D809D221784AE00D49CD0 /* Promise.swift in Sources */,
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,
 				8CC508021ED35AA900C19524 /* NetworkSerializer.swift in Sources */,
+				DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */,
 				DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */,
 				DAE6F7361FEF022D0060AA80 /* ServerError.swift in Sources */,
-				DAE6F7401FEF1D690060AA80 /* BaseError.swift in Sources */,
+				DAE6F7401FEF1D690060AA80 /* BaseNetworkError.swift in Sources */,
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
 				8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */,
 				DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */,
 				8CC508A91ED3741300C19524 /* Bundle+Extensions.swift in Sources */,
+				DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */,
 				DA3E506B21B458CB001450EC /* Request.swift in Sources */,
 				DAE6F7381FEF023B0060AA80 /* ClientError.swift in Sources */,
 				DAE6F73A1FEF02470060AA80 /* NetworkError.swift in Sources */,

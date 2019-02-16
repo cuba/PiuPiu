@@ -10,19 +10,25 @@ import Foundation
 
 public enum NetworkError: BaseNetworkError {
     case noConnection
+    
+    public var errorKey: String {
+        switch self {
+        case .noConnection: return "NoConnection"
+        }
+    }
 }
 
 extension NetworkError {
     
     public var failureReason: String? {
         switch self {
-        case .noConnection: return "Error.Reason.NoConnection".localized
+        case .noConnection: return "ErrorReason.NoConnection".localized()
         }
     }
     
     public var recoverySuggestion: String? {
         switch self {
-        case .noConnection: return "Error.RecoverySuggestion.EstablishConnection".localized
+        case .noConnection: return "RecoverySuggestion.EstablishConnection".localized()
         }
     }
 }
@@ -35,12 +41,6 @@ extension NetworkError: CustomNSError {
     public var errorCode: Int {
         switch self {
         case .noConnection: return 0
-        }
-    }
-    
-    public var key: String {
-        switch self {
-        case .noConnection: return "NoConnection"
         }
     }
 }

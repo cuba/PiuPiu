@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol BaseNetworkError: LocalizedError, CustomNSError {
-    var key: String { get }
+    var errorKey: String { get }
 }
 
 extension BaseNetworkError  {
@@ -27,13 +27,13 @@ extension BaseNetworkError  {
         if parts.count > 0 {
             return parts.joined(separator: " ")
         } else {
-            return "Error.Reason.UnknownNetworkError".localized
+            return "ErrorReason.UnknownNetworkError".localized()
         }
     }
     
     public var errorUserInfo: [String : Any] {
         var userInfo: [String: Any] = [
-            NSDebugDescriptionErrorKey: key
+            NSDebugDescriptionErrorKey: errorKey
         ]
         
         var tempUserInfo: [String: Any?] = [

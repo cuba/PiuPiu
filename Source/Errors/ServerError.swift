@@ -10,18 +10,24 @@ import Foundation
 
 public enum ServerError: BaseNetworkError {
     case internalServerError(cause: Error?)
+    
+    public var errorKey: String {
+        switch self {
+        case .internalServerError: return "InternalServerError"
+        }
+    }
 }
 
 extension ServerError: LocalizedError {
     public var failureReason: String? {
         switch self {
-        case .internalServerError: return "Error.Reason.UnknownNetworkError".localized
+        case .internalServerError: return "ErrorReason.UnknownNetworkError".localized()
         }
     }
     
     public var recoverySuggestion: String? {
         switch self {
-        case .internalServerError: return "Error.RecoverySuggestion.ContactSupport".localized
+        case .internalServerError: return "RecoverySuggestion.ContactSupport".localized()
         }
     }
 }
@@ -34,12 +40,6 @@ extension ServerError: CustomNSError {
     public var errorCode: Int {
         switch self {
         case .internalServerError: return 0
-        }
-    }
-    
-    public var key: String {
-        switch self {
-        case .internalServerError: return "InternalServerError"
         }
     }
 }

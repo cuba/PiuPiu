@@ -12,7 +12,7 @@ import Foundation
 public enum ResponseError: BaseNetworkError {
     case unknown(cause: Error?)
     
-    public var key: String {
+    public var errorKey: String {
         switch self {
         case .unknown: return "Unknown"
         }
@@ -23,13 +23,13 @@ extension ResponseError: LocalizedError {
     
     public var failureReason: String? {
         switch self {
-        case .unknown: return "Error.Reason.UnexpectedResponse".localized
+        case .unknown: return "ErrorReason.UnexpectedResponse".localized()
         }
     }
     
     public var recoverySuggestion: String? {
         switch self {
-        case .unknown: return "Error.RecoverySuggestion.ContactSupport".localized
+        case .unknown: return "RecoverySuggestion.ContactSupport".localized()
         }
     }
 }
