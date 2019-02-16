@@ -13,7 +13,7 @@ public protocol Request {
     var method: HTTPMethod { get }
     var path:   String { get }
     var queryItems: [URLQueryItem]? { get }
-    var body: [String: Any]? { get }
+    var httpBody: Data? { get }
     var headers: [String: String]? { get }
     var parameterEncoding: ParameterEncoding { get }
 }

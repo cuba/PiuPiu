@@ -84,9 +84,25 @@ open class NetworkDispatcher {
     
     private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {
         do {
+            let urlRequest = try self.urlRequest(from: request, serverProvider: serverProvider)
+            return sessionManager.request(urlRequest)
+        } catch let error {
+            throw RequestError.invalidURL(cause: error)
+        }
+    }
+    
+    private func urlRequest(from request: Request, serverProvider: ServerProvider) throws -> URLRequest {
+        do {
             let url = try serverProvider.url(from: request)
-            let method = request.method.alamofireMethod
-            return sessionManager.request(url, method: method, parameters: request.body, encoding: request.parameterEncoding, headers: request.headers)
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = request.method.rawValue
+            urlRequest.httpBody = request.httpBody
+            
+            for (key, value) in request.headers ?? [:] {
+                urlRequest.addValue(value, forHTTPHeaderField: key)
+            }
+            
+            return urlRequest
         } catch let error {
             throw RequestError.invalidURL(cause: error)
         }

@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public class Promise<T, E> {
     public typealias ActionCallback = (Promise<T, E>) throws -> Void
     public typealias SuccessHandler = (T) throws -> Void

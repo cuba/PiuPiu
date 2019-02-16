@@ -9,7 +9,7 @@
 import Foundation
 
 public enum SerializationError: BaseNetworkError {
-    case failedToDecodeResponseData(cause: Error)
+    case failedToDecodeResponseData(cause: Error?)
     case unexpectedEmptyResponse
     
     public var errorKey: String {

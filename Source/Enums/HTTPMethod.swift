@@ -33,4 +33,18 @@ public enum HTTPMethod: String {
         case .connect:  return .connect
         }
     }
+    
+    var requiresBody: Bool {
+        switch self {
+        case .options:  return false
+        case .get:      return false
+        case .head:     return false
+        case .post:     return true
+        case .put:      return true
+        case .patch:    return true
+        case .delete:   return false
+        case .trace:    return false
+        case .connect:  return false
+        }
+    }
 }

@@ -16,27 +16,22 @@ public struct JSONRequest: Request {
     public var method: HTTPMethod
     public var path:   String
     public var queryItems: [URLQueryItem]?
-    public var body: [String: Any]?
+    public var httpBody: Data?
     public var headers: [String: String]?
     
-    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, body: [String: Any]? = nil, headers: [String: String]? = nil) {
+    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, headers: [String: String] = [:]) {
         self.method = method
         self.path = path
         self.queryItems = queryItems
-        self.body = body
         self.headers = headers
+        
+        if method.requiresBody {
+            self.headers?["Content-Type"] = "application/json"
+        }
     }
     
-    public init<T: MapEncodable>(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, body: T, headers: [String: String]? = nil) throws {
+    public init<T: MapEncodable>(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, body: T, headers: [String: String] = [:]) throws {
         self.init(method: method, path: path, queryItems: queryItems, headers: headers)
-        self.body = [:]
-        
-        // TODO: Alamofire uses [String: Any] so we can't send nil values?
-        // Need to figure this out or drop alamofire (its way too big anyway)
-        for (key, value) in try body.json() {
-            // TODO: @JS Remove empty sub array values?
-            guard let value = value else { continue }
-            self.body?[key] = value
-        }
+        self.httpBody = try body.jsonData()
     }
 }

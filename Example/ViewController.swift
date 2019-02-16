@@ -65,12 +65,10 @@ class ViewController: UIViewController {
     @objc private func tappedSendButton() {
         currentTextField?.resignFirstResponder()
         
-        let request = JSONRequest(method: .get, path: pathTextField.text ?? "")
-        self.textView.text = ""
+        let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
         
-        serializer?.send(request).fetchedData({ [weak self] response in
-            let jsonString = String(data: response.data, encoding: .utf8)
-            self?.textView.text = jsonString
+        self.serializer?.send(request).deserializeJSONString().success({ [weak self] response in
+            self?.textView.text = response.data
         }).failure({ [weak self] response in
             self?.textView.text = response.error.localizedDescription
         }).error({ [weak self] error in
