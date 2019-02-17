@@ -45,7 +45,7 @@ open class NetworkDispatcher: NetworkDispatcherInterface {
                 let statusCode = StatusCode(rawValue: response.statusCode)
                 
                 // Get the status code
-                if let responseError = statusCode.error(cause: error) {
+                if let responseError = statusCode.makeError(cause: error) {
                     DispatchQueue.main.async {
                         promise.fail(with: (data, response, urlRequest, statusCode, responseError) )
                     }
@@ -66,12 +66,10 @@ open class MockDispatcher: NetworkDispatcherInterface, ServerProvider {
     open var mockStatusCode: StatusCode
     open var mockError: BaseNetworkError?
     open var mockHeaders: [String: String]
+    public var baseURL: URL
     
-    public var baseURL: URL {
-        return URL(string: "https://example.com")!
-    }
-    
-    public init(mockStatusCode: StatusCode, mockError: BaseNetworkError? = nil, mockHeaders: [String: String] = [:]) {
+    public init(baseUrl: URL, mockStatusCode: StatusCode, mockError: BaseNetworkError? = nil, mockHeaders: [String: String] = [:]) {
+        self.baseURL = baseUrl
         self.mockStatusCode = mockStatusCode
         self.mockError = mockError
         self.mockHeaders = mockHeaders

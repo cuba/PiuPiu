@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum StatusCode {
+public enum StatusCode: Equatable {
     case ok
     case created
     case noData
@@ -53,15 +53,15 @@ public enum StatusCode {
         }
     }
     
-    func error(cause: Error?) -> BaseNetworkError? {
+    func makeError(cause: Error?) -> ResponseError? {
         switch self {
-        case .badRequest:           return ClientError.badRequest(cause: cause)
-        case .unauthorized:         return ClientError.unauthorized(cause: cause)
-        case .forbidden:            return ClientError.forbidden(cause: cause)
-        case .notFound:             return ClientError.notFound(cause: cause)
-        case .conflict:             return ClientError.conflict(cause: cause)
-        case .unprocessableEntity:  return ClientError.unprocessableEntity(cause: cause)
-        case .internalServerError:  return ServerError.internalServerError(cause: cause)
+        case .badRequest:           return ResponseError.badRequest(cause: cause)
+        case .unauthorized:         return ResponseError.unauthorized(cause: cause)
+        case .forbidden:            return ResponseError.forbidden(cause: cause)
+        case .notFound:             return ResponseError.notFound(cause: cause)
+        case .conflict:             return ResponseError.conflict(cause: cause)
+        case .unprocessableEntity:  return ResponseError.unprocessableEntity(cause: cause)
+        case .internalServerError:  return ResponseError.internalServerError(cause: cause)
         default:
             if let error = cause {
                 return ResponseError.unknown(cause: error)
@@ -69,5 +69,9 @@ public enum StatusCode {
                 return nil
             }
         }
+    }
+    
+    public static func == (lhs: StatusCode, rhs: StatusCode) -> Bool {
+        return lhs.rawValue == rhs.rawValue
     }
 }
