@@ -79,9 +79,12 @@ dispatcher?.make(request).deserializeJSONString().success({ [weak self] response
     // This method is triggered when a non 2xx response comes in.
     // All errors in the response object are ResponseError
 }).error({ [weak self] error in
-    // Triggers whenever an error is thrown. In other words, all errors that are created on the application fall through here.
-    // This includes deserialization errors, unwraping failures, and anything else that is thrown in a `success`, `error`, `then` or `thenFailure` block in any chained promise.
-    // These errors are oftern application related errors but (in terms of serialization) can be caused because of invalid server responses.
+    // Triggers whenever an error is thrown. 
+    // In other words, all errors that are created on the application fall through here.
+    // This includes deserialization errors, unwraping failures, and anything else that is thrown 
+    // in a `success`, `error`, `then` or `thenFailure` block in any chained promise.
+    // These errors are oftern application related errors but can be caused 
+    // because of invalid server responses (example: when deserializing the response data).
 }).send()
 ```
 
@@ -131,11 +134,12 @@ try request.setHTTPBody(mapEncodable: myMapCodable)
 ```
 
 ### Wrap Encoding In a Promise
-It might be beneficial to wrap the request creation in a promise. This will allow you to
+
+It might be beneficial to wrap the request creation in a promise. This will allow you to:
 1. Delay the request creation at a later time when submitting the request.
 2. Combine any errors thrown while creating the request in the error callback.
 
-To quicly do this, there is a convenience method on the Dispatcher.
+To quickly do this, there is a convenience method on the Dispatcher.
 
 ```swift
 dispatcher.make(from: {
@@ -230,6 +234,36 @@ Promise<MockCodable, MockDecodable>(action: { promise in
     completionExpectation.fulfill()
 }).start()
 ```
+
+This promise utilizes all of the callbaks and features.
+
+### `success` callback
+The success callback when the request is successful and all chained promises (such as when performing deserialization) are successful.  You get at the end of the day exactly what your promise had promised you.
+
+### `failure` callback
+The failure callback is triggered when the there is a response but it is not valid. In a nutshell it gets triggered for all non-2xx responses such as a 401, 403, 404 or 500 error. This callback will give you the http response, status code and a ResponseError.
+
+### `error` callback
+The error callbak is triggered whenever something is thrown inside a response.  This includes errors thrown when attempting to deserialize the body for both successful and unsuccessful responses.
+
+### `completion` callback
+The completion callback is always triggered at the end after all promises have been fulfulled.
+
+### `then` callback
+This callback transforms the `success` type to another type.
+
+### `thenFailure` callback
+This callback transforms the `error` type to another type.
+
+### `fullfill`
+Fullfil a promise with the results of this promise. Both promises have to be identical.  In order to make them identical, first use `then` and `thenFailure` to transform the promise to the same type.
+
+### `start` or `send`
+The two methods are identical. They will start the promise. In other words, the action callback will be triggered and the requests will be sent to the server. If this method is not called, nothing will happen (no request will be made). 
+
+These methos should ALWAY be called AFTER declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
+
+One useful sideffect is that you can create your request, store it and call `start()` later after some time.
 
 ## MockDispatcher
 
