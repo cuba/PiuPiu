@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8C4BAEC41F5295AA00D03976 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4BAEC31F5295AA00D03976 /* Logger.swift */; };
 		8CC507EE1ED35A8E00C19524 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CC507E41ED35A8D00C19524 /* NetworkKit.framework */; };
 		8CC507F31ED35A8E00C19524 /* NetworkKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507F21ED35A8E00C19524 /* NetworkKitTests.swift */; };
 		8CC507F51ED35A8E00C19524 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -24,7 +23,6 @@
 		DA3E506D21B458DD001450EC /* JSONRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* JSONRequest.swift */; };
 		DA3E507021B4590F001450EC /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
 		DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
-		DAE6F7331FEF013F0060AA80 /* NetworkReachabilityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */; };
 		DAE6F7361FEF022D0060AA80 /* ServerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7351FEF022D0060AA80 /* ServerError.swift */; };
 		DAE6F7381FEF023B0060AA80 /* ClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7371FEF023B0060AA80 /* ClientError.swift */; };
 		DAE6F73A1FEF02470060AA80 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F7391FEF02470060AA80 /* NetworkError.swift */; };
@@ -44,7 +42,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8C4BAEC31F5295AA00D03976 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		8CC507E41ED35A8D00C19524 /* NetworkKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC507E71ED35A8D00C19524 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkKit.h; path = Source/NetworkKit.h; sourceTree = "<group>"; };
 		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
@@ -65,7 +62,6 @@
 		DA3E506C21B458DD001450EC /* JSONRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRequest.swift; sourceTree = "<group>"; };
 		DA3E506F21B4590F001450EC /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
 		DA3E507121B4595E001450EC /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
-		DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachabilityManager.swift; sourceTree = "<group>"; };
 		DAE6F7351FEF022D0060AA80 /* ServerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerError.swift; sourceTree = "<group>"; };
 		DAE6F7371FEF023B0060AA80 /* ClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientError.swift; sourceTree = "<group>"; };
 		DAE6F7391FEF02470060AA80 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
@@ -96,8 +92,6 @@
 		8C4BAEC51F5295AF00D03976 /* Utilties */ = {
 			isa = PBXGroup;
 			children = (
-				DAE6F7321FEF013F0060AA80 /* NetworkReachabilityManager.swift */,
-				8C4BAEC31F5295AA00D03976 /* Logger.swift */,
 				DA3D809C221784AE00D49CD0 /* Promise.swift */,
 			);
 			name = Utilties;
@@ -331,10 +325,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAE6F7331FEF013F0060AA80 /* NetworkReachabilityManager.swift in Sources */,
 				8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */,
 				DA3E506D21B458DD001450EC /* JSONRequest.swift in Sources */,
-				8C4BAEC41F5295AA00D03976 /* Logger.swift in Sources */,
 				DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */,
 				DA3D809D221784AE00D49CD0 /* Promise.swift in Sources */,
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,

@@ -15,22 +15,26 @@ public struct JSONRequest: Request {
     
     public var method: HTTPMethod
     public var path:   String
-    public var queryItems: [URLQueryItem]?
+    public var queryItems: [URLQueryItem]
+    public var headers: [String: String]
     public var httpBody: Data?
-    public var headers: [String: String]?
     
-    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, headers: [String: String] = [:]) {
+    public init(method: HTTPMethod, path: String, queryItems: [URLQueryItem] = [], headers: [String: String] = [:]) {
         self.method = method
         self.path = path
         self.queryItems = queryItems
-        self.headers = headers
+        self.headers = [:]
         
         if method.requiresBody {
-            self.headers?["Content-Type"] = "application/json"
+            self.headers["Content-Type"] = "application/json"
+        }
+        
+        for (key, value) in headers {
+            self.headers[key] = value
         }
     }
     
-    public init<T: MapEncodable>(method: HTTPMethod, path: String, queryItems: [URLQueryItem]? = nil, body: T, headers: [String: String] = [:]) throws {
+    public init<T: MapEncodable>(method: HTTPMethod, path: String, queryItems: [URLQueryItem] = [], body: T, headers: [String: String] = [:]) throws {
         self.init(method: method, path: path, queryItems: queryItems, headers: headers)
         self.httpBody = try body.jsonData()
     }

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 
 public enum HTTPMethod: String {
     case options = "OPTIONS"
@@ -19,20 +18,6 @@ public enum HTTPMethod: String {
     case delete  = "DELETE"
     case trace   = "TRACE"
     case connect = "CONNECT"
-    
-    var alamofireMethod: Alamofire.HTTPMethod {
-        switch self {
-        case .options:  return .options
-        case .get:      return .get
-        case .head:     return .head
-        case .post:     return .post
-        case .put:      return .put
-        case .patch:    return .patch
-        case .delete:   return .delete
-        case .trace:    return .trace
-        case .connect:  return .connect
-        }
-    }
     
     var requiresBody: Bool {
         switch self {

@@ -8,18 +8,50 @@
 
 import Foundation
 
-public enum StatusCode: Int {
-    case ok             = 200
-    case created        = 201
-    case noData         = 204
-    case badRequest     = 400
-    case unauthorized   = 401
-    case forbidden      = 403
-    case notFound       = 404
-    case conflict       = 409
+public enum StatusCode {
+    case ok
+    case created
+    case noData
+    case badRequest
+    case unauthorized
+    case forbidden
+    case notFound
+    case unprocessableEntity
+    case conflict
+    case internalServerError
+    case other(Int)
     
-    case unprocessableEntity = 422
-    case internalServerError = 500
+    var rawValue: Int {
+        switch self {
+        case .ok                    : return 200
+        case .created               : return 201
+        case .noData                : return 204
+        case .badRequest            : return 400
+        case .unauthorized          : return 401
+        case .forbidden             : return 403
+        case .notFound              : return 404
+        case .unprocessableEntity   : return 422
+        case .conflict              : return 409
+        case .internalServerError   : return 500
+        case .other(let value)      : return value
+        }
+    }
+    
+    init(rawValue: Int) {
+        switch rawValue {
+        case StatusCode.ok.rawValue                     : self = .ok
+        case StatusCode.created.rawValue                : self = .created
+        case StatusCode.noData.rawValue                 : self = .noData
+        case StatusCode.badRequest.rawValue             : self = .badRequest
+        case StatusCode.unauthorized.rawValue           : self = .unauthorized
+        case StatusCode.forbidden.rawValue              : self = .forbidden
+        case StatusCode.notFound.rawValue               : self = .notFound
+        case StatusCode.conflict.rawValue               : self = .conflict
+        case StatusCode.unprocessableEntity.rawValue    : self = .unprocessableEntity
+        case StatusCode.internalServerError.rawValue    : self = .internalServerError
+        default                                         : self = .other(rawValue)
+        }
+    }
     
     func error(cause: Error?) -> BaseNetworkError? {
         switch self {
@@ -30,7 +62,12 @@ public enum StatusCode: Int {
         case .conflict:             return ClientError.conflict(cause: cause)
         case .unprocessableEntity:  return ClientError.unprocessableEntity(cause: cause)
         case .internalServerError:  return ServerError.internalServerError(cause: cause)
-        default:                    return nil
+        default:
+            if let error = cause {
+                return ResponseError.unknown(cause: error)
+            } else {
+                return nil
+            }
         }
     }
 }

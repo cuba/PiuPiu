@@ -7,6 +7,7 @@
 */
 
 // Reason
+"ErrorReason.ApplicationError" = "There was an unknow problem with the request.";
 "ErrorReason.InvalidRequest" = "The request is invalid.";
 "ErrorReason.NotAuthenticated" = "You are not authenticated.";
 "ErrorReason.NotAuthorized" = "You are not authorized to perform this action.";

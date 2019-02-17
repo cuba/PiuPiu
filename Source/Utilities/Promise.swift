@@ -8,10 +8,11 @@
 
 import Foundation
 
+/// A Promise is a delayed action that is performed after doing the `start()`.
 public class Promise<T, E> {
     public typealias ActionCallback = (Promise<T, E>) throws -> Void
     public typealias SuccessHandler = (T) throws -> Void
-    public typealias FailureHandler = (E) -> Void
+    public typealias FailureHandler = (E) throws -> Void
     public typealias ErrorHandler = (Error) -> Void
     public typealias CompletionHandler = () -> Void
     
@@ -57,9 +58,9 @@ public class Promise<T, E> {
         do {
             try successHandler?(object)
             status = .success
+            return
         } catch {
-            errorHandler?(error)
-            status = .error
+            self.catch(error)
         }
         
         completionHandler?()
@@ -69,8 +70,23 @@ public class Promise<T, E> {
     ///
     /// - Parameter object: The failed object required by the promise error callback.
     public func fail(with object: E) {
-        status = .failure
-        failureHandler?(object)
+        do {
+            try failureHandler?(object)
+            status = .failure
+            return
+        } catch {
+            self.catch(error)
+        }
+        
+        completionHandler?()
+    }
+    
+    /// Fullfill the promise with a failed result.
+    ///
+    /// - Parameter object: The failed object required by the promise error callback.
+    public func `catch`(_ error: Error) {
+        errorHandler?(error)
+        status = .error
         completionHandler?()
     }
     
@@ -120,10 +136,31 @@ public class Promise<T, E> {
         do {
             try action(self)
         } catch {
-            errorHandler?(error)
-            status = .error
+            self.catch(error)
         }
         
         return self
+    }
+    
+    public func then<U>(_ callback: @escaping (T) throws -> U) -> Promise<U, E> {
+        return Promise<U, E>() { promise in
+            self.success({ result in
+                let transformed = try callback(result)
+                promise.succeed(with: transformed)
+            }).failure({ result in
+                promise.fail(with: result)
+            }).start()
+        }
+    }
+    
+    public func transformFailure<U>(_ callback: @escaping (E) throws -> U) -> Promise<T, U> {
+        return Promise<T, U>() { promise in
+            self.success({ result in
+                promise.succeed(with: result)
+            }).failure({ result in
+                let transformed = try callback(result)
+                promise.fail(with: transformed)
+            }).start()
+        }
     }
 }

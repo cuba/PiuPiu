@@ -7,87 +7,51 @@
 //
 
 import Foundation
-import Alamofire
 
-public typealias ResponseHandler = (Data?, [AnyHashable: Any]?, BaseNetworkError?) -> Void
+// Response types
+public typealias SuccessResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode)
+public typealias ErrorResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: BaseNetworkError)
 
 open class NetworkDispatcher {
     public weak var serverProvider: ServerProvider?
-    public var sessionManager: SessionManager
     
-    public init(serverProvider: ServerProvider, requestAdapter: RequestAdapter? = nil, requestRetrier: RequestRetrier? = nil) {
+    public init(serverProvider: ServerProvider) {
         self.serverProvider = serverProvider
-        self.sessionManager = SessionManager()
-        sessionManager.adapter = requestAdapter
-        sessionManager.retrier = requestRetrier
     }
-
+    
     open func send(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
-        return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { [weak self] promise in
-            try self?.send(request) { data, headers, error in
-                if let error = error {
-                    // Check if we have an error
-                    // TODO: Allow the user to serialize an error object from the response
-                    promise.fail(with: (error, data, headers))
-                } else {
-                    // We have a response object. Let's return it.
-                    promise.succeed(with: (data, headers ?? [:]))
-                }
-            }
-        }
-    }
-    
-    private func send(_ request: Request, responseHandler: @escaping ResponseHandler) throws {
-        guard let serverProvider = self.serverProvider else { return }
-        let alamofireRequest = try self.alamofireRequest(from: request, serverProvider: serverProvider)
-        NetworkDispatcher.send(alamofireRequest, responseHandler: responseHandler)
-    }
-    
-    private static func send(_ alamofireRequest: Alamofire.DataRequest, responseHandler: @escaping ResponseHandler) {
-        
-        #if DEBUG
-        Logger.log(alamofireRequest)
-        #endif
-        
-        guard NetworkReachabilityManager.shared.isReachable else {
-            responseHandler(nil, nil, NetworkError.noConnection)
-            return
-        }
-        
-        alamofireRequest.validate().responseData() { data in
-            #if DEBUG
-            Logger.log(data)
-            #endif
-            
-            // Ensure there is a status code (ex: 200)
-            guard let statusCode = data.response?.statusCode else {
-                let error = ResponseError.unknown(cause: data.error)
-                responseHandler(data.data, nil, error)
-                return
+        return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
+            guard let serverProvider = self.serverProvider else {
+                throw RequestError.missingServerProvider
             }
             
-            // Ensure there are no errors. If there are, map them to our errors
-            guard data.error == nil else {
-                guard let statusCode = StatusCode(rawValue: statusCode), let responseError = statusCode.error(cause: data.error) else {
-                    let error = ResponseError.unknown(cause: data.error)
-                    responseHandler(data.data, nil, error)
+            let urlRequest = try self.urlRequest(from: request, serverProvider: serverProvider)
+            
+            let task = URLSession.shared.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
+                // Ensure there is a status code (ex: 200)
+                guard let response = urlResponse as? HTTPURLResponse else {
+                    let error = ResponseError.unknown(cause: error)
+                    DispatchQueue.main.async {
+                        promise.catch(error)
+                    }
                     return
                 }
                 
-                responseHandler(data.data, nil, responseError)
-                return
+                let statusCode = StatusCode(rawValue: response.statusCode)
+                
+                // Get the status code
+                if let responseError = statusCode.error(cause: error) {
+                    DispatchQueue.main.async {
+                        promise.fail(with: (data, response, urlRequest, statusCode, responseError) )
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        promise.succeed(with: (data, response, urlRequest, statusCode))
+                    }
+                }
             }
             
-            responseHandler(data.data, nil, nil)
-        }
-    }
-    
-    private func alamofireRequest(from request: Request, serverProvider: ServerProvider) throws -> Alamofire.DataRequest {
-        do {
-            let urlRequest = try self.urlRequest(from: request, serverProvider: serverProvider)
-            return sessionManager.request(urlRequest)
-        } catch let error {
-            throw RequestError.invalidURL(cause: error)
+            task.resume()
         }
     }
     
@@ -98,7 +62,7 @@ open class NetworkDispatcher {
             urlRequest.httpMethod = request.method.rawValue
             urlRequest.httpBody = request.httpBody
             
-            for (key, value) in request.headers ?? [:] {
+            for (key, value) in request.headers {
                 urlRequest.addValue(value, forHTTPHeaderField: key)
             }
             

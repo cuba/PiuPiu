@@ -13,10 +13,6 @@ import MapCodableKit
 public typealias ErrorHandler = (Error) -> Void
 public typealias CompletionHandler = () -> Void
 
-// Response types
-public typealias SuccessResponse<T> = (data: T, headers: [AnyHashable: Any])
-public typealias ErrorResponse<T> = (error: BaseNetworkError, data: T, headers: [AnyHashable: Any]?)
-
 open class NetworkSerializer {
     public var dispatcher: NetworkDispatcher
     
@@ -43,7 +39,7 @@ open class NetworkSerializer {
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         dispatcher.send(request).deserializeMapDecodable().success({ response in
-            successHandler(response.data, response.headers)
+            successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in
@@ -63,7 +59,7 @@ open class NetworkSerializer {
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping ([T], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         dispatcher.send(request).deserializeMapDecodableArray().success({ response in
-            successHandler(response.data, response.headers)
+            successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in
@@ -83,7 +79,7 @@ open class NetworkSerializer {
      */
     open func fetchDecodable<T: Decodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         dispatcher.send(request).deserializeDecodable().success({ response in
-            successHandler(response.data, response.headers)
+            successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in
@@ -103,7 +99,7 @@ open class NetworkSerializer {
      */
     open func send(_ request: Request, successHandler: @escaping ([AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
         dispatcher.send(request).success({ response in
-            successHandler(response.headers)
+            successHandler(response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in

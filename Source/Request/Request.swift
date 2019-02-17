@@ -12,8 +12,8 @@ import Alamofire
 public protocol Request {
     var method: HTTPMethod { get }
     var path:   String { get }
-    var queryItems: [URLQueryItem]? { get }
+    var queryItems: [URLQueryItem] { get }
+    var headers: [String: String] { get }
     var httpBody: Data? { get }
-    var headers: [String: String]? { get }
     var parameterEncoding: ParameterEncoding { get }
 }
