@@ -61,9 +61,10 @@ class ViewController: UIViewController {
         currentTextField?.resignFirstResponder()
         
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
         
-        dispatcher.make(request).deserializeJSONString().success({ [weak self] response in
+        dispatcher.make(from: {
+            return JSONRequest(method: .get, path: self.pathTextField.text ?? "")
+        }).deserializeJSONString().success({ [weak self] response in
             self?.textView.text = response.data
         }).failure({ [weak self] response in
             self?.textView.text = response.error.localizedDescription

@@ -73,6 +73,57 @@ class NetworkKitTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testSuccessfulEncodableSerialization() {
+        // Given
+        let url = URL(string: "https://jsonplaceholder.typicode.com")!
+        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+        
+        // When
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        dispatcher.make(from: {
+            var request = JSONRequest(method: .post, path: "")
+            let requestObject = MockCodable()
+            try request.setHTTPBody(requestObject)
+            return request
+        }).success({ response in
+            // Then
+            XCTAssertEqual(response.statusCode, StatusCode.ok)
+            successExpectation.fulfill()
+        }).failure({ response in
+            XCTFail("Should not trigger the failure")
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testUnsuccessfulEncodableSerialization() {
+        // Given
+        let url = URL(string: "https://jsonplaceholder.typicode.com")!
+        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+        
+        // When
+        let errorExpectation = self.expectation(description: "Error callback triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        dispatcher.make(from: {
+            throw ResponseError.badRequest(cause: nil)
+        }).success({ response in
+            XCTFail("Should not trigger the success")
+        }).failure({ response in
+            XCTFail("Should not trigger the failure")
+        }).error({ error in
+            errorExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
     func testSuccessfulCodableDeserialization() {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
@@ -145,7 +196,7 @@ class NetworkKitTests: XCTestCase {
         XCTAssertNotNil(request.httpBody)
     }
     
-    func testSuccessfulJSONStringSerialization() {
+    func testSuccessfulJSONObjectSerialization() {
         // Given
         var request = JSONRequest(method: .get, path: "")
         
@@ -156,6 +207,22 @@ class NetworkKitTests: XCTestCase {
         
         // Then
         XCTAssertNoThrow(try request.setHTTPBody(jsonObject: jsonObject), "Should not fail serialization")
+        XCTAssertNotNil(request.httpBody)
+    }
+    
+    func testSuccessfulJSONStringSerialization() {
+        // Given
+        var request = JSONRequest(method: .get, path: "")
+        
+        let jsonString = """
+            {
+                "id": "123",
+                "name": "Kevin Malone"
+            }
+        """
+        
+        // Then
+        request.setHTTPBody(jsonString: jsonString)
         XCTAssertNotNil(request.httpBody)
     }
     

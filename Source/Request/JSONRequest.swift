@@ -34,28 +34,28 @@ public struct JSONRequest: Request {
         }
     }
     
-    mutating func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
+    mutating public func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
         self.httpBody = try mapEncodable.jsonData(options: options)
     }
     
-    mutating func setHTTPBody<T: Encodable>(encodable: T) throws {
+    mutating public func setHTTPBody<T: Encodable>(encodable: T) throws {
         self.httpBody = try JSONEncoder().encode(encodable)
     }
     
-    mutating func setHTTPBody(jsonString: String, encoding: String.Encoding = .utf8) {
+    mutating public func setHTTPBody(jsonString: String, encoding: String.Encoding = .utf8) {
         self.httpBody = jsonString.data(using: encoding)
     }
     
-    mutating func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
+    mutating public func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
     }
     
     // Convenience method.
-    mutating func setHTTPBody<T: MapEncodable>(_ encodable: T) throws {
+    mutating public func setHTTPBody<T: MapEncodable>(_ encodable: T) throws {
         try setHTTPBody(mapEncodable: encodable)
     }
     
-    mutating func setHTTPBody<T: Encodable>(_ encodable: T) throws {
+    mutating public func setHTTPBody<T: Encodable>(_ encodable: T) throws {
         try setHTTPBody(encodable: encodable)
     }
 }

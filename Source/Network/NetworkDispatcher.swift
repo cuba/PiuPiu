@@ -17,6 +17,16 @@ public protocol NetworkDispatcherInterface {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
 }
 
+extension NetworkDispatcherInterface {
+    public func make(from callback: @escaping () throws -> Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+        return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
+            let request = try callback()
+            let requestPromise = self.make(request)
+            requestPromise.fullfill(promise)
+        }
+    }
+}
+
 
 /// The object that will be making the API call.
 open class NetworkDispatcher: NetworkDispatcherInterface {
