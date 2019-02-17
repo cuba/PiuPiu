@@ -22,16 +22,8 @@ class NetworkKitTests: XCTestCase {
         }
     }
     
-    struct MockCodable2: Codable, Equatable {
-        var uuid2: String
-        
-        init() {
-            self.uuid2 = UUID().uuidString
-        }
-        
-        public static func == (lhs: MockCodable2, rhs: MockCodable2) -> Bool {
-            return lhs.uuid2 == rhs.uuid2
-        }
+    struct MockDecodable: Decodable {
+        let message: String
     }
 
     func testSuccessfulDataResponse() {
@@ -46,8 +38,8 @@ class NetworkKitTests: XCTestCase {
         
         dispatcher.make(request).success({ response in
             // Then
-            successExpectation.fulfill()
             XCTAssertEqual(response.statusCode, StatusCode.ok)
+            successExpectation.fulfill()
         }).failure({ response in
             XCTFail("Should not trigger the failure")
         }).completion({
@@ -72,8 +64,8 @@ class NetworkKitTests: XCTestCase {
             // Then
             XCTFail("Should not trigger the success")
         }).failure({ response in
-            failureExpectation.fulfill()
             XCTAssertEqual(response.statusCode, statusCode)
+            failureExpectation.fulfill()
         }).completion({
             completionExpectation.fulfill()
         }).send()
@@ -100,9 +92,9 @@ class NetworkKitTests: XCTestCase {
         
         dispatcher.make(request).deserialize(to: MockCodable.self).success({ response in
             // Then
-            successExpectation.fulfill()
             XCTAssertEqual(response.statusCode, StatusCode.ok)
             XCTAssertEqual(response.data, responseObject)
+            successExpectation.fulfill()
         }).failure({ response in
             XCTFail("Should not trigger the failure")
         }).completion({
@@ -129,7 +121,7 @@ class NetworkKitTests: XCTestCase {
         let errorExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        dispatcher.make(request).deserialize(to: MockCodable2.self).success({ response in
+        dispatcher.make(request).deserialize(to: MockDecodable.self).success({ response in
             // Then
             XCTFail("Should not trigger the success")
         }).failure({ response in
@@ -165,6 +157,39 @@ class NetworkKitTests: XCTestCase {
         // Then
         XCTAssertNoThrow(try request.setHTTPBody(jsonObject: jsonObject), "Should not fail serialization")
         XCTAssertNotNil(request.httpBody)
+    }
+    
+    func testWrappedPromise() {
+        // Given
+        let codable = MockCodable()
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let url = URL(string: "https://jsonplaceholder.typicode.com")!
+        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        // When
+        Promise<MockCodable, MockDecodable>(action: { promise in
+            try dispatcher.setMockData(codable)
+            let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
+            
+            requestPromise.fullfill(promise, success: { response in
+                return response.data
+            }, failure: { response in
+                return response.data
+            })
+        }).success({ response in
+            XCTAssertEqual(response, codable)
+            successExpectation.fulfill()
+        }).failure({ mockDecodable in
+            XCTFail("Should not trigger the failure")
+        }).error({ error in
+            XCTFail("Should not trigger the error")
+        }).completion({
+            completionExpectation.fulfill()
+        }).start()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testPerformanceExample() {
