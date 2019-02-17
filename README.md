@@ -63,17 +63,22 @@ extension ViewController: ServerProvider {
 
 ### 3. Send your request.
 
+
 ```swift
 let dispatcher = NetworkDispatcher(serverProvider: self)
 let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
 
-dispatcher?.send(request).deserializeJSONString().success({ [weak self] response in
+dispatcher?.make(request).deserializeJSONString().success({ [weak self] response in
+    // Triggered on a successful response and deserialization
     let jsonString = response.data
 }).failure({ [weak self] response in
-    // This method is triggered when a response comes back but is unexpected.
+    // This method is triggered when a non 2xx response comes in.
+    // All errors in the response object are either ClientError, ServerError, or ResponseError
 }).error({ [weak self] error in
-    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
-}).start()
+    // Triggers whenever an error is thrown. In other words all errors that are created on the application side are here.
+    // This includes decoding errors, unwrapped  
+    // These errors are usually application related errors but (in terms of serialization) can be caused because of invalid server responses.
+}).send()
 ```
 
 ## Deserialization
@@ -82,7 +87,7 @@ NetworkKit can quickly deserialize any number of object types:
 ### `Data`
 
 ```swift
-dispatcher?.send(request).deserializeData().success({ [weak self] response in
+dispatcher?.make(request).deserializeData().success({ [weak self] response in
     let data = response.data
 })
 ```
@@ -90,7 +95,7 @@ dispatcher?.send(request).deserializeData().success({ [weak self] response in
 ### JSON `String`
 
 ```swift
-dispatcher?.send(request).deserializeJSONString().success({ [weak self] response in
+dispatcher?.make(request).deserializeJSONString().success({ [weak self] response in
     let data = response.data
 })
 ```
@@ -98,7 +103,7 @@ dispatcher?.send(request).deserializeJSONString().success({ [weak self] response
 ### `Decodable`
 
 ```swift
-dispatcher?.send(request).deserializeDecodable().success({ [weak self] response in
+dispatcher?.make(request).deserializeDecodable().success({ [weak self] response in
     let decodable = response.data
 })
 ```
