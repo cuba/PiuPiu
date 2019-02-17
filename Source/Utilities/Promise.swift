@@ -58,12 +58,11 @@ public class Promise<T, E> {
         do {
             try successHandler?(object)
             status = .success
+            completionHandler?()
             return
         } catch {
             self.catch(error)
         }
-        
-        completionHandler?()
     }
     
     /// Fullfill the promise with a failed result.
@@ -73,12 +72,11 @@ public class Promise<T, E> {
         do {
             try failureHandler?(object)
             status = .failure
+            completionHandler?()
             return
         } catch {
             self.catch(error)
         }
-        
-        completionHandler?()
     }
     
     /// Fullfill the promise with a failed result.
@@ -145,17 +143,21 @@ public class Promise<T, E> {
                 promise.succeed(with: transformed)
             }).failure({ result in
                 promise.fail(with: result)
+            }).error({ error in
+                promise.catch(error)
             }).start()
         }
     }
     
-    public func transformFailure<U>(_ callback: @escaping (E) throws -> U) -> Promise<T, U> {
+    public func thenFailure<U>(_ callback: @escaping (E) throws -> U) -> Promise<T, U> {
         return Promise<T, U>() { promise in
             self.success({ result in
                 promise.succeed(with: result)
             }).failure({ result in
                 let transformed = try callback(result)
                 promise.fail(with: transformed)
+            }).error({ error in
+                promise.catch(error)
             }).start()
         }
     }
