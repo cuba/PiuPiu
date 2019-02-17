@@ -17,7 +17,7 @@ public protocol NetworkDispatcherInterface {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
 }
 
-extension NetworkDispatcherInterface {
+public extension NetworkDispatcherInterface {
     public func make(from callback: @escaping () throws -> Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
