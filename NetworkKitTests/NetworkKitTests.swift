@@ -81,7 +81,7 @@ class NetworkKitTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testSuccessfulCodableSerialization() {
+    func testSuccessfulCodableDeserialization() {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
@@ -141,6 +141,30 @@ class NetworkKitTests: XCTestCase {
         }).send()
         
         waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testSuccessfulCodableSerialization() {
+        // Given
+        let codable = MockCodable()
+        var request = JSONRequest(method: .get, path: "")
+        
+        // Then
+        XCTAssertNoThrow(try request.setHTTPBody(codable), "Should not fail serialization")
+        XCTAssertNotNil(request.httpBody)
+    }
+    
+    func testSuccessfulJSONStringSerialization() {
+        // Given
+        var request = JSONRequest(method: .get, path: "")
+        
+        let jsonObject: [String: Any?] = [
+            "id": "123",
+            "name": "Kevin Malone"
+        ]
+        
+        // Then
+        XCTAssertNoThrow(try request.setHTTPBody(jsonObject: jsonObject), "Should not fail serialization")
+        XCTAssertNotNil(request.httpBody)
     }
 
     func testPerformanceExample() {
