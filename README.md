@@ -79,9 +79,9 @@ dispatcher?.make(request).deserializeJSONString().success({ [weak self] response
     // This method is triggered when a non 2xx response comes in.
     // All errors in the response object are ResponseError
 }).error({ [weak self] error in
-    // Triggers whenever an error is thrown. In other words all errors that are created on the application side are here.
-    // This includes decoding errors, unwrapped  
-    // These errors are usually application related errors but (in terms of serialization) can be caused because of invalid server responses.
+    // Triggers whenever an error is thrown. In other words, all errors that are created on the application fall through here.
+    // This includes deserialization errors, unwraping failures, and anything else that is thrown in a `success`, `error`, `then` or `thenFailure` block in any chained promise.
+    // These errors are oftern application related errors but (in terms of serialization) can be caused because of invalid server responses.
 }).send()
 ```
 
