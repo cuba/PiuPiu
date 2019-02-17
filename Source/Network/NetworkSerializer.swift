@@ -14,7 +14,7 @@ public typealias ErrorHandler = (Error) -> Void
 public typealias CompletionHandler = () -> Void
 
 open class NetworkSerializer {
-    public var dispatcher: NetworkDispatcher
+    public var dispatcher: Dispatcher
     
     /**
      Send a request while expecting a single `MapDecodable` object

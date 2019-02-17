@@ -13,11 +13,11 @@ import MapCodableKit
 public typealias SuccessResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode)
 public typealias ErrorResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError)
 
-public protocol NetworkDispatcherInterface {
+public protocol Dispatcher {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
 }
 
-public extension NetworkDispatcherInterface {
+public extension Dispatcher {
     public func make(from callback: @escaping () throws -> Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
@@ -29,7 +29,7 @@ public extension NetworkDispatcherInterface {
 
 
 /// The object that will be making the API call.
-open class NetworkDispatcher: NetworkDispatcherInterface {
+open class NetworkDispatcher: Dispatcher {
     public weak var serverProvider: ServerProvider?
     
     public init(serverProvider: ServerProvider) {
@@ -74,7 +74,7 @@ open class NetworkDispatcher: NetworkDispatcherInterface {
 }
 
 /// A mock dispatcher that does not actually make any network calls.
-open class MockDispatcher: NetworkDispatcherInterface, ServerProvider {
+open class MockDispatcher: Dispatcher, ServerProvider {
     open var mockData: Data?
     open var mockStatusCode: StatusCode
     open var mockError: ResponseError?
