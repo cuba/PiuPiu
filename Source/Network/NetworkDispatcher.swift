@@ -11,7 +11,7 @@ import MapCodableKit
 
 // Response types
 public typealias SuccessResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode)
-public typealias ErrorResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: BaseNetworkError)
+public typealias ErrorResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError)
 
 public protocol NetworkDispatcherInterface {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
@@ -64,11 +64,11 @@ open class NetworkDispatcher: NetworkDispatcherInterface {
 open class MockDispatcher: NetworkDispatcherInterface, ServerProvider {
     open var mockData: Data?
     open var mockStatusCode: StatusCode
-    open var mockError: BaseNetworkError?
+    open var mockError: ResponseError?
     open var mockHeaders: [String: String]
     public var baseURL: URL
     
-    public init(baseUrl: URL, mockStatusCode: StatusCode, mockError: BaseNetworkError? = nil, mockHeaders: [String: String] = [:]) {
+    public init(baseUrl: URL, mockStatusCode: StatusCode, mockError: ResponseError? = nil, mockHeaders: [String: String] = [:]) {
         self.baseURL = baseUrl
         self.mockStatusCode = mockStatusCode
         self.mockError = mockError

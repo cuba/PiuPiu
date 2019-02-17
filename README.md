@@ -77,7 +77,7 @@ dispatcher?.make(request).deserializeJSONString().success({ [weak self] response
     let jsonString = response.data
 }).failure({ [weak self] response in
     // This method is triggered when a non 2xx response comes in.
-    // All errors in the response object are either ClientError, ServerError, or ResponseError
+    // All errors in the response object are ResponseError
 }).error({ [weak self] error in
     // Triggers whenever an error is thrown. In other words all errors that are created on the application side are here.
     // This includes decoding errors, unwrapped  
