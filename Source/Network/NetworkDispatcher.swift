@@ -17,6 +17,8 @@ public protocol NetworkDispatcherInterface {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
 }
 
+
+/// The object that will be making the API call.
 open class NetworkDispatcher: NetworkDispatcherInterface {
     public weak var serverProvider: ServerProvider?
     
@@ -61,6 +63,7 @@ open class NetworkDispatcher: NetworkDispatcherInterface {
     }
 }
 
+/// A mock dispatcher that does not actually make any network calls.
 open class MockDispatcher: NetworkDispatcherInterface, ServerProvider {
     open var mockData: Data?
     open var mockStatusCode: StatusCode

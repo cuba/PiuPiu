@@ -25,13 +25,6 @@
 			remoteGlobalIDString = 8CC507E41ED35A8D00C19524;
 			remoteInfo = "NetworkKit iOS";
 		};
-		DADDFF541FEF2578005FEC56 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8CC507ED1ED35A8E00C19524;
-			remoteInfo = "NetworkKit iOS Tests";
-		};
 		DADDFF5B1FEF25BD005FEC56 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */;
@@ -133,7 +126,6 @@
 			isa = PBXGroup;
 			children = (
 				DADDFF531FEF2578005FEC56 /* NetworkKit.framework */,
-				DADDFF551FEF2578005FEC56 /* NetworkKit iOS Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -250,13 +242,6 @@
 			fileType = wrapper.framework;
 			path = NetworkKit.framework;
 			remoteRef = DADDFF521FEF2578005FEC56 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DADDFF551FEF2578005FEC56 /* NetworkKit iOS Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "NetworkKit iOS Tests.xctest";
-			remoteRef = DADDFF541FEF2578005FEC56 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -450,7 +435,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.networkkit.example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKit.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};
@@ -469,7 +454,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.networkkit.example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKit.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};

@@ -171,13 +171,14 @@ class NetworkKitTests: XCTestCase {
         // When
         Promise<MockCodable, MockDecodable>(action: { promise in
             try dispatcher.setMockData(codable)
+            
             let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
             
-            requestPromise.fullfill(promise, success: { response in
+            requestPromise.then({ response -> MockCodable in
                 return response.data
-            }, failure: { response in
+            }).thenFailure({ response -> MockDecodable in
                 return response.data
-            })
+            }).fullfill(promise)
         }).success({ response in
             XCTAssertEqual(response, codable)
             successExpectation.fulfill()

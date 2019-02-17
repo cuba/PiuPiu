@@ -194,11 +194,14 @@ Promise<MockCodable, MockDecodable>(action: { promise in
     try dispatcher.setMockData(codable)
     let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
 
-    requestPromise.fullfill(promise, success: { response in
+    // Convert the request promise so that it can fullfill this promise.
+    requestPromise.then({ response -> MockCodable in
+        // Converts the promise success object to `MapCodable`
         return response.data
-    }, failure: { response in
+    }).thenFailure({ response -> MockDecodable in
+        // Converts the promise failure object to `MapCodable`
         return response.data
-    })
+    }).fullfill(promise)
 }).success({ response in
     XCTAssertEqual(response, codable)
     successExpectation.fulfill()

@@ -18,16 +18,16 @@ public class Promise<T, E> {
     
     public enum Status {
         case created
-        case pending
+        case started
         case failure
         case success
         case error
         
         var isComplete: Bool {
             switch self {
-            case .pending   : return false
             case .created   : return false
-            case .failure    : return true
+            case .started   : return false
+            case .failure   : return true
             case .success   : return true
             case .error     : return true
             }
@@ -51,11 +51,15 @@ public class Promise<T, E> {
         self.status = .created
     }
     
-    public func fullfill<TT, EE>(_ promise: Promise<TT, EE>, success: @escaping (T) throws -> TT, failure: @escaping (E) throws -> EE) {
+    /// Fulfills this promise with the results of another promise of the same type.
+    /// The promise passed needs to be converted to the same type using the `then` and `thenFailure` methods.
+    ///
+    /// - Parameter promise: The promise that fullfils this one.
+    public func fullfill(_ promise: Promise<T, E>) {
         self.success({ result in
-            promise.succeed(with: try success(result))
+            promise.succeed(with: result)
         }).failure({ result in
-            promise.fail(with: try failure(result))
+            promise.fail(with: result)
         }).error({ error in
             promise.catch(error)
         }).start()
@@ -138,6 +142,7 @@ public class Promise<T, E> {
     @discardableResult
     public func start() -> Promise<T, E> {
         do {
+            self.status = .started
             try action(self)
         } catch {
             self.catch(error)
@@ -146,6 +151,10 @@ public class Promise<T, E> {
         return self
     }
     
+    /// Convert the success callback to another type.
+    ///
+    /// - Parameter callback: The callback that does the conversion.
+    /// - Returns: The coverted promise
     public func then<U>(_ callback: @escaping (T) throws -> U) -> Promise<U, E> {
         return Promise<U, E>() { promise in
             self.success({ result in
@@ -159,6 +168,10 @@ public class Promise<T, E> {
         }
     }
     
+    /// Convert the error callback to another type.
+    ///
+    /// - Parameter callback: The callback that does the conversion.
+    /// - Returns: The coverted promise
     public func thenFailure<U>(_ callback: @escaping (E) throws -> U) -> Promise<T, U> {
         return Promise<T, U>() { promise in
             self.success({ result in

@@ -8,11 +8,19 @@
 
 import Foundation
 
+/// The object that returns the server host or base url
 public protocol ServerProvider: class {
     var baseURL: URL { get }
 }
 
+/// Extensions used by NetworkDispatcher
 public extension ServerProvider {
+    
+    /// Attempt to construct a URL from the request.
+    ///
+    /// - Parameter request: The request that will be sent.
+    /// - Returns: A url to which the request will be sent.
+    /// - Throws: Any errors when trying to create the url.
     public func url(from request: Request) throws -> URL {
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
@@ -26,6 +34,11 @@ public extension ServerProvider {
         }
     }
     
+    /// Attempt to convert the request to a URLRequest.
+    ///
+    /// - Parameter request: The request that will be converted
+    /// - Returns: The created URLRequest
+    /// - Throws: A RequstError object
     public func urlRequest(from request: Request) throws -> URLRequest {
         do {
             let url = try self.url(from: request)

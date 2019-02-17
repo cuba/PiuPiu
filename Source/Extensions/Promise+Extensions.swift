@@ -9,11 +9,13 @@
 import Foundation
 import MapCodableKit
 
+// MARK: - Data response extensions
+
 extension Promise where T == SuccessResponse<Data?> {
     
-    /// Attempts to unwrap the resposne data.
+    /// On an successful response, attempt to unwrap the response data.
     ///
-    /// - Returns: A promose containing the unwrapped data
+    /// - Returns: A promise containing the unwrapped data
     open func unwrapData() -> Promise<SuccessResponse<Data>, E> {
         return then() { response in
             // Check if we have the data we need
@@ -25,9 +27,9 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a JSON string.
+    /// On an successful response, attempt to deserialize the response data into a JSON string.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeJSONString() -> Promise<SuccessResponse<String>, E> {
         return unwrapData().then { response in
             // Attempt to deserialize the object.
@@ -39,9 +41,9 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable object.
+    /// On an successful response, attempt to deserialize the response data into a MapDecodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeMapDecodable<D: MapDecodable>(to: D.Type) -> Promise<SuccessResponse<D>, E> {
         return unwrapData().then { response in
             do {
@@ -55,9 +57,9 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable array.
+    /// On an successful response, attempt to deserialize the response data into a MapDecodable array.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeMapDecodable<D: MapDecodable>(to: [D].Type) -> Promise<SuccessResponse<[D]>, E> {
         return unwrapData().then { response in
             do {
@@ -71,9 +73,9 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a Decodable object.
+    /// On an successful response, attempt to deserialize the response data into a Decodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeDecodable<D: Decodable>(to: D.Type) -> Promise<SuccessResponse<D>, E> {
         return unwrapData().then { response in
             do {
@@ -87,23 +89,23 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable object.
+    /// On an successful response, attempt to deserialize the response data into a MapDecodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserialize<D: MapDecodable>(to type: D.Type) -> Promise<SuccessResponse<D>, E> {
         return deserializeMapDecodable(to: type)
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable array.
+    /// On an successful response, attempt to deserialize the response data into a MapDecodable array.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserialize<D: MapDecodable>(to type: [D].Type) -> Promise<SuccessResponse<[D]>, E> {
         return deserializeMapDecodable(to: type)
     }
     
-    /// Attempts to deserialize the resposne data into a Decodable object.
+    /// On an successful response, attempt to deserialize the response data into a Decodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserialize<D: Decodable>(to type: D.Type) -> Promise<SuccessResponse<D>, E> {
         return deserializeDecodable(to: type)
     }
@@ -111,9 +113,9 @@ extension Promise where T == SuccessResponse<Data?> {
 
 extension Promise where E == ErrorResponse<Data?> {
     
-    /// Attempts to unwrap the resposne data.
+    /// On an error response, attempt to unwrap the response data.
     ///
-    /// - Returns: A promose containing the unwrapped data
+    /// - Returns: A promise containing the unwrapped data
     open func unwrapErrorData() -> Promise<T, ErrorResponse<Data>> {
         return thenFailure() { response in
             // Check if we have the data we need
@@ -125,9 +127,9 @@ extension Promise where E == ErrorResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a JSON string.
+    /// On an error response, attempts to deserialize the response data into a JSON string.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeJSONString() -> Promise<T, ErrorResponse<String>> {
         return unwrapErrorData().thenFailure { response in
             // Attempt to deserialize the object.
@@ -139,9 +141,9 @@ extension Promise where E == ErrorResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable object.
+    /// On an error response, attempt to deserialize the response data into a MapDecodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeError<D: MapDecodable>(to: D.Type) -> Promise<T, ErrorResponse<D>> {
         return unwrapErrorData().thenFailure { response in
             do {
@@ -155,9 +157,9 @@ extension Promise where E == ErrorResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a MapDecodable array.
+    /// On an error response, attempt to deserialize the response data into a MapDecodable array.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeError<D: MapDecodable>(to: [D].Type) -> Promise<T, ErrorResponse<[D]>> {
         return unwrapErrorData().thenFailure { response in
             do {
@@ -171,9 +173,9 @@ extension Promise where E == ErrorResponse<Data?> {
         }
     }
     
-    /// Attempts to deserialize the resposne data into a Decodable object.
+    /// On an error response, attempt to deserialize the response data into a Decodable object.
     ///
-    /// - Returns: A promose containing the deserilized results
+    /// - Returns: A promise containing the deserilized results
     open func deserializeError<D: Decodable>(to: D.Type) -> Promise<T, ErrorResponse<D>> {
         return unwrapErrorData().thenFailure { response in
             do {
