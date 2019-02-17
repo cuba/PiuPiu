@@ -93,6 +93,8 @@ class NetworkKitTests: XCTestCase {
             successExpectation.fulfill()
         }).failure({ response in
             XCTFail("Should not trigger the failure")
+        }).error({ error in
+            XCTFail("Should not trigger the error")
         }).completion({
             completionExpectation.fulfill()
         }).send()
