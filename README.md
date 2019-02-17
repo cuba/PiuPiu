@@ -7,6 +7,10 @@ NetworkKit
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Serialization](#serialization)
+- [Deserializaiton](#deserialization)
+- [Promises](#promises)
+- [MockDispatcher](#mock-dispatcher)
 - [Credits](#credits)
 - [License](#license)
 
@@ -181,9 +185,46 @@ dispatcher?.send(request).deserializeMapDecodableArray().success({ [weak self] r
 ```
 
 ## Promises
-Under the hood, NetworkKit uses a simple strongly typed implementation of a Promise.  This allows you to be as flexible as you want.
+Under the hood, NetworkKit uses a simple strongly typed implementation of a Promise.  This allows you to be as flexible as you want. We promise to give you better documentation on these promises soon :)
 
-We promise to give you full documentation on these promises soon :)
+Here is an example of more advanced usage of promises from one of the tests:
+
+```swift
+Promise<MockCodable, MockDecodable>(action: { promise in
+    try dispatcher.setMockData(codable)
+    let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
+
+    requestPromise.fullfill(promise, success: { response in
+        return response.data
+    }, failure: { response in
+        return response.data
+    })
+}).success({ response in
+    XCTAssertEqual(response, codable)
+    successExpectation.fulfill()
+}).failure({ mockDecodable in
+    XCTFail("Should not trigger the failure")
+}).error({ error in
+    XCTFail("Should not trigger the error")
+}).completion({
+    completionExpectation.fulfill()
+}).start()
+```
+
+## MockDispatcher
+
+Testing network calls is always a pain.  That's why there is an available `MockDispatcher`.  It allows you to simulate network responses without actually making network calls.
+
+```swift
+let url = URL(string: "https://jsonplaceholder.typicode.com")!
+let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+let request = JSONRequest(method: .get, path: "/posts")
+try dispatcher.setMockData(codable)
+
+/// The url specified is not actually called.
+dispatcher.make(request).send()
+```
+
 
 
 ## Dependencies
