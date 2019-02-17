@@ -25,8 +25,8 @@ open class NetworkSerializer {
         self.dispatcher = dispatcher
     }
     
-    open func send(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
-        return dispatcher.send(request)
+    open func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+        return dispatcher.make(request)
     }
     
     /**
@@ -38,7 +38,7 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.send(request).deserializeMapDecodable().success({ response in
+        dispatcher.make(request).deserialize(to: T.self).success({ response in
             successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
@@ -58,7 +58,7 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping ([T], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.send(request).deserializeMapDecodableArray().success({ response in
+        dispatcher.make(request).deserialize(to: [T].self).success({ response in
             successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
@@ -78,7 +78,7 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func fetchDecodable<T: Decodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.send(request).deserializeDecodable().success({ response in
+        dispatcher.make(request).deserialize(to: T.self).success({ response in
             successHandler(response.data, response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
@@ -98,7 +98,7 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send(_ request: Request, successHandler: @escaping ([AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.send(request).success({ response in
+        dispatcher.make(request).success({ response in
             successHandler(response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)

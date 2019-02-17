@@ -45,17 +45,12 @@ class ViewController: UIViewController {
     }()
     
     fileprivate var currentTextField: UITextField?
-    private var serializer: NetworkSerializer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
         title = "Example "
         setupLayout()
-        
-        // Configure the NetworkKit
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        serializer = NetworkSerializer(dispatcher: dispatcher)
         
         // Configure the Text Fields
         baseUrlTextField.delegate = self
@@ -65,15 +60,16 @@ class ViewController: UIViewController {
     @objc private func tappedSendButton() {
         currentTextField?.resignFirstResponder()
         
+        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
         
-        self.serializer?.send(request).deserializeJSONString().success({ [weak self] response in
+        dispatcher.make(request).deserializeJSONString().success({ [weak self] response in
             self?.textView.text = response.data
         }).failure({ [weak self] response in
             self?.textView.text = response.error.localizedDescription
         }).error({ [weak self] error in
             self?.textView.text = error.localizedDescription
-        }).start()
+        }).send()
     }
     
     private func setupLayout() {

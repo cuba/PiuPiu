@@ -11,7 +11,10 @@ import MapCodableKit
 
 extension Promise where T == SuccessResponse<Data?> {
     
-    open func deserializeData() -> Promise<SuccessResponse<Data>, E> {
+    /// Attempts to unwrap the resposne data.
+    ///
+    /// - Returns: A promose containing the unwrapped data
+    open func unwrapData() -> Promise<SuccessResponse<Data>, E> {
         return then() { response in
             // Check if we have the data we need
             guard let unwrappedData = response.data else {
@@ -22,8 +25,11 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
+    /// Attempts to deserialize the resposne data into a JSON string.
+    ///
+    /// - Returns: A promose containing the deserilized results
     open func deserializeJSONString() -> Promise<SuccessResponse<String>, E> {
-        return deserializeData().then { response in
+        return unwrapData().then { response in
             // Attempt to deserialize the object.
             guard let jsonString = String(data: response.data, encoding: .utf8) else {
                 throw SerializationError.failedToDecodeResponseData(cause: nil)
@@ -33,8 +39,11 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    open func deserializeMapDecodable<D: MapDecodable>() -> Promise<SuccessResponse<D>, E> {
-        return deserializeData().then { response in
+    /// Attempts to deserialize the resposne data into a MapDecodable object.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserializeMapDecodable<D: MapDecodable>(to: D.Type) -> Promise<SuccessResponse<D>, E> {
+        return unwrapData().then { response in
             do {
                 // Attempt to deserialize the object.
                 let object = try D(jsonData: response.data)
@@ -46,8 +55,11 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    open func deserializeMapDecodableArray<D: MapDecodable>() -> Promise<SuccessResponse<[D]>, E> {
-        return deserializeData().then { response in
+    /// Attempts to deserialize the resposne data into a MapDecodable array.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserializeMapDecodable<D: MapDecodable>(to: [D].Type) -> Promise<SuccessResponse<[D]>, E> {
+        return unwrapData().then { response in
             do {
                 // Attempt to deserialize the object.
                 let object = try D.parseArray(jsonData: response.data)
@@ -59,8 +71,11 @@ extension Promise where T == SuccessResponse<Data?> {
         }
     }
     
-    open func deserializeDecodable<D: Decodable>() -> Promise<SuccessResponse<D>, E> {
-        return deserializeData().then { response in
+    /// Attempts to deserialize the resposne data into a Decodable object.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserializeDecodable<D: Decodable>(to: D.Type) -> Promise<SuccessResponse<D>, E> {
+        return unwrapData().then { response in
             do {
                 // Attempt to deserialize the object.
                 let object = try JSONDecoder().decode(D.self, from: response.data)
@@ -70,5 +85,37 @@ extension Promise where T == SuccessResponse<Data?> {
                 throw SerializationError.failedToDecodeResponseData(cause: error)
             }
         }
+    }
+    
+    /// Attempts to deserialize the resposne data into a MapDecodable object.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserialize<D: MapDecodable>(to type: D.Type) -> Promise<SuccessResponse<D>, E> {
+        return deserializeMapDecodable(to: type)
+    }
+    
+    /// Attempts to deserialize the resposne data into a MapDecodable array.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserialize<D: MapDecodable>(to type: [D].Type) -> Promise<SuccessResponse<[D]>, E> {
+        return deserializeMapDecodable(to: type)
+    }
+    
+    /// Attempts to deserialize the resposne data into a Decodable object.
+    ///
+    /// - Returns: A promose containing the deserilized results
+    open func deserialize<D: Decodable>(to type: D.Type) -> Promise<SuccessResponse<D>, E> {
+        return deserializeDecodable(to: type)
+    }
+}
+
+extension Promise {
+    
+    /// Calls the start() method on the promise
+    ///
+    /// - Returns: This promise
+    @discardableResult
+    public func send() -> Promise<T, E> {
+        return start()
     }
 }

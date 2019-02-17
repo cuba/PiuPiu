@@ -94,7 +94,6 @@ public class Promise<T, E> {
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This promise for chaining.
-    @discardableResult
     public func success(_ handler: @escaping SuccessHandler) -> Promise<T, E> {
         self.successHandler = handler
         return self
@@ -104,7 +103,6 @@ public class Promise<T, E> {
     ///
     /// - Parameter handler: The error handler that will be triggered after the `fail()` method is called.
     /// - Returns: This promise for chaining.
-    @discardableResult
     public func failure(_ handler: @escaping FailureHandler) -> Promise<T, E> {
         self.failureHandler = handler
         return self
@@ -114,7 +112,6 @@ public class Promise<T, E> {
     ///
     /// - Parameter handler: The error handler that will be triggered if anything is thrown inside the success callback.
     /// - Returns: This promise for chaining.
-    @discardableResult
     public func error(_ handler: @escaping (Error) -> Void) -> Promise<T, E> {
         self.errorHandler = handler
         return self
@@ -124,7 +121,6 @@ public class Promise<T, E> {
     ///
     /// - Parameter handler: The completion handler that will be triggered after the `succeed()` or `fail()` methods are triggered.
     /// - Returns: This promise for chaining.
-    @discardableResult
     public func completion(_ handler: @escaping CompletionHandler) -> Promise<T, E> {
         self.completionHandler = handler
         return self
