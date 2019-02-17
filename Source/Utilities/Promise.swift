@@ -51,6 +51,16 @@ public class Promise<T, E> {
         self.status = .created
     }
     
+    public func fullfill<TT, EE>(_ promise: Promise<TT, EE>, success: @escaping (T) throws -> TT, failure: @escaping (E) throws -> EE) {
+        self.success({ result in
+            promise.succeed(with: try success(result))
+        }).failure({ result in
+            promise.fail(with: try failure(result))
+        }).error({ error in
+            promise.catch(error)
+        }).start()
+    }
+    
     /// Fullfill this promise with a successful result.
     ///
     /// - Parameter object: The succeeded object required by the promise success callback.
