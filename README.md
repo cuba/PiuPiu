@@ -130,6 +130,27 @@ var request = JSONRequest(method: .post, path: "/posts")
 try request.setHTTPBody(mapEncodable: myMapCodable)
 ```
 
+### Wrap Encoding In a Promise
+It might be beneficial to wrap the request creation in a promise. This will allow you to delay the request creation at a later time and combine its creation errors in the error callback.
+For this there is a convenience method on the Dispatcher.
+
+```swift
+dispatcher.make(from: {
+    var request = JSONRequest(method: .post, path: "")
+    let requestObject = MockCodable()
+    try request.setHTTPBody(requestObject)
+    return request
+}).success({ response in
+    // Then
+    XCTAssertEqual(response.statusCode, StatusCode.ok)
+    successExpectation.fulfill()
+}).failure({ response in
+    XCTFail("Should not trigger the failure")
+}).completion({
+    completionExpectation.fulfill()
+}).send()
+```
+
 ## Deserialization
 NetworkKit can quickly deserialize any number of object types:
 
