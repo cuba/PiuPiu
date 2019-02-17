@@ -81,6 +81,51 @@ dispatcher?.make(request).deserializeJSONString().success({ [weak self] response
 }).send()
 ```
 
+## Serialization
+NetworkKit can serialize objects into JSON.  Currently, this is done before the promise is created therefore it is not chained in the promise callbacks.
+
+### `Data` 
+You can manually create your data object if you wish
+
+```swift
+let requestObject = MockCodable()
+var request = JSONRequest(method: .post, path: "/users")
+request.httpBody = myData
+```
+
+### JSON `String`
+
+```
+var request = JSONRequest(method: .post, path: "/users")
+request.setHTTPBody(jsonString: jsonString)
+```
+
+### JSON Object
+
+```
+let jsonObject: [String: Any?] = [
+    "id": "123",
+    "name": "Kevin Malone"
+]
+
+var request = JSONRequest(method: .post, path: "/users")
+try request.setHTTPBody(jsonObject: jsonObject)
+```
+
+### `Encodable`
+
+```
+var request = JSONRequest(method: .post, path: "/posts")
+try request.setHTTPBody(encodable: myCodable)
+```
+
+### `MapEncodable`
+
+```
+var request = JSONRequest(method: .post, path: "/posts")
+try request.setHTTPBody(mapEncodable: myMapCodable)
+```
+
 ## Deserialization
 NetworkKit can quickly deserialize any number of object types:
 
@@ -103,13 +148,13 @@ dispatcher?.make(request).deserializeJSONString().success({ [weak self] response
 ### `Decodable`
 
 ```swift
-dispatcher?.make(request).deserializeDecodable().success({ [weak self] response in
+dispatcher?.make(request).deserialize(to: MyCodable.self).success({ [weak self] response in
     let decodable = response.data
 })
 ```
 
 ### `MapDecodable`
-MapCodableKit is a convenience frameworks that handles JSON deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit). It is especially useful if you want to reserve Codable for auxillary serialization. MapCodableKit allows you to deserialize nested objects.
+MapCodableKit is a convenience frameworks that handles JSON deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 For objects:
 
