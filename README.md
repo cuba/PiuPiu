@@ -216,7 +216,7 @@ Promise<MockCodable, MockDecodable>(action: { promise in
 
 ## MockDispatcher
 
-Testing network calls is always a pain.  That's why there is an available `MockDispatcher`.  It allows you to simulate network responses without actually making network calls.
+Testing network calls is always a pain.  That's why we included the `MockDispatcher`.  It allows you to simulate network responses without actually making network calls.
 
 ```swift
 let url = URL(string: "https://jsonplaceholder.typicode.com")!
