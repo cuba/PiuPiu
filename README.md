@@ -1,4 +1,3 @@
-[![BuddyBuild](https://dashboard.buddybuild.com/api/statusImage?appID=592348f0b74ee700016fbbe6&branch=master&build=latest)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-lightgray.svg?style=flat)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
 
@@ -13,10 +12,13 @@ NetworkKit
 
 ## Features
 
-- [x] A wrapper around Alamofire
-- [x] Uses ObjectMapper for object deserialization
+- [x] A wrapper around network requests
+- [x] Uses Promises to allow scalablity and dryness
+- [x] Convenience methods for deserializing Decodable, MapDecodable (MapDecodableKit) and JSON 
 - [x] Easy integration
 - [x] Handles common http errors
+- [x] Returns production safe error messages
+- [x] Strongly typed and safely unwrapped responses
 
 ## Installation
 
@@ -34,16 +36,22 @@ $ brew install carthage
 To integrate NetworkKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/NetworkKit" ~> 1.3
+github "cuba/NetworkKit" ~> 4.0
 ```
 
 Run `carthage update` to build the framework and drag the built `NetworkKit.framework` into your Xcode project.
 
 ## Usage
 
-### Implementing the server provider
+### 1. Import `NetworkKit` into your file
 
-The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController.
+```swift
+import NetworkKit
+```
+
+### 2. Implement a  `ServerProvider`
+
+The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController or held strongly by some class.
 
 ```swift
 extension ViewController: ServerProvider {
@@ -53,82 +61,84 @@ extension ViewController: ServerProvider {
 }
 ```
 
-### Basic usage (without serialization)
-
-Import NetworkKit into your file
-
-```swift
-import NetworkKit
-```
-
-Initialize the dispatcher. Make sure to hold a strong reference to your dispatcher.
-```swift
-self.dispatcher = NetworkDispatcher(serverProvider: self)
-```
-
-Send your request.
-
-```swift
-let request = JSONRequest(method: .get, path: "/posts/1")
-
-serializer.send(request, successHandler: { (data: Any?) in
-    print(data)
-}, errorHandler: { error in
-    print(error.localizedDescription)
-}, completionHandler: {
-    // perform some action at the end of the request
-    // (Such as hide the activity indicator)
-})
-```
-
-### Advanced usage (with ObjectMapper serialization)
-
-Import the following libraries:
-
-```swift
-import NetworkKit
-import ObjectMapper
-```
-
-You will need a model object extending [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper)'s `Mappable` or `ImmutableMappable` protocol.
-
-```swift
-struct Post: ImmutableMappable {
-    init(map: Map) throws {
-        // Add mapping from json
-    }
-    
-    func mapping(map: Map) {
-        // Add mapping to json
-    }
-}
-```
-
-Initialize the serializer and dispatcher. Make sure to hold a strong reference to your serializer but not your dispatcher. You can initialize these in your `viewDidLoad()` method or one of your initializers.
+### 3. Send your request.
 
 ```swift
 let dispatcher = NetworkDispatcher(serverProvider: self)
-self.serializer = NetworkSerializer(dispatcher: dispatcher)
+let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
+
+dispatcher?.send(request).deserializeJSONString().success({ [weak self] response in
+    let jsonString = response.data
+}).failure({ [weak self] response in
+    // This method is triggered when a response comes back but is unexpected.
+}).error({ [weak self] error in
+    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
+}).start()
 ```
 
-Send your request.
+## Deserialization
+NetworkKit can quickly deserialize any number of object types:
+
+### `Data`
 
 ```swift
-let request = JSONRequest(method: .get, path: "/posts")
-
-serializer.send(request, successHandler: { (posts: [Post]) in
-    print(posts)
-}, errorHandler: { error in
-    print(error.localizedDescription)
-}, completionHandler: {
-    // perform some action at the end of the request
-    // (Such as hide the activity indicator)
+dispatcher?.send(request).deserializeData().success({ [weak self] response in
+    let data = response.data
 })
 ```
 
+### JSON `String`
+
+```swift
+dispatcher?.send(request).deserializeJSONString().success({ [weak self] response in
+    let data = response.data
+})
+```
+
+### `Decodable`
+
+```swift
+dispatcher?.send(request).deserializeDecodable().success({ [weak self] response in
+    let decodable = response.data
+})
+```
+
+### `MapDecodable`
+MapCodableKit is a convenience frameworks that handles JSON deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit). It is especially useful if you want to reserve Codable for auxillary serialization. MapCodableKit allows you to deserialize nested objects.
+
+For objects:
+
+```swift
+dispatcher?.send(request).deserializeMapDecodable().success({ [weak self] response in
+    let decodable = response.data
+}).failure({ [weak self] response in
+    // This method is triggered when a response comes back but is unexpected.
+}).error({ [weak self] error in
+    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
+}).start()
+```
+
+For arrays:
+
+```swift
+dispatcher?.send(request).deserializeMapDecodableArray().success({ [weak self] response in
+    let decodable = response.data
+}).failure({ [weak self] response in
+    // This method is triggered when a response comes back but is unexpected.
+}).error({ [weak self] error in
+    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
+}).start()
+```
+
+## Promises
+Under the hood, NetworkKit uses a simple strongly typed implementation of a Promise.  This allows you to be as flexible as you want.
+
+We promise to give you full documentation on these promises soon :)
+
+
 ## Dependencies
 
-NetworkKit uses [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) for serialization and [Alamofire](https://github.com/Alamofire/Alamofire) for network requests.
+NetworkKit uses [MapCodableKit](https://github.com/cuba/MapCodableKit) for serialization.
 
 ## Credits
 
