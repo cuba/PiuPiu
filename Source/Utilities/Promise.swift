@@ -139,6 +139,8 @@ public class Promise<T, E> {
     }
     
     /// This method triggers the action method defined on this promise.
+    ///
+    /// - Returns: `self`
     @discardableResult
     public func start() -> Promise<T, E> {
         do {

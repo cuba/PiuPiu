@@ -15,6 +15,7 @@
 		DADDFF591FEF25BD005FEC56 /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; };
 		DADDFF5A1FEF25BD005FEC56 /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DADDFF531FEF2578005FEC56 /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DAE5EF6822190A0200D1990B /* NetworkKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF6722190A0200D1990B /* NetworkKitTests.swift */; };
+		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6722190A0200D1990B /* NetworkKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkKitTests.swift; sourceTree = "<group>"; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationExamples.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 		DAE5EF6622190A0200D1990B /* NetworkKitTests */ = {
 			isa = PBXGroup;
 			children = (
+				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
 				DAE5EF6722190A0200D1990B /* NetworkKitTests.swift */,
 				DAE5EF6922190A0200D1990B /* Info.plist */,
 			);
@@ -297,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAE5EF6822190A0200D1990B /* NetworkKitTests.swift in Sources */,
+				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

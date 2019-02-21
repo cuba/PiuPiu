@@ -40,7 +40,7 @@ $ brew install carthage
 To integrate NetworkKit into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/NetworkKit" ~> 4.1
+github "cuba/NetworkKit" ~> 4.2
 ```
 
 Run `carthage update` to build the framework and drag the built `NetworkKit.framework` into your Xcode project.
@@ -55,7 +55,8 @@ import NetworkKit
 
 ### 2. Implement a  `ServerProvider`
 
-The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController or held strongly by some class.
+The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController or another class that is held strongly.
+The reason for this is so that you can dynamically return a url (ex: it changes based on an environment picker).
 
 ```swift
 extension ViewController: ServerProvider {
@@ -70,37 +71,45 @@ extension ViewController: ServerProvider {
 
 ```swift
 let dispatcher = NetworkDispatcher(serverProvider: self)
-let request = JSONRequest(method: .get, path: self.pathTextField.text ?? "")
+let request = JSONRequest(method: .get, path: "/posts")
 
-dispatcher?.make(request).deserializeJSONString().success({ [weak self] response in
-    // Triggered on a successful response and deserialization
-    let jsonString = response.data
-}).failure({ [weak self] response in
+dispatcher.make(request).success({ response in
+    // This method is triggered when a 2xx response comes in.
+
+    let posts = try response.decode([Post].self)
+    print(posts)
+}).failure({ response in
     // This method is triggered when a non 2xx response comes in.
     // All errors in the response object are ResponseError
-}).error({ [weak self] error in
-    // Triggers whenever an error is thrown. 
-    // In other words, all errors that are created on the application fall through here.
-    // This includes deserialization errors, unwraping failures, and anything else that is thrown 
+    
+    if let message = try? response.decodeString(encoding: .utf8) {
+        print(message)
+    }
+}).error({ error in
+    // Triggers whenever an error is thrown.
+    // This includes deserialization errors, unwraping failures, and anything else that is thrown
     // in a `success`, `error`, `then` or `thenFailure` block in any chained promise.
-    // These errors are oftern application related errors but can be caused 
+    // These errors are often application related errors but can be caused
     // because of invalid server responses (example: when deserializing the response data).
+    
+    print(error)
 }).send()
 ```
 
-## Serialization
-NetworkKit can serialize objects into JSON.  Currently, this is done before the promise is created therefore it is not chained in the promise callbacks.
+## Requests
+
+## Encoding JSON requests
+NetworkKit has convenience methods to encode objects into JSON using the `JSONRequest` object. `JSONRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types including:
 
 ### `Data` 
-You can manually create your data object if you wish
+You can manually create your data object if you wish.
 
 ```swift
-let requestObject = MockCodable()
 var request = JSONRequest(method: .post, path: "/users")
 request.httpBody = myData
 ```
 
-### JSON `String`
+### `String`
 
 ```
 var request = JSONRequest(method: .post, path: "/users")
@@ -127,6 +136,7 @@ try request.setHTTPBody(encodable: myCodable)
 ```
 
 ### `MapEncodable`
+MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 ```
 var request = JSONRequest(method: .post, path: "/posts")
@@ -151,94 +161,110 @@ dispatcher.make(from: {
 }).send()
 ```
 
-## Deserialization
-NetworkKit can quickly deserialize any number of object types:
+## Decoding
+NetworkKit can quickly decode any number of object types, including:
 
 ### `Data`
 
 ```swift
-dispatcher?.make(request).deserializeData().success({ [weak self] response in
-    let data = response.data
-})
+dispatcher?.make(request).success({ [weak self] response in
+    let data = try response.unwrapData()
+
+    // do something with data.
+    print(data)
+}).error({ error in 
+    // Triggered when decoding fails.
+}).send()
 ```
 
-### JSON `String`
+###  `String`
 
 ```swift
-dispatcher?.make(request).deserializeJSONString().success({ [weak self] response in
-    let data = response.data
-})
+dispatcher.make(request).success({ [weak self] response in
+    let string = try response.decodeString(encoding: .utf8)
+
+    // do something with string.
+    print(string)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
 ```
 
 ### `Decodable`
 
 ```swift
-dispatcher?.make(request).deserialize(to: MyCodable.self).success({ [weak self] response in
-    let decodable = response.data
-})
+dispatcher.make(request).success({ [weak self] response in
+    let posts = try response.decode([Post].self)
+
+    // do something with string.
+    print(posts)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
 ```
 
 ### `MapDecodable`
-MapCodableKit is a convenience frameworks that handles JSON deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
+MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 For objects:
 
 ```swift
-dispatcher?.send(request).deserializeMapDecodable().success({ [weak self] response in
-    let decodable = response.data
-}).failure({ [weak self] response in
-    // This method is triggered when a response comes back but is unexpected.
-}).error({ [weak self] error in
-    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
-}).start()
+dispatcher.make(request).success({ [weak self] response in
+    let post = try response.decodeMapDecodable(Post.self)
+
+    // do something with string.
+    print(post)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
 ```
 
 For arrays:
 
 ```swift
-dispatcher?.send(request).deserializeMapDecodableArray().success({ [weak self] response in
-    let decodable = response.data
-}).failure({ [weak self] response in
-    // This method is triggered when a response comes back but is unexpected.
-}).error({ [weak self] error in
-    // Triggers whenever an error is thrown, serialization failed or the request could not be created for whatever reason.
-}).start()
+dispatcher.make(request).success({ [weak self] response in
+    let posts = try response.decodeMapDecodable([Post].self)
+
+    // do something with string.
+    print(posts)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
 ```
 
 ## Promises
-Under the hood, NetworkKit uses a simple strongly typed implementation of a Promise.  This allows you to be as flexible as you want. We promise to give you better documentation on these promises soon :)
-
-Here is an example of more advanced usage of promises from one of the tests:
+Under the hood, NetworkKit uses a simple strongly typed implementation of a Promise.  This allows you to be as flexible as you want.
+Here is an example of more advanced usage of promises:
 
 ```swift
-Promise<MockCodable, MockDecodable>(action: { promise in
-    try dispatcher.setMockData(codable)
-    let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
+Promise<[Post], ServerError>(action: { promise in
+    // `fullfill` calls the succeed and fail methods. The promise that is fullfilling another promise must be transformed first using `then` and `thenFailure` so that it is of the same type.
+    // You may also succeed or fail the promise manually.
+    // `fulfill `calls `start` so there is no need to call it.
 
-    // Convert the request promise so that it can fullfill this promise.
-    requestPromise.then({ response -> MockCodable in
-        // Converts the promise success object to `MapCodable`
-        return response.data
-    }).thenFailure({ response -> MockDecodable in
-        // Converts the promise failure object to `MapCodable`
-        return response.data
+    dispatcher.make(request).then({ response in
+        // `then` callback is triggered only when a successful response comes back.
+        return try response.decode([Post].self)
+    }).thenFailure({ response in
+        // `thenFailure` callback is only triggered when an unsusccessful response comes back.
+        return try response.decode(ServerError.self)
     }).fullfill(promise)
-}).success({ response in
-    XCTAssertEqual(response, codable)
-    successExpectation.fulfill()
-}).failure({ mockDecodable in
-    XCTFail("Should not trigger the failure")
+}).success({ posts in
+    // Then
+    print(posts)
+}).failure({ serverError in
+    print(serverError)
 }).error({ error in
-    XCTFail("Should not trigger the error")
+    print(error)
 }).completion({
-    completionExpectation.fulfill()
+    // Perform operation on completion
 }).start()
 ```
 
 This promise utilizes all of the callbaks and features.
 
 ### `success` callback
-The success callback when the request is successful and all chained promises (such as when performing deserialization) are successful.  You get at the end of the day exactly what your promise had promised you.
+The success callback when the request is successful and all chained promises (such as when performing decoding) are successful.  You get at the end of the day exactly what your promise had promised you.
 
 ### `failure` callback
 The failure callback is triggered when the there is a response but it is not valid. In a nutshell it gets triggered for all non-2xx responses such as a 401, 403, 404 or 500 error. This callback will give you the http response, status code and a ResponseError.
@@ -278,8 +304,6 @@ try dispatcher.setMockData(codable)
 /// The url specified is not actually called.
 dispatcher.make(request).send()
 ```
-
-
 
 ## Dependencies
 

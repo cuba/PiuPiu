@@ -38,8 +38,8 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.make(request).deserialize(to: T.self).success({ response in
-            successHandler(response.data, response.httpResponse.allHeaderFields)
+        dispatcher.make(request).success({ response in
+            successHandler(try response.decodeMapDecodable(T.self), response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in
@@ -58,8 +58,8 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func send<T: MapDecodable>(_ request: Request, successHandler: @escaping ([T], [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.make(request).deserialize(to: [T].self).success({ response in
-            successHandler(response.data, response.httpResponse.allHeaderFields)
+        dispatcher.make(request).success({ response in
+            successHandler(try response.decodeMapDecodable([T].self), response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in
@@ -78,8 +78,8 @@ open class NetworkSerializer {
      - parameter completionHandler: The callback that will be triggered after either successHandler or errorHandler is triggered
      */
     open func fetchDecodable<T: Decodable>(_ request: Request, successHandler: @escaping (T, [AnyHashable: Any]) -> Void, errorHandler: @escaping ErrorHandler, completionHandler: @escaping CompletionHandler) {
-        dispatcher.make(request).deserialize(to: T.self).success({ response in
-            successHandler(response.data, response.httpResponse.allHeaderFields)
+        dispatcher.make(request).success({ response in
+            successHandler(try response.decode(T.self), response.httpResponse.allHeaderFields)
         }).failure({ response in
             errorHandler(response.error)
         }).error({ error in

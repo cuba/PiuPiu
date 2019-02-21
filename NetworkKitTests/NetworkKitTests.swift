@@ -132,6 +132,8 @@ class NetworkKitTests: XCTestCase {
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
         let request = JSONRequest(method: .get, path: "")
         let responseObject = MockCodable()
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
         
         do {
             try dispatcher.setMockData(responseObject)
@@ -139,14 +141,14 @@ class NetworkKitTests: XCTestCase {
             XCTFail("Should not fail serialization")
         }
         
-        // When
-        let successExpectation = self.expectation(description: "Success response triggered")
-        let completionExpectation = self.expectation(description: "Completion triggered")
-        
-        dispatcher.make(request).deserialize(to: MockCodable.self).success({ response in
-            // Then
+        dispatcher.make(request).then({ response -> MockCodable in
             XCTAssertEqual(response.statusCode, StatusCode.ok)
-            XCTAssertEqual(response.data, responseObject)
+            
+            // When
+            return try response.decode(MockCodable.self)
+        }).success({ decodable in
+            // Then
+            XCTAssertEqual(decodable, responseObject)
             successExpectation.fulfill()
         }).failure({ response in
             XCTFail("Should not trigger the failure")
@@ -174,7 +176,10 @@ class NetworkKitTests: XCTestCase {
         let errorExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        dispatcher.make(request).deserialize(to: MockDecodable.self).success({ response in
+        dispatcher.make(request).then({ response in
+            // When
+            return try response.decode(MockDecodable.self)
+        }).success({ response in
             // Then
             XCTFail("Should not trigger the success")
         }).failure({ response in
@@ -237,18 +242,17 @@ class NetworkKitTests: XCTestCase {
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
         let request = JSONRequest(method: .get, path: "/posts")
         
-        // When
         Promise<MockCodable, MockDecodable>(action: { promise in
             try dispatcher.setMockData(codable)
             
-            let requestPromise = dispatcher.make(request).deserialize(to: MockCodable.self).deserializeError(to: MockDecodable.self)
-            
-            requestPromise.then({ response -> MockCodable in
-                return response.data
-            }).thenFailure({ response -> MockDecodable in
-                return response.data
+            // When
+            dispatcher.make(request).then({ response in
+                return try response.decode(MockCodable.self)
+            }).thenFailure({ response in
+                return try response.decode(MockDecodable.self)
             }).fullfill(promise)
         }).success({ response in
+            // Then
             XCTAssertEqual(response, codable)
             successExpectation.fulfill()
         }).failure({ mockDecodable in

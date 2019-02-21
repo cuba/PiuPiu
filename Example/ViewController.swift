@@ -64,8 +64,9 @@ class ViewController: UIViewController {
         
         dispatcher.make(from: {
             return JSONRequest(method: .get, path: self.pathTextField.text ?? "")
-        }).deserializeJSONString().success({ [weak self] response in
-            self?.textView.text = response.data
+        }).success({ [weak self] response in
+            let jsonString = try response.decodeString(encoding: .utf8)
+            self?.textView.text = jsonString
         }).failure({ [weak self] response in
             self?.textView.text = response.error.localizedDescription
         }).error({ [weak self] error in

@@ -9,9 +9,134 @@
 import Foundation
 import MapCodableKit
 
+public protocol Response {
+    associatedtype T
+    
+    var data: T { get }
+    var httpResponse: HTTPURLResponse { get }
+    var urlRequest: URLRequest { get }
+    var statusCode: StatusCode { get }
+}
+
+public extension Response where T == Data? {
+    
+    /// Attempt to unwrap the response data.
+    ///
+    /// - Returns: The unwrapped object
+    public func unwrapData() throws -> Data {
+        // Check if we have the data we need
+        guard let unwrappedData = data else {
+            throw SerializationError.unexpectedEmptyResponse
+        }
+        
+        return unwrappedData
+    }
+    
+    /// Attempt to deserialize the response data into a JSON string.
+    ///
+    /// - Returns: The decoded object
+    public func decodeString(encoding: String.Encoding = .utf8) throws -> String {
+        let data = try unwrapData()
+        
+        // Attempt to deserialize the object.
+        guard let string = String(data: data, encoding: encoding) else {
+            throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+        
+        return string
+    }
+    
+    /// Attempt to deserialize the response data into a MapDecodable object.
+    ///
+    /// - Returns: The decoded object
+    public func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
+        let data = try self.unwrapData()
+        
+        do {
+            // Attempt to deserialize the object.
+            return try D(jsonData: data)
+        } catch {
+            // Wrap this error so that we're controlling the error type and return a safe message to the user.
+            throw SerializationError.failedToDecodeResponseData(cause: error)
+        }
+    }
+    
+    /// Attempt to decode the response data into a MapDecodable array.
+    ///
+    /// - Returns: The decoded array
+    public func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
+        let data = try self.unwrapData()
+        
+        do {
+            // Attempt to deserialize the object.
+            return try D.parseArray(jsonData: data)
+        } catch {
+            // Wrap this error so that we're controlling the error type and return a safe message to the user.
+            throw SerializationError.failedToDecodeResponseData(cause: error)
+        }
+    }
+    
+    /// Attempt to Decode the response data into a Decodable object.
+    ///
+    /// - Returns: The decoded object
+    public func decode<D: Decodable>(_ type: D.Type) throws  -> D {
+        let data = try self.unwrapData()
+        
+        do {
+            // Attempt to deserialize the object.
+            return try JSONDecoder().decode(D.self, from: data)
+        } catch {
+            // Wrap this error so that we're controlling the error type and return a safe message to the user.
+            throw SerializationError.failedToDecodeResponseData(cause: error)
+        }
+    }
+}
+
 // Response types
-public typealias SuccessResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode)
-public typealias ErrorResponse<T> = (data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError)
+public struct SuccessResponse<T>: Response {
+    public let data: T
+    public let httpResponse: HTTPURLResponse
+    public let urlRequest: URLRequest
+    public let statusCode: StatusCode
+    
+    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode) {
+        self.data = data
+        self.httpResponse = httpResponse
+        self.urlRequest = urlRequest
+        self.statusCode = statusCode
+    }
+    
+    public init<U: Response>(data: T, response: U) {
+        self.data = data
+        self.httpResponse = response.httpResponse
+        self.urlRequest = response.urlRequest
+        self.statusCode = response.statusCode
+    }
+}
+
+public struct ErrorResponse<T>: Response {
+    public let data: T
+    public let httpResponse: HTTPURLResponse
+    public let urlRequest: URLRequest
+    public let statusCode: StatusCode
+    public let error: ResponseError
+    
+    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError) {
+        self.data = data
+        self.httpResponse = httpResponse
+        self.urlRequest = urlRequest
+        self.statusCode = statusCode
+        self.error = error
+    }
+    
+    init<U: Response>(data: T, error: ResponseError, response: U) {
+        self.data = data
+        self.error = error
+        self.httpResponse = response.httpResponse
+        self.urlRequest = response.urlRequest
+        self.statusCode = response.statusCode
+    }
+}
 
 public protocol Dispatcher {
     func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
@@ -59,11 +184,13 @@ open class NetworkDispatcher: Dispatcher {
                 // Get the status code
                 if let responseError = statusCode.makeError(cause: error) {
                     DispatchQueue.main.async {
-                        promise.fail(with: (data, response, urlRequest, statusCode, responseError) )
+                        let errorResponse = ErrorResponse(data: data, httpResponse: response, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
+                        promise.fail(with: errorResponse)
                     }
                 } else {
                     DispatchQueue.main.async {
-                        promise.succeed(with: (data, response, urlRequest, statusCode))
+                        let successResponse = SuccessResponse(data: data, httpResponse: response, urlRequest: urlRequest, statusCode: statusCode)
+                        promise.succeed(with: successResponse)
                     }
                 }
             }
@@ -123,9 +250,11 @@ open class MockDispatcher: Dispatcher, ServerProvider {
             let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
             
             if let mockError = self.mockError {
-                promise.fail(with: (data, httpResponse, urlRequest, statusCode, mockError))
+                let errorResponse = ErrorResponse(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: mockError)
+                promise.fail(with: errorResponse)
             } else {
-                promise.succeed(with: (data, httpResponse, urlRequest, statusCode))
+                let successResponse = SuccessResponse(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode)
+                promise.succeed(with: successResponse)
             }
         }
     }
