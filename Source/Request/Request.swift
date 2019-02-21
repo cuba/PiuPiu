@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 
 public protocol Request {
     var method: HTTPMethod { get }
@@ -15,5 +14,4 @@ public protocol Request {
     var queryItems: [URLQueryItem] { get }
     var headers: [String: String] { get }
     var httpBody: Data? { get }
-    var parameterEncoding: ParameterEncoding { get }
 }

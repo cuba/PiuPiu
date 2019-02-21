@@ -7,12 +7,9 @@
 //
 
 import Foundation
-import Alamofire
 import MapCodableKit
 
 public struct JSONRequest: Request {
-    public let parameterEncoding: ParameterEncoding = JSONEncoding.default
-    
     public var method: HTTPMethod
     public var path:   String
     public var queryItems: [URLQueryItem]
