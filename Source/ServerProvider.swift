@@ -27,7 +27,7 @@ public extension ServerProvider {
         urlComponents?.queryItems = request.queryItems
         urlComponents?.path = request.path
         
-        if let url = try urlComponents?.asURL() {
+        if let url = urlComponents?.url {
             return url
         } else {
             throw URLError(.badURL)
