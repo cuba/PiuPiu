@@ -7,8 +7,8 @@ NetworkKit
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Serialization](#serialization)
-- [Deserializaiton](#deserialization)
+- [Encoding](#encoding)
+- [Decoding](#decoding)
 - [Promises](#promises)
 - [MockDispatcher](#mock-dispatcher)
 - [Credits](#credits)
@@ -96,9 +96,7 @@ dispatcher.make(request).success({ response in
 }).send()
 ```
 
-## Requests
-
-## Encoding JSON requests
+## Encoding
 NetworkKit has convenience methods to encode objects into JSON using the `JSONRequest` object. `JSONRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types including:
 
 ### `Data` 
