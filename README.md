@@ -116,7 +116,7 @@ var request = JSONRequest(method: .post, path: "/users")
 request.setHTTPBody(string: jsonString)
 ```
 
-### JSON Object
+### Encode JSON Object
 
 ```
 let jsonObject: [String: Any?] = [
@@ -128,14 +128,21 @@ var request = JSONRequest(method: .post, path: "/users")
 try request.setHTTPBody(jsonObject: jsonObject)
 ```
 
-### Encodable
+### Encode JSON `String`
+
+```
+var request = JSONRequest(method: .post, path: "/users")
+request.setHTTPBody(string: jsonString, encoding: .utf8)
+```
+
+### Encode `Encodable`
 
 ```
 var request = JSONRequest(method: .post, path: "/posts")
 try request.setHTTPBody(encodable: myCodable)
 ```
 
-### MapEncodable
+### Encode `MapEncodable`
 MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 ```
@@ -161,13 +168,13 @@ dispatcher.make(from: {
 }).send()
 ```
 
-### Non-JSON Requests
+### Sending Non-JSON Requests
 You may create a custom request object by implementing the `Request` protocol.
 
 ## Decoding
 NetworkKit can quickly decode any number of object types, including:
 
-### `Data`
+### Unwrapping `Data`
 
 ```swift
 dispatcher?.make(request).success({ response in
@@ -180,7 +187,7 @@ dispatcher?.make(request).success({ response in
 }).send()
 ```
 
-###  `String`
+### Decode `String`
 
 ```swift
 dispatcher.make(request).success({ response in
@@ -193,7 +200,7 @@ dispatcher.make(request).success({ response in
 }).send()
 ```
 
-### `Decodable`
+### Decode `Decodable`
 
 ```swift
 dispatcher.make(request).success({ response in
@@ -206,7 +213,7 @@ dispatcher.make(request).success({ response in
 }).send()
 ```
 
-### `MapDecodable`
+### Decode `MapDecodable`
 MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 For objects:

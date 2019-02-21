@@ -18,9 +18,14 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         var body: String
     }
     
-    
     struct ServerError: Codable {
+    }
+    
+    struct User: Codable {
+        // TODO: Make this MapCodable to test properly.
         
+        var id: Int
+        var name: String
     }
     
     var baseURL: URL {
@@ -59,7 +64,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         request.httpBody = myData
     }
     
-    func testAddJsonStringToRequest() {
+    func testEncodeJsonString() {
         // Given
         let jsonString = """
             {
@@ -72,7 +77,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         request.setHTTPBody(string: jsonString, encoding: .utf8)
     }
     
-    func addJsonObjectToRequest() {
+    func testEncodeJsonObject() {
         do {
             let jsonObject: [String: Any?] = [
                 "id": "123",
@@ -86,7 +91,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }
     }
     
-    func addEncodableToRequest() {
+    func testEncodeEncodable() {
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         do {
@@ -97,11 +102,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }
     }
     
-    func addMapEncodableToRequest() {
+    func testEncodeMapEncodable() {
         // TODO
     }
     
-    func wrapEncodingInAPromise() {
+    func testWrapEncodingInAPromise() {
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
@@ -116,7 +121,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func unwrappingData() {
+    func testUnwrappingData() {
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts")
@@ -132,7 +137,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func decodingString() {
+    func testDecodingString() {
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts")
@@ -148,46 +153,30 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func decodingCodable() {
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let posts = try response.decode([Post].self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).send()
-    }
-    
-    func decodingMapCodableArray() {
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let posts = try response.decode([Post].self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).send()
-    }
-    
-    func decodingMapCodable() {
+    func testDecodingDecodable() {
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts/1")
         
         // Example
         dispatcher.make(request).success({ response in
-            let post = try response.decode(Post.self)
+            let posts = try response.decode(Post.self)
+            
+            // do something with string.
+            print(posts)
+        }).error({ error in
+            // Triggered when decoding fails.
+        }).send()
+    }
+    
+    func testDecodingMapDecodable() {
+        // Given
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/users/1")
+        
+        // Example
+        dispatcher.make(request).success({ response in
+            let post = try response.decode(User.self)
             
             // do something with string.
             print(post)
@@ -196,26 +185,42 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func advancedPromise() {
+    func testDecodingMapDecodableArray() {
+        // Given
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/users")
+        
+        // Example
+        dispatcher.make(request).success({ response in
+            let posts = try response.decode([User].self)
+            
+            // do something with string.
+            print(posts)
+        }).error({ error in
+            // Triggered when decoding fails.
+        }).send()
+    }
+    
+    func testAdvancedPromise() {
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts/1")
         
-        Promise<[Post], ServerError>(action: { promise in
+        Promise<Post, ServerError>(action: { promise in
             // `fullfill` calls the succeed and fail methods. The promise that is fullfilling another promise must be transformed first using `then` and `thenFailure` so that it is of the same type.
             // You may also succeed or fail the promise manually.
             // `fulfill `calls `start` so there is no need to call it.
             
             dispatcher.make(request).then({ response in
                 // `then` callback is triggered only when a successful response comes back.
-                return try response.decode([Post].self)
+                return try response.decode(Post.self)
             }).thenFailure({ response in
                 // `thenFailure` callback is triggered only when an unsusccessful response comes back.
                 return try response.decode(ServerError.self)
             }).fullfill(promise)
-        }).success({ posts in
+        }).success({ post in
             // Then
-            print(posts)
+            print(post)
         }).failure({ serverError in
             print(serverError)
         }).error({ error in
