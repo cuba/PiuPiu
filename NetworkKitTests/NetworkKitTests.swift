@@ -229,7 +229,7 @@ class NetworkKitTests: XCTestCase {
         """
         
         // Then
-        request.setHTTPBody(jsonString: jsonString)
+        request.setHTTPBody(string: jsonString)
         XCTAssertNotNil(request.httpBody)
     }
     

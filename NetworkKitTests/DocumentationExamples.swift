@@ -69,7 +69,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Example
         var request = JSONRequest(method: .post, path: "/users")
-        request.setHTTPBody(jsonString: jsonString, encoding: .utf8)
+        request.setHTTPBody(string: jsonString, encoding: .utf8)
     }
     
     func addJsonObjectToRequest() {
@@ -138,7 +138,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let request = JSONRequest(method: .get, path: "/posts")
         
         // Example
-        dispatcher.make(request).success({ [weak self] response in
+        dispatcher.make(request).success({ response in
             let string = try response.decodeString(encoding: .utf8)
             
             // do something with string.
@@ -154,7 +154,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let request = JSONRequest(method: .get, path: "/posts")
         
         // Example
-        dispatcher.make(request).success({ [weak self] response in
+        dispatcher.make(request).success({ response in
             let posts = try response.decode([Post].self)
             
             // do something with string.
@@ -170,7 +170,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let request = JSONRequest(method: .get, path: "/posts")
         
         // Example
-        dispatcher.make(request).success({ [weak self] response in
+        dispatcher.make(request).success({ response in
             let posts = try response.decode([Post].self)
             
             // do something with string.
@@ -186,7 +186,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let request = JSONRequest(method: .get, path: "/posts/1")
         
         // Example
-        dispatcher.make(request).success({ [weak self] response in
+        dispatcher.make(request).success({ response in
             let post = try response.decode(Post.self)
             
             // do something with string.

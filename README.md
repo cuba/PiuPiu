@@ -98,9 +98,9 @@ dispatcher.make(request).success({ response in
 ```
 
 ## Encoding
-NetworkKit has convenience methods to encode objects into JSON using the `JSONRequest` object. `JSONRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types including:
+NetworkKit has convenience methods to encode objects into JSON using the `JSONRequest` object. `JSONRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types into JSON, including:
 
-### `Data` 
+### Data
 You can manually create your data object if you wish.
 
 ```swift
@@ -108,11 +108,12 @@ var request = JSONRequest(method: .post, path: "/users")
 request.httpBody = myData
 ```
 
-### `String`
+### String
+Since this is a JSON Request, this string should be encoded as JSON.
 
 ```
 var request = JSONRequest(method: .post, path: "/users")
-request.setHTTPBody(jsonString: jsonString)
+request.setHTTPBody(string: jsonString)
 ```
 
 ### JSON Object
@@ -127,14 +128,14 @@ var request = JSONRequest(method: .post, path: "/users")
 try request.setHTTPBody(jsonObject: jsonObject)
 ```
 
-### `Encodable`
+### Encodable
 
 ```
 var request = JSONRequest(method: .post, path: "/posts")
 try request.setHTTPBody(encodable: myCodable)
 ```
 
-### `MapEncodable`
+### MapEncodable
 MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 ```
@@ -160,13 +161,16 @@ dispatcher.make(from: {
 }).send()
 ```
 
+### Non-JSON Requests
+You may create a custom request object by implementing the `Request` protocol.
+
 ## Decoding
 NetworkKit can quickly decode any number of object types, including:
 
 ### `Data`
 
 ```swift
-dispatcher?.make(request).success({ [weak self] response in
+dispatcher?.make(request).success({ response in
     let data = try response.unwrapData()
 
     // do something with data.
@@ -179,7 +183,7 @@ dispatcher?.make(request).success({ [weak self] response in
 ###  `String`
 
 ```swift
-dispatcher.make(request).success({ [weak self] response in
+dispatcher.make(request).success({ response in
     let string = try response.decodeString(encoding: .utf8)
 
     // do something with string.
@@ -192,7 +196,7 @@ dispatcher.make(request).success({ [weak self] response in
 ### `Decodable`
 
 ```swift
-dispatcher.make(request).success({ [weak self] response in
+dispatcher.make(request).success({ response in
     let posts = try response.decode([Post].self)
 
     // do something with string.
@@ -208,7 +212,7 @@ MapCodableKit is a convenience frameworks that handles JSON serialization and de
 For objects:
 
 ```swift
-dispatcher.make(request).success({ [weak self] response in
+dispatcher.make(request).success({ response in
     let post = try response.decodeMapDecodable(Post.self)
 
     // do something with string.
@@ -221,7 +225,7 @@ dispatcher.make(request).success({ [weak self] response in
 For arrays:
 
 ```swift
-dispatcher.make(request).success({ [weak self] response in
+dispatcher.make(request).success({ response in
     let posts = try response.decodeMapDecodable([Post].self)
 
     // do something with string.
@@ -306,7 +310,7 @@ dispatcher.make(request).send()
 
 ## Dependencies
 
-NetworkKit uses [MapCodableKit](https://github.com/cuba/MapCodableKit) for serialization.
+NetworkKit includes [MapCodableKit](https://github.com/cuba/MapCodableKit). This is a light-weight library.
 
 ## Credits
 

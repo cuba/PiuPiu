@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+/// The HTTP Method to use when sending the request.
 public enum HTTPMethod: String {
     case options = "OPTIONS"
     case get     = "GET"
