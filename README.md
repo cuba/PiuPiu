@@ -10,7 +10,7 @@ NetworkKit
 - [Encoding](#encoding)
 - [Decoding](#decoding)
 - [Promises](#promises)
-- [MockDispatcher](#mock-dispatcher)
+- [MockDispatcher](#mockdispatcher)
 - [Credits](#credits)
 - [License](#license)
 
