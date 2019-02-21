@@ -11,6 +11,7 @@ NetworkKit
 - [Decoding](#decoding)
 - [Promises](#promises)
 - [MockDispatcher](#mockdispatcher)
+- [Dependencies](#dependencies)
 - [Credits](#credits)
 - [License](#license)
 
