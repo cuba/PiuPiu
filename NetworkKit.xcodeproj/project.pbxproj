@@ -14,6 +14,8 @@
 		8CC508A91ED3741300C19524 /* Bundle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508A71ED3741300C19524 /* Bundle+Extensions.swift */; };
 		8CC508AA1ED3741300C19524 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508A81ED3741300C19524 /* String+Extensions.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
+		DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
+		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
 		DA3D809D221784AE00D49CD0 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* Promise.swift */; };
 		DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
@@ -39,6 +41,8 @@
 		8CC508A71ED3741300C19524 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
 		8CC508A81ED3741300C19524 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		8CC508AE1ED3745A00C19524 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
+		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Extensions.swift"; sourceTree = "<group>"; };
 		DA3D80A32218AE7E00D49CD0 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
@@ -131,6 +135,8 @@
 				8CC508A81ED3741300C19524 /* String+Extensions.swift */,
 				DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */,
 				DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */,
+				DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */,
+				DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -264,6 +270,7 @@
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,
 				8CC508021ED35AA900C19524 /* NetworkSerializer.swift in Sources */,
 				DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */,
+				DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */,
 				DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */,
 				DAE6F7401FEF1D690060AA80 /* BaseNetworkError.swift in Sources */,
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
@@ -271,6 +278,7 @@
 				DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */,
 				8CC508A91ED3741300C19524 /* Bundle+Extensions.swift in Sources */,
 				DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */,
+				DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */,
 				DA3E506B21B458CB001450EC /* Request.swift in Sources */,
 			);

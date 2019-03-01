@@ -54,8 +54,11 @@ public struct JSONRequest: Request {
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    mutating public func setHTTPBody<T: Encodable>(encodable: T) throws {
-        self.httpBody = try JSONEncoder().encode(encodable)
+    mutating public func setHTTPBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        
+        self.httpBody = try encoder.encode(encodable)
     }
     
     /// Add body to the request from a string.
@@ -96,3 +99,4 @@ public struct JSONRequest: Request {
         try setHTTPBody(encodable: encodable)
     }
 }
+

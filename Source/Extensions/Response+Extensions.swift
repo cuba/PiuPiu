@@ -70,12 +70,14 @@ public extension Response where T == Data? {
     /// Attempt to Decode the response data into a Decodable object.
     ///
     /// - Returns: The decoded object
-    public func decode<D: Decodable>(_ type: D.Type) throws  -> D {
+    public func decode<D: Decodable>(_ type: D.Type, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .rfc3339) throws  -> D {
         let data = try self.unwrapData()
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = dateDecodingStrategy
         
         do {
             // Attempt to deserialize the object.
-            return try JSONDecoder().decode(D.self, from: data)
+            return try decoder.decode(D.self, from: data)
         } catch {
             // Wrap this error so that we're controlling the error type and return a safe message to the user.
             throw SerializationError.failedToDecodeResponseData(cause: error)
