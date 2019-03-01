@@ -80,7 +80,7 @@ dispatcher.make(request).success({ response in
     let posts = try response.decode([Post].self)
     print(posts)
 }).failure({ response in
-    // This method is triggered when a non 2xx response comes in.
+    // This method is triggered whenever we get an error object when performing a data task.
     // All errors in the response object are ResponseError
     
     if let message = try? response.decodeString(encoding: .utf8) {
