@@ -114,6 +114,17 @@ public enum StatusCode: Equatable {
         }
     }
     
+    var type: StatusCodeType {
+        switch rawValue {
+        case 100..<200: return .informational
+        case 200..<300: return .success
+        case 300..<400: return .redirect
+        case 400..<500: return .clientError
+        case 500..<600: return .serverError
+        default       : return .invalid
+        }
+    }
+    
     public init(rawValue: Int) {
         if let statusCode = StatusCode.predefined.first(where: { $0.rawValue == rawValue }) {
             self = statusCode
@@ -131,8 +142,18 @@ public enum StatusCode: Equatable {
         case .conflict:             return ResponseError.conflict(cause: cause)
         case .unprocessableEntity:  return ResponseError.unprocessableEntity(cause: cause)
         case .internalServerError:  return ResponseError.internalServerError(cause: cause)
+        case .serviceUnavailable:   return ResponseError.serviceUnavailable(cause: cause)
         default:
-            if let error = cause {
+            if !type.isSuccessful {
+                switch type {
+                case .clientError:
+                    return ResponseError.otherClientError(cause: cause)
+                case .serverError:
+                    return ResponseError.otherServerError(cause: cause)
+                default:
+                    return ResponseError.unknown(cause: cause)
+                }
+            } else if let error = cause {
                 return ResponseError.unknown(cause: error)
             } else {
                 return nil
@@ -142,5 +163,25 @@ public enum StatusCode: Equatable {
     
     public static func == (lhs: StatusCode, rhs: StatusCode) -> Bool {
         return lhs.rawValue == rhs.rawValue
+    }
+}
+
+public enum StatusCodeType: Equatable {
+    case informational
+    case success
+    case redirect
+    case clientError
+    case serverError
+    case invalid
+    
+    public var isSuccessful: Bool {
+        switch self {
+        case .informational : return true
+        case .success       : return true
+        case .redirect      : return true
+        case .clientError   : return false
+        case .serverError   : return false
+        case .invalid       : return false
+        }
     }
 }
