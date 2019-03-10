@@ -303,7 +303,7 @@ The promise may have 3 types of strong references:
 3. The developer's own strong reference to the promise.
 
 ### Strong callbacks
-When only  `1` and `2` applies to you, a memory leak is never created. But you need to be careful. Since the reference `1` holds on to the promise and the promise holds on to `self` (via the callback), `self` will not be dealocated until AFTER the response is returned and the callbacks are triggered.
+When only  `1` and `2` applies to you, a memory leak is never created.  The following code is valid:
 
 ```swift
 dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
@@ -316,35 +316,25 @@ dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
 }).send()
 ```
 
-**DO NOT DO THIS**:
-The following is an example of a circular reference:
-
-```swift
-self.strongPromise = dispatcher.make(request).success({ response in
-    // Both the promise and self are held on by each other.
-    // `self` will never be dealocated!
-    self.show(response.data)
-}).send()
-```
-
-**DO NOT DO THIS**:
+But you need to be careful. Since the reference `1` holds on to the promise and the promise holds on to `self` (via the callback), `self` will not be dealocated until AFTER the response is returned and the callbacks are triggered.
 
 You will have crashes if you are making calls to anything that is forced unwrapped (i.e. usign a `!`).  We suggest you make your callbacks weak or avoid force unwrapping anything unless absolutely sure it can succeed. Always avoid calling anything that uses `!` by always unwrapping it first.
 
+**DO NOT DO THIS**:
+
 ```swift
-self.strongPromise = dispatcher.make(request).success({ response in
+dispatcher.make(request).success({ response in
     // We are foce unwrapping a text field. 
     let textField = self.textField!
-    
+
     // If we dealocated textField by the time the 
     // response comes back, a crash will occur
     textField.text = "Success"
 }).send()
 ```
 
-### Storing your promise
-You may be holding a reference to your promise. This is fine as long as you make either the promise or callbacks that reference `self` weak. 
-This is an example of making the callbacks weak.
+### Strong reference to a Promise
+You may be holding a reference to your promise. This is fine as long as you make the callbacks weak in order to avoid circular reference. 
 
 ```swift
 self.postPromise = dispatcher.make(request).then({ response in
@@ -365,7 +355,21 @@ self.postPromise = dispatcher.make(request).then({ response in
 self.postPromise?.send()
 ```
 
-You may chose to make the promise weak (or both the promise and the callbacks weak), This is fine, as long as you do it after calling `send` or `start` as your object will be dealocated before you get a chance to do this.
+If you have a strong reference to your promise and also have a strong reference in your callback, you have created a circular reference.
+
+**DO NOT DO THIS**
+
+```swift
+self.strongPromise = dispatcher.make(request).success({ response in
+// Both the promise and self are held on by each other.
+// `self` will never be dealocated!
+self.show(response.data)
+}).send()
+```
+
+### Weak reference to a Promise
+
+You may chose to have a weak reference to your promise. This is fine, as long as you do it after calling `send` or `start` as your object will be dealocated before you get a chance to do this.
 
 ```swift
 self.weakPromise = dispatcher.make(request).completion({
@@ -379,8 +383,9 @@ self.weakPromise = dispatcher.make(request).completion({
 // but the callbacks will always be triggered. 
 ```
 
-**DO NOT DO THIS**:
 The following is an example of where we our request will never happen because we lose the referrence to the promise before `send` is called:
+
+**DO NOT DO THIS**:
 
 ```swift
 self.weakPromise = dispatcher.make(request).completion({
