@@ -12,7 +12,7 @@ import XCTest
 class DocumentationExamples: XCTestCase, ServerProvider {
     
     struct Post: Codable {
-        let id: Int
+        let id: Int?
         let userId: Int
         let title: String
         let body: String
@@ -31,6 +31,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     var baseURL: URL {
         return URL(string: "https://jsonplaceholder.typicode.com")!
     }
+    
+    private var strongPromise: ResponsePromise<[Post], Data?>?
+    private weak var weakPromise: ResponsePromise<Data?, Data?>?
 
     func testPostExample() {
         let expectation = self.expectation(description: "Success response triggered")
@@ -244,30 +247,182 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testTransform() {
-        let expectation = self.expectation(description: "Success response triggered")
+    func testFullExample() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
         
-        // Given
-        let request = self.fetchPost(id: "1")
-        
-        // Then
-        request.success({ post in
-            // When everything succeeds including the network call and deserialization
-            print(post)
+        dispatcher.make(request).then({ response -> Post in
+            // The `then` callback transforms a successful response
+            return try response.decode(Post.self)
+        }).thenFailure({ response -> ServerErrorDetails in
+            // The `thenFailure` callback transforms a failed response
+            return try response.decode(ServerErrorDetails.self)
+        }).success({ post in
+            // Handles any success responses.
+            // In this case the object returned in the `then` method.
         }).failure({ serverError in
-            // Triggered when network call fails
-            // and the deserialization of the error object succeeds.
-            print(serverError)
+            // Handles any graceful errors.
+            // In this case the object returned in the `thenFailure` method.
         }).error({ error in
-            // Triggered when internal error occurs.
-            // Includes errors caused durin the deserialization
-            // of the success response or the error response
-            print(error)
+            // Handles any ungraceful errors.
+            // This includes deserialization errors, unwraping failures, and anything else that is thrown
+            // in a `make`, `success`, `error`, `then` or `thenFailure` block in any chained promise.
         }).completion({
+            // The completion callback guaranteed to be called once
+            // for every time the `send` or `start` method is triggered on the callback.
+        }).send()
+    }
+    
+    func testMakeCallback() {
+        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        
+        dispatcher.make(from: {
+            var request = JSONRequest(method: .post, path: "/post")
+            try request.setHTTPBody(newPost)
+            return request
+        }).send()
+        
+        
+        let request = JSONRequest(method: .get, path: "/posts")
+        dispatcher.make(request).send()
+    }
+    
+    func testSuccessCallback() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        dispatcher.make(request).success({ response in
+            // When everything succeeds including the network call and deserialization
+        }).send()
+    }
+
+    func testThenCallback() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        dispatcher.make(request).then({ response -> SuccessResponse<Post> in
+            // The `then` callback transforms a successful response
+            // You can return any object here and this will be reflected on the success callback.
+            let post = try response.decode(Post.self)
+            return SuccessResponse<Post>(data: post, response: response)
+        }).success({ post in
+            // Handles any success responses.
+            // In this case the object returned in the `then` method.
+        }).send()
+    }
+    
+    func testThenFailureCallback() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        dispatcher.make(request).thenFailure({ response -> ErrorResponse<ServerErrorDetails?> in
+            // The `thenFailure` callback transforms a failed response.
+            // You can return any object here and this will be reflected on the failure callback.
+            
+            // Note: You should make this non-failing since server errors can be unpredictable,
+            // especially in the case of 5xx errors.
+            let post = try? response.decode(ServerErrorDetails.self)
+            return ErrorResponse<ServerErrorDetails?>(data: post, response: response)
+        }).failure({ response in
+            // Handles any failed responses.
+            // In this case the object returned in the `thenFailure` method.
+        }).send()
+    }
+    
+    func testWeakCallbacks() {
+        let expectation = self.expectation(description: "Success response triggered")
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
+            // [weak self] not needed as `self` is not called
+            let posts = try response.decode([Post].self)
+            return SuccessResponse<[Post]>(data: posts, response: response)
+        }).success({ [weak self] response in
+            // [weak self] needed as `self` is called
+            self?.show(response.data)
+        }).completion({ [weak self] in
+            // [weak self] needed as `self` is called
+            // You can use an optional self directly.
             expectation.fulfill()
         }).send()
         
+        
         waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testWeakCallbacksStrongReference() {
+        let expectation = self.expectation(description: "Success response triggered")
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        self.strongPromise = dispatcher.make(request).then({ response in
+            // [weak self] not needed as `self` is not called
+            let posts = try response.decode([Post].self)
+            return SuccessResponse<[Post]>(data: posts, response: response)
+        }).success({ [weak self] response in
+            // [weak self] needed as `self` is called
+            self?.show(response.data)
+        }).completion({ [weak self] in
+            // [weak self] needed as `self` is called
+            self?.strongPromise = nil
+            expectation.fulfill()
+        })
+        
+        // Perform other logic, add delay, do whatever you would do that forced you
+        // to store a reference to this promise in the first place
+        
+        self.strongPromise?.send()
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testWeakCallbacksWeakReferenceDealocated() {
+        let expectation = self.expectation(description: "Success response should not be triggered")
+        expectation.isInverted = true
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        self.weakPromise = dispatcher.make(request).completion({
+            // [weak self] needed as `self` is not called
+            expectation.fulfill()
+        })
+        
+        // Our object is already nil because we have not established a strong reference to it.
+        // The `send` method will do nothing. No callback will be triggered.
+        
+        XCTAssertNil(self.weakPromise)
+        self.weakPromise?.send()
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+    
+    func testWeakCallbacksWeakReference() {
+        let expectation = self.expectation(description: "Success response triggered")
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts")
+        
+        self.weakPromise = dispatcher.make(request).completion({
+            // Always triggered
+            expectation.fulfill()
+        }).send()
+        
+        XCTAssertNotNil(self.weakPromise)
+        
+        // This promise may still be nil at this point
+        // if the request is still pending and no errors
+        // are thrown during the request creation process.
+        waitForExpectations(timeout: 5, handler: nil)
+        XCTAssertNil(self.weakPromise)
+    }
+    
+    func testReturnedPromiseExample() {
+        fetchPost(id: 1).success({ response in
+            // Show success
+        }).failure({ response in
+            // Show error response
+        }).error({ error in
+            // Show error
+        }).send()
     }
     
     func testAdvancedPromise() {
@@ -292,13 +447,6 @@ class DocumentationExamples: XCTestCase, ServerProvider {
                 // `thenFailure` callback is triggered only when an unsusccessful response comes back.
                 return try response.decode(ServerErrorDetails.self)
             }).fullfill(promise)
-        }).success({ post in
-            // Then
-            print(post)
-        }).failure({ serverError in
-            print(serverError)
-        }).error({ error in
-            print(error)
         }).completion({
             // Perform operation on completion
             expectation.fulfill()
@@ -307,34 +455,14 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    
-    /// Make a API call to retrieve a post by its id.
-    /// Transform the response to return a Post or a ServerErrorDetails.
-    /// NOTE: `ServerErrorDetails` is a custom object that does not come with `NetworkKit`.
-    ///
-    /// - Parameter id: The id of the post.
-    /// - Returns: A promise that expects a Post succcess object or a ServerErrorDatails failure object.
-    private func fetchPost(id: String) -> Promise<Post, ServerErrorDetails> {
+    private func fetchPost(id: Int) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts/\(id)")
         
-        return dispatcher.make(request).then({ response in
-            // Return the transformed object
-            // In this case the transformed object will be a decoded post
-            // Note: a throwing failure will trigger the `error` callback.
-            // Any unhandled throws in a `make`, `success`, `failure`, `then`, or `thenFailure`
-            // block will trigger the `error` callback.
-            return try response.decode(Post.self)
-        }).thenFailure({ response in
-            // Return the transformed object
-            // In this case the transformed object will be a decoded ServerDetailsError object
-            // Note: a throwing failure will trigger the `error` callback.
-            // You may consider doing non-failing decoding here since
-            // server errors may be unpredictable and you can't guarantee a specific
-            // response object. You may also check the status code or the response before
-            // doing your decoding.
-            
-            return try response.decode(ServerErrorDetails.self)
-        })
+        return dispatcher.make(request)
+    }
+    
+    private func show(_ posts: [Post]) {
+        print(posts)
     }
 }

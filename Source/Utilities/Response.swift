@@ -39,7 +39,7 @@ public struct SuccessResponse<T>: Response {
         self.statusCode = statusCode
     }
     
-    init<U: Response>(data: T, response: U) {
+    public init<U: Response>(data: T, response: U) {
         self.data = data
         self.httpResponse = response.httpResponse
         self.urlRequest = response.urlRequest
@@ -71,9 +71,17 @@ public struct ErrorResponse<T>: Response {
         self.error = error
     }
     
-    init<U: Response>(data: T, error: ResponseError, response: U) {
+    public init<U: Response>(data: T, response: U, error: ResponseError) {
         self.data = data
         self.error = error
+        self.httpResponse = response.httpResponse
+        self.urlRequest = response.urlRequest
+        self.statusCode = response.statusCode
+    }
+    
+    public init<U>(data: T, response: ErrorResponse<U>) {
+        self.data = data
+        self.error = response.error
         self.httpResponse = response.httpResponse
         self.urlRequest = response.urlRequest
         self.statusCode = response.statusCode

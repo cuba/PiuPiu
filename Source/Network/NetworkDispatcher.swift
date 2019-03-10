@@ -9,6 +9,8 @@
 import Foundation
 import MapCodableKit
 
+public typealias ResponsePromise<T, E> = Promise<SuccessResponse<T>, ErrorResponse<E>>
+
 /// The object that will be making the API call.
 public protocol Dispatcher {
     
@@ -16,7 +18,7 @@ public protocol Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>
+    func make(_ request: Request) -> ResponsePromise<Data?, Data?>
 }
 
 public extension Dispatcher {
@@ -25,7 +27,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    public func make(from callback: @escaping () throws -> Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+    public func make(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.make(request)
@@ -50,7 +52,7 @@ open class NetworkDispatcher: Dispatcher {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
-    open func make(_ request: Request) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
+    open func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             guard let serverProvider = self.serverProvider else {
                 throw RequestError.missingServerProvider
