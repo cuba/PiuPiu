@@ -297,15 +297,13 @@ fetchPost(id: 1).success({ response in
 
 ### Memory Managment
 
-The promise may be held strongly in 3 different ways: 
-1. The system (only after `send` or `start` is called). This reference is temporary and will be dealocated once the system returns a response
-2. The callbacks (only if `self` is used in the callback).  Any callback that references `self` has a strong reference to the object unless `[weak self]` is explicitly specified.
-3. The developer's custom reference. You may chose to have a strong reference to the promise if you wish.
+The promise may have 3 types of strong references: 
+1. The system may have a strong reference to the promise after `send` or `start` is called. This reference is temporary and will be dealocated once the system returns a response. This will never create a circular reference as it is held on by a system class which you cannot reference directly.
+2. Any callback that references `self` has a strong reference to `self` unless `[weak self]` is explicitly specified.
+3. The developer's own strong reference to the promise.
 
 ### Strong callbacks
-Since references `1` and `2` will always be different objects that don't reference each other a memory leak is never created. But you need to be careful. Since the reference `1` holds on to the promise and the promise holds on to `self` (via the callback), `self` will not be dealocated until AFTER the response is returned and the callbacks are triggered.  
-
-This may be cause crashes if you are making calls to anything that is forced unwrapped (i.e. usign a `!`).  We suggest you make your callbacks weak or avoid force unwrapping anything unless absolutely sure it can succeed. Always avoid calling anything that uses `!` by always unwrapping it first.
+When only  `1` and `2` applies to you, a memory leak is never created. But you need to be careful. Since the reference `1` holds on to the promise and the promise holds on to `self` (via the callback), `self` will not be dealocated until AFTER the response is returned and the callbacks are triggered.
 
 ```swift
 dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
@@ -315,6 +313,32 @@ dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
 }).success({ [weak self] response in
     // [weak self] needed as `self` is called
     self?.show(response.data)
+}).send()
+```
+
+**DO NOT DO THIS**:
+The following is an example of a circular reference:
+
+```swift
+self.strongPromise = dispatcher.make(request).success({ response in
+    // Both the promise and self are held on by each other.
+    // `self` will never be dealocated!
+    self.show(response.data)
+}).send()
+```
+
+**DO NOT DO THIS**:
+
+You will have crashes if you are making calls to anything that is forced unwrapped (i.e. usign a `!`).  We suggest you make your callbacks weak or avoid force unwrapping anything unless absolutely sure it can succeed. Always avoid calling anything that uses `!` by always unwrapping it first.
+
+```swift
+self.strongPromise = dispatcher.make(request).success({ response in
+    // We are foce unwrapping a text field. 
+    let textField = self.textField!
+    
+    // If we dealocated textField by the time the 
+    // response comes back, a crash will occur
+    textField.text = "Success"
 }).send()
 ```
 
