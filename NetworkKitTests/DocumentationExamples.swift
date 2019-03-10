@@ -12,13 +12,13 @@ import XCTest
 class DocumentationExamples: XCTestCase, ServerProvider {
     
     struct Post: Codable {
-        var id: Int
-        var userId: Int
-        var title: String
-        var body: String
+        let id: Int
+        let userId: Int
+        let title: String
+        let body: String
     }
     
-    struct ServerError: Codable {
+    struct ServerErrorDetails: Codable {
     }
     
     struct User: Codable {
@@ -33,6 +33,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
 
     func testPostExample() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts")
         
@@ -53,7 +55,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             // These errors are often application related errors but can be caused
             // because of invalid server responses (example: when deserializing the response data).
             print(error)
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testAddDataToRequest() {
@@ -107,6 +113,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testWrapEncodingInAPromise() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
@@ -118,10 +126,16 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             return request
         }).error({ error in
             // Any error thrown while creating the request will trigger this callback.
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testUnwrappingData() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts")
@@ -134,10 +148,16 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(data)
         }).error({ error in
             // Triggered when unwrapData fails.
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingString() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts")
@@ -150,10 +170,16 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(string)
         }).error({ error in
             // Triggered when decoding fails.
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingDecodable() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts/1")
@@ -166,10 +192,16 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(posts)
         }).error({ error in
             // Triggered when decoding fails.
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingMapDecodable() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/users/1")
@@ -182,10 +214,16 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(post)
         }).error({ error in
             // Triggered when decoding fails.
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingMapDecodableArray() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/users")
@@ -198,16 +236,52 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(posts)
         }).error({ error in
             // Triggered when decoding fails.
+            print(error)
+        }).completion({
+            expectation.fulfill()
         }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testTransform() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
+        // Given
+        let request = self.fetchPost(id: "1")
+        
+        // Then
+        request.success({ post in
+            // When everything succeeds including the network call and deserialization
+            print(post)
+        }).failure({ serverError in
+            // Triggered when network call fails
+            // and the deserialization of the error object succeeds.
+            print(serverError)
+        }).error({ error in
+            // Triggered when internal error occurs.
+            // Includes errors caused durin the deserialization
+            // of the success response or the error response
+            print(error)
+        }).completion({
+            expectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testAdvancedPromise() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = JSONRequest(method: .get, path: "/posts/1")
         
-        Promise<Post, ServerError>(action: { promise in
-            // `fullfill` calls the succeed and fail methods. The promise that is fullfilling another promise must be transformed first using `then` and `thenFailure` so that it is of the same type.
+        Promise<Post, ServerErrorDetails>(action: { promise in
+            // `fullfill` calls the succeed and fail methods.
+            // The promise that is fullfilling another promise must be transformed
+            // first using `then` and `thenFailure` so that it is of the same type
+            // before the fullfill method can be called.
             // You may also succeed or fail the promise manually.
             // `fulfill `calls `start` so there is no need to call it.
             
@@ -216,7 +290,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
                 return try response.decode(Post.self)
             }).thenFailure({ response in
                 // `thenFailure` callback is triggered only when an unsusccessful response comes back.
-                return try response.decode(ServerError.self)
+                return try response.decode(ServerErrorDetails.self)
             }).fullfill(promise)
         }).success({ post in
             // Then
@@ -227,6 +301,40 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             print(error)
         }).completion({
             // Perform operation on completion
+            expectation.fulfill()
         }).start()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    
+    /// Make a API call to retrieve a post by its id.
+    /// Transform the response to return a Post or a ServerErrorDetails.
+    /// NOTE: `ServerErrorDetails` is a custom object that does not come with `NetworkKit`.
+    ///
+    /// - Parameter id: The id of the post.
+    /// - Returns: A promise that expects a Post succcess object or a ServerErrorDatails failure object.
+    private func fetchPost(id: String) -> Promise<Post, ServerErrorDetails> {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = JSONRequest(method: .get, path: "/posts/\(id)")
+        
+        return dispatcher.make(request).then({ response in
+            // Return the transformed object
+            // In this case the transformed object will be a decoded post
+            // Note: a throwing failure will trigger the `error` callback.
+            // Any unhandled throws in a `make`, `success`, `failure`, `then`, or `thenFailure`
+            // block will trigger the `error` callback.
+            return try response.decode(Post.self)
+        }).thenFailure({ response in
+            // Return the transformed object
+            // In this case the transformed object will be a decoded ServerDetailsError object
+            // Note: a throwing failure will trigger the `error` callback.
+            // You may consider doing non-failing decoding here since
+            // server errors may be unpredictable and you can't guarantee a specific
+            // response object. You may also check the status code or the response before
+            // doing your decoding.
+            
+            return try response.decode(ServerErrorDetails.self)
+        })
     }
 }
