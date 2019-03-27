@@ -27,7 +27,16 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
+    @available(*, deprecated, renamed: "makeRequest(from:)")
     public func make(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
+        return makeRequest(from: callback)
+    }
+    
+    /// Make a promise to send the network call.
+    ///
+    /// - Parameter callback: A callback that constructs the Request object.
+    /// - Returns: A promise to make the network call.
+    public func makeRequest(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.make(request)

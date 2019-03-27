@@ -82,7 +82,7 @@ class NetworkKitTests: XCTestCase {
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        dispatcher.make(from: {
+        dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "")
             let requestObject = MockCodable()
             try request.setHTTPBody(requestObject)
@@ -111,7 +111,7 @@ class NetworkKitTests: XCTestCase {
         let errorExpectation = self.expectation(description: "Error callback triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        dispatcher.make(from: {
+        dispatcher.makeRequest(from: {
             throw ResponseError.badRequest(cause: nil)
         }).success({ response in
             XCTFail("Should not trigger the success")

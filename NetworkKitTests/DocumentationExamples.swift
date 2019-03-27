@@ -123,7 +123,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // Example
-        dispatcher.make(from: {
+        dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "")
             try request.setHTTPBody(myCodable)
             return request
@@ -277,7 +277,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         let dispatcher = NetworkDispatcher(serverProvider: self)
         
-        dispatcher.make(from: {
+        dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "/post")
             try request.setHTTPBody(newPost)
             return request
@@ -342,7 +342,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).success({ [weak self] response in
             // [weak self] needed as `self` is called
             self?.show(response.data)
-        }).completion({ [weak self] in
+        }).completion({
             // [weak self] needed as `self` is called
             // You can use an optional self directly.
             expectation.fulfill()
