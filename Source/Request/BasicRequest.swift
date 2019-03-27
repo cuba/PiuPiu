@@ -1,5 +1,5 @@
 //
-//  JSONRequest.swift
+//  BasicRequest.swift
 //  NetworkKit iOS
 //
 //  Created by Jacob Sikorski on 2018-12-02.
@@ -10,9 +10,9 @@ import Foundation
 import MapCodableKit
 
 /// A convenience Request object for encoding JSON data.
-public struct JSONRequest: Request {
+public struct BasicRequest: Request {
     public var method: HTTPMethod
-    public var path:   String
+    public var path: String
     public var queryItems: [URLQueryItem]
     public var headers: [String: String]
     public var httpBody: Data?
@@ -30,10 +30,6 @@ public struct JSONRequest: Request {
         self.queryItems = queryItems
         self.headers = [:]
         
-        if method.requiresBody {
-            self.headers["Content-Type"] = "application/json"
-        }
-        
         for (key, value) in headers {
             self.headers[key] = value
         }
@@ -46,6 +42,7 @@ public struct JSONRequest: Request {
     ///   - options: Writing options for serializing the `MapEncodable` object.
     /// - Throws: Any serialization errors thrown by `MapCodableKit`.
     mutating public func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
+        self.headers["Content-Type"] = "application/json"
         self.httpBody = try mapEncodable.jsonData(options: options)
     }
     
@@ -57,7 +54,7 @@ public struct JSONRequest: Request {
     mutating public func setHTTPBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = dateEncodingStrategy
-        
+        self.headers["Content-Type"] = "application/json"
         self.httpBody = try encoder.encode(encodable)
     }
     
@@ -67,6 +64,7 @@ public struct JSONRequest: Request {
     ///   - string: The string to add to the body.
     ///   - encoding: The encoding type to use when adding the string.
     mutating public func setHTTPBody(string: String, encoding: String.Encoding = .utf8) {
+        self.headers["Content-Type"] = "application/json"
         self.httpBody = string.data(using: encoding)
     }
     
@@ -77,6 +75,7 @@ public struct JSONRequest: Request {
     ///   - options: The writing options to use when encoding.
     /// - Throws: Any errors thrown by `JSONSerialization`.
     mutating public func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
+        self.headers["Content-Type"] = "application/json"
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
     }
     
@@ -100,3 +99,4 @@ public struct JSONRequest: Request {
     }
 }
 
+public typealias JSONRequest = BasicRequest

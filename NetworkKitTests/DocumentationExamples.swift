@@ -39,7 +39,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let expectation = self.expectation(description: "Success response triggered")
         
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).success({ response in
             let posts = try response.decode([Post].self)
@@ -69,7 +69,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         // Given
         let myData = Data(count: 0)
         
-        var request = JSONRequest(method: .post, path: "/users")
+        var request = BasicRequest(method: .post, path: "/users")
         request.httpBody = myData
     }
     
@@ -82,7 +82,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         """
         
         // Example
-        var request = JSONRequest(method: .post, path: "/users")
+        var request = BasicRequest(method: .post, path: "/users")
         request.setHTTPBody(string: jsonString, encoding: .utf8)
     }
     
@@ -93,7 +93,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
                 "name": "Kevin Malone"
             ]
             
-            var request = JSONRequest(method: .post, path: "/users")
+            var request = BasicRequest(method: .post, path: "/users")
             try request.setHTTPBody(jsonObject: jsonObject)
         } catch {
             XCTFail("Should not throw")
@@ -104,7 +104,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         do {
-            var request = JSONRequest(method: .post, path: "/posts")
+            var request = BasicRequest(method: .post, path: "/posts")
             try request.setHTTPBody(encodable: myCodable)
         } catch {
             XCTFail("Should not throw")
@@ -124,7 +124,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Example
         dispatcher.make(from: {
-            var request = JSONRequest(method: .post, path: "")
+            var request = BasicRequest(method: .post, path: "")
             try request.setHTTPBody(myCodable)
             return request
         }).error({ error in
@@ -141,7 +141,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         // Example
         dispatcher.make(request).success({ response in
@@ -163,7 +163,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         // Example
         dispatcher.make(request).success({ response in
@@ -185,7 +185,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts/1")
+        let request = BasicRequest(method: .get, path: "/posts/1")
         
         // Example
         dispatcher.make(request).success({ response in
@@ -207,7 +207,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/users/1")
+        let request = BasicRequest(method: .get, path: "/users/1")
         
         // Example
         dispatcher.make(request).success({ response in
@@ -229,7 +229,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/users")
+        let request = BasicRequest(method: .get, path: "/users")
         
         // Example
         dispatcher.make(request).success({ response in
@@ -249,7 +249,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     func testFullExample() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).then({ response -> Post in
             // The `then` callback transforms a successful response
@@ -278,19 +278,19 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         
         dispatcher.make(from: {
-            var request = JSONRequest(method: .post, path: "/post")
+            var request = BasicRequest(method: .post, path: "/post")
             try request.setHTTPBody(newPost)
             return request
         }).send()
         
         
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         dispatcher.make(request).send()
     }
     
     func testSuccessCallback() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).success({ response in
             // When everything succeeds including the network call and deserialization
@@ -299,7 +299,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
 
     func testThenCallback() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).then({ response -> SuccessResponse<Post> in
             // The `then` callback transforms a successful response
@@ -314,7 +314,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     func testThenFailureCallback() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).thenFailure({ response -> ErrorResponse<ServerErrorDetails?> in
             // The `thenFailure` callback transforms a failed response.
@@ -333,7 +333,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     func testWeakCallbacks() {
         let expectation = self.expectation(description: "Success response triggered")
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
             // [weak self] not needed as `self` is not called
@@ -355,7 +355,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     func testWeakCallbacksStrongReference() {
         let expectation = self.expectation(description: "Success response triggered")
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         self.strongPromise = dispatcher.make(request).then({ response in
             // [weak self] not needed as `self` is not called
@@ -381,7 +381,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let expectation = self.expectation(description: "Success response should not be triggered")
         expectation.isInverted = true
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         self.weakPromise = dispatcher.make(request).completion({
             // [weak self] needed as `self` is not called
@@ -399,7 +399,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     func testWeakCallbacksWeakReference() {
         let expectation = self.expectation(description: "Success response triggered")
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         self.weakPromise = dispatcher.make(request).completion({
             // Always triggered
@@ -430,7 +430,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         // Given
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts/1")
+        let request = BasicRequest(method: .get, path: "/posts/1")
         
         Promise<Post, ServerErrorDetails>(action: { promise in
             // `fullfill` calls the succeed and fail methods.
@@ -457,7 +457,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     private func fetchPost(id: Int) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = JSONRequest(method: .get, path: "/posts/\(id)")
+        let request = BasicRequest(method: .get, path: "/posts/\(id)")
         
         return dispatcher.make(request)
     }

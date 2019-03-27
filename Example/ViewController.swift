@@ -63,7 +63,7 @@ class ViewController: UIViewController {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         
         dispatcher.make(from: {
-            return JSONRequest(method: .get, path: self.pathTextField.text ?? "")
+            return BasicRequest(method: .get, path: self.pathTextField.text ?? "")
         }).success({ [weak self] response in
             let jsonString = try response.decodeString(encoding: .utf8)
             self?.textView.text = jsonString

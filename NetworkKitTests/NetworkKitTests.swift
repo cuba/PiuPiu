@@ -30,7 +30,7 @@ class NetworkKitTests: XCTestCase {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = JSONRequest(method: .get, path: "")
+        let request = BasicRequest(method: .get, path: "")
         
         // When
         let successExpectation = self.expectation(description: "Success response triggered")
@@ -54,7 +54,7 @@ class NetworkKitTests: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let statusCode = StatusCode.badRequest
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: statusCode, mockError: statusCode.makeError(cause: nil))
-        let request = JSONRequest(method: .get, path: "")
+        let request = BasicRequest(method: .get, path: "")
         
         // When
         let failureExpectation = self.expectation(description: "Error response triggered")
@@ -83,7 +83,7 @@ class NetworkKitTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         dispatcher.make(from: {
-            var request = JSONRequest(method: .post, path: "")
+            var request = BasicRequest(method: .post, path: "")
             let requestObject = MockCodable()
             try request.setHTTPBody(requestObject)
             return request
@@ -130,7 +130,7 @@ class NetworkKitTests: XCTestCase {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = JSONRequest(method: .get, path: "")
+        let request = BasicRequest(method: .get, path: "")
         let responseObject = MockCodable()
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
@@ -163,7 +163,7 @@ class NetworkKitTests: XCTestCase {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = JSONRequest(method: .get, path: "")
+        let request = BasicRequest(method: .get, path: "")
         let responseObject = MockCodable()
         
         do {
@@ -196,7 +196,7 @@ class NetworkKitTests: XCTestCase {
     func testSuccessfulCodableSerialization() {
         // Given
         let codable = MockCodable()
-        var request = JSONRequest(method: .get, path: "")
+        var request = BasicRequest(method: .get, path: "")
         
         // Then
         XCTAssertNoThrow(try request.setHTTPBody(codable), "Should not fail serialization")
@@ -205,7 +205,7 @@ class NetworkKitTests: XCTestCase {
     
     func testSuccessfulJSONObjectSerialization() {
         // Given
-        var request = JSONRequest(method: .get, path: "")
+        var request = BasicRequest(method: .get, path: "")
         
         let jsonObject: [String: Any?] = [
             "id": "123",
@@ -219,7 +219,7 @@ class NetworkKitTests: XCTestCase {
     
     func testSuccessfulJSONStringSerialization() {
         // Given
-        var request = JSONRequest(method: .get, path: "")
+        var request = BasicRequest(method: .get, path: "")
         
         let jsonString = """
             {
@@ -240,7 +240,7 @@ class NetworkKitTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         let url = URL(string: "https://jsonplaceholder.typicode.com")!
         let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = JSONRequest(method: .get, path: "/posts")
+        let request = BasicRequest(method: .get, path: "/posts")
         
         Promise<MockCodable, MockDecodable>(action: { promise in
             try dispatcher.setMockData(codable)
