@@ -35,27 +35,50 @@ public struct BasicRequest: Request {
         }
     }
     
+    /// Add JSON body to the request from a `MapEncodable` object.
+    ///
+    /// - Parameters:
+    ///   - mapEncodable: The `MapEncodable` object to serialize into JSON.
+    ///   - options: Writing options for serializing the `MapEncodable` object.
+    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
+    @available(*, deprecated, renamed: "setJSONBody(mapEncodable:options:)")
+    mutating public func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
+        try setJSONBody(mapEncodable: mapEncodable, options: options)
+    }
+    
     /// Add body to the request from a `MapEncodable` object.
     ///
     /// - Parameters:
     ///   - mapEncodable: The `MapEncodable` object to serialize into JSON.
     ///   - options: Writing options for serializing the `MapEncodable` object.
     /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    mutating public func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        self.headers["Content-Type"] = "application/json"
+    mutating public func setJSONBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
+        if !self.headers.keys.contains("Content-Type") {
+            self.headers["Content-Type"] = "application/json"
+        }
+        
         self.httpBody = try mapEncodable.jsonData(options: options)
     }
     
-    /// Add body to the request from an `Encodable` object using the `JSONEncoder`.
+    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
     ///
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    @available(*, deprecated, renamed: "setJSONBody(encodable:dateEncodingStrategy:)")
     mutating public func setHTTPBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
+        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    mutating public func setJSONBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = dateEncodingStrategy
-        self.headers["Content-Type"] = "application/json"
         self.httpBody = try encoder.encode(encodable)
+        ensureJSONContentType()
     }
     
     /// Add body to the request from a string.
@@ -64,38 +87,74 @@ public struct BasicRequest: Request {
     ///   - string: The string to add to the body.
     ///   - encoding: The encoding type to use when adding the string.
     mutating public func setHTTPBody(string: String, encoding: String.Encoding = .utf8) {
-        self.headers["Content-Type"] = "application/json"
         self.httpBody = string.data(using: encoding)
     }
     
-    /// Add body to the request from a JSON Object.
+    /// Add JSON body to the request from a string. Adds the content type header.
+    ///
+    /// - Parameters:
+    ///   - string: The string to add to the body.
+    ///   - encoding: The encoding type to use when adding the string.
+    mutating public func setJSONBody(string: String, encoding: String.Encoding = .utf8) {
+        self.setHTTPBody(string: string, encoding: encoding)
+        ensureJSONContentType()
+    }
+    
+    /// Add JSON body to the request from a JSON Object.
     ///
     /// - Parameters:
     ///   - jsonObject: The JSON Object to encode into the request body using `JSONSerialization`.
     ///   - options: The writing options to use when encoding.
     /// - Throws: Any errors thrown by `JSONSerialization`.
     mutating public func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
-        self.headers["Content-Type"] = "application/json"
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
+        ensureJSONContentType()
     }
     
-    /// Add body to the request from a `MapEncodable` object.
+    /// Add JSON body to the request from a `MapEncodable` object.
     ///
     /// - Parameters:
     ///   - encodable: The `MapEncodable` object to serialize into JSON.
     ///   - options: Writing options for serializing the `MapEncodable` object.
     /// - Throws: Any serialization errors thrown by `MapCodableKit`.
+    @available(*, deprecated, renamed: "setJSONBody(_:options:)")
     mutating public func setHTTPBody<T: MapEncodable>(_ encodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        try setHTTPBody(mapEncodable: encodable)
+        try setJSONBody(mapEncodable: encodable, options: options)
     }
     
-    /// Add body to the request from an `Encodable` object using the `JSONEncoder`.
+    /// Add JSON body to the request from a `MapEncodable` object.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `MapEncodable` object to serialize into JSON.
+    ///   - options: Writing options for serializing the `MapEncodable` object.
+    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
+    mutating public func setJSONBody<T: MapEncodable>(_ encodable: T, options: JSONSerialization.WritingOptions = []) throws {
+        try setJSONBody(mapEncodable: encodable)
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
     ///
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    mutating public func setHTTPBody<T: Encodable>(_ encodable: T) throws {
-        try setHTTPBody(encodable: encodable)
+    @available(*, deprecated, renamed: "setJSONBody(_:dateEncodingStrategy:)")
+    mutating public func setHTTPBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
+        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    mutating public func setJSONBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
+        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
+    }
+    
+    mutating private func ensureJSONContentType() {
+        if !self.headers.keys.contains("Content-Type") {
+            self.headers["Content-Type"] = "application/json"
+        }
     }
 }
 

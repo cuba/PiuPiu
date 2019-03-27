@@ -85,7 +85,7 @@ class NetworkKitTests: XCTestCase {
         dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "")
             let requestObject = MockCodable()
-            try request.setHTTPBody(requestObject)
+            try request.setJSONBody(requestObject)
             return request
         }).success({ response in
             // Then
@@ -199,7 +199,7 @@ class NetworkKitTests: XCTestCase {
         var request = BasicRequest(method: .get, path: "")
         
         // Then
-        XCTAssertNoThrow(try request.setHTTPBody(codable), "Should not fail serialization")
+        XCTAssertNoThrow(try request.setJSONBody(codable), "Should not fail serialization")
         XCTAssertNotNil(request.httpBody)
     }
     

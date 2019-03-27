@@ -105,7 +105,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         do {
             var request = BasicRequest(method: .post, path: "/posts")
-            try request.setHTTPBody(encodable: myCodable)
+            try request.setJSONBody(encodable: myCodable)
         } catch {
             XCTFail("Should not throw")
         }
@@ -125,7 +125,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         // Example
         dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "")
-            try request.setHTTPBody(myCodable)
+            try request.setJSONBody(myCodable)
             return request
         }).error({ error in
             // Any error thrown while creating the request will trigger this callback.
@@ -279,7 +279,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         
         dispatcher.makeRequest(from: {
             var request = BasicRequest(method: .post, path: "/post")
-            try request.setHTTPBody(newPost)
+            try request.setJSONBody(newPost)
             return request
         }).send()
         
