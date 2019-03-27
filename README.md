@@ -521,6 +521,7 @@ dispatcher.make(request).send()
 1. Parallel calls
 2. Sequential calls
 3. Custom localized strings returned on the error objects
+4. Custom translations
 
 ## Dependencies
 
