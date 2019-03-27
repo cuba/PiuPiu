@@ -72,7 +72,7 @@ extension ViewController: ServerProvider {
 
 ```swift
 let dispatcher = NetworkDispatcher(serverProvider: self)
-let request = JSONRequest(method: .get, path: "/posts")
+let request = BasicRequest(method: .get, path: "/posts")
 
 dispatcher.make(request).success({ response in
     // This method is triggered when a 2xx response comes in.
@@ -98,13 +98,13 @@ dispatcher.make(request).success({ response in
 ```
 
 ## Encoding
-NetworkKit has convenience methods to encode objects into JSON using the `JSONRequest` object. `JSONRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types into JSON, including:
+NetworkKit has convenience methods to encode objects into JSON using the `BasicRequest` object. `BasicRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types into JSON, including:
 
 ### Data
 You can manually create your data object if you wish.
 
 ```swift
-var request = JSONRequest(method: .post, path: "/users")
+var request = BasicRequest(method: .post, path: "/users")
 request.httpBody = myData
 ```
 
@@ -112,8 +112,8 @@ request.httpBody = myData
 Since this is a JSON Request, this string should be encoded as JSON.
 
 ```
-var request = JSONRequest(method: .post, path: "/users")
-request.setHTTPBody(string: jsonString)
+var request = BasicRequest(method: .post, path: "/users")
+request.setJSONBody(string: jsonString)
 ```
 
 ### Encode JSON Object
@@ -124,30 +124,30 @@ let jsonObject: [String: Any?] = [
     "name": "Kevin Malone"
 ]
 
-var request = JSONRequest(method: .post, path: "/users")
-try request.setHTTPBody(jsonObject: jsonObject)
+var request = BasicRequest(method: .post, path: "/users")
+try request.setJSONBody(jsonObject: jsonObject)
 ```
 
 ### Encode JSON `String`
 
 ```
-var request = JSONRequest(method: .post, path: "/users")
-request.setHTTPBody(string: jsonString, encoding: .utf8)
+var request = BasicRequest(method: .post, path: "/users")
+request.setJSONBody(string: jsonString, encoding: .utf8)
 ```
 
 ### Encode `Encodable`
 
 ```
-var request = JSONRequest(method: .post, path: "/posts")
-try request.setHTTPBody(encodable: myCodable)
+var request = BasicRequest(method: .post, path: "/posts")
+try request.setJSONBody(encodable: myCodable)
 ```
 
 ### Encode `MapEncodable`
 MapCodableKit is a convenience frameworks that handles JSON serialization and deserialization. More information on this library can be found [here](https://github.com/cuba/MapCodableKit).
 
 ```
-var request = JSONRequest(method: .post, path: "/posts")
-try request.setHTTPBody(mapEncodable: myMapCodable)
+var request = BasicRequest(method: .post, path: "/posts")
+try request.setJSONBody(mapEncodable: myMapCodable)
 ```
 
 ### Wrap Encoding In a Promise
@@ -159,9 +159,9 @@ It might be beneficial to wrap the request creation in a promise. This will allo
 To quickly do this, there is a convenience method on the Dispatcher.
 
 ```swift
-dispatcher.make(from: {
-    var request = JSONRequest(method: .post, path: "")
-    try request.setHTTPBody(myCodable)
+dispatcher.makeRequest(from: {
+    var request = BasicRequest(method: .post, path: "/posts")
+    try request.setJSONBody(myCodable)
     return request
 }).error({ error in
     // Any error thrown while creating the request will trigger this callback.
@@ -277,7 +277,7 @@ Using promises instead of responses allow you to be more flexibly by adding addi
 ```swift
 private func fetchPost(id: String) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
     let dispatcher = NetworkDispatcher(serverProvider: self)
-    let request = JSONRequest(method: .get, path: "/posts/\(id)")
+    let request = BasicRequest(method: .get, path: "/posts/\(id)")
 
     return dispatcher.make(request)
 }
@@ -409,8 +409,8 @@ There is also a convenice `make` method which accepts a `Request` object instead
 
 ```swift
 dispatcher.make(from: {
-    var request = JSONRequest(method: .post, path: "/post")
-    try request.setHTTPBody(newPost)
+    var request = BasicRequest(method: .post, path: "/post")
+    try request.setJSONBody(newPost)
     return request
 })
 ```
@@ -418,7 +418,7 @@ dispatcher.make(from: {
 or 
 
 ```swift
-let request = JSONRequest(method: .get, path: "/posts")
+let request = BasicRequest(method: .get, path: "/posts")
 dispatcher.make(request)
 ```
 
@@ -509,7 +509,7 @@ Testing network calls is always a pain.  That's why we included the `MockDispatc
 ```swift
 let url = URL(string: "https://jsonplaceholder.typicode.com")!
 let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-let request = JSONRequest(method: .get, path: "/posts")
+let request = BasicRequest(method: .get, path: "/posts")
 try dispatcher.setMockData(codable)
 
 /// The url specified is not actually called.
