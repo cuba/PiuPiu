@@ -18,3 +18,23 @@ extension Promise {
         return start()
     }
 }
+
+public extension Promise where T == SuccessResponse<Data?>, E == ErrorResponse<Data?> {
+    public func printResponse() -> Promise<T, E> {
+        return then({ response in
+            print("===========================================")
+            response.printRequest()
+            print("-------------------------------------------")
+            response.printResponse()
+            print("===========================================")
+            return response
+        }).thenFailure({ response in
+            print("===========================================")
+            response.printRequest()
+            print("-------------------------------------------")
+            response.printResponse()
+            print("===========================================")
+            return response
+        })
+    }
+}

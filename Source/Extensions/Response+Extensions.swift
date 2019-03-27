@@ -84,3 +84,37 @@ public extension Response where T == Data? {
         }
     }
 }
+
+public extension Response where Self.T == Data? {
+    public func printRequest() {
+        print("REQUEST [\(urlRequest.httpMethod!)] \(urlRequest.url!)")
+        
+        if let headersString = urlRequest.allHTTPHeaderFields?.map({ "    \($0): \($1)" }).joined(separator: "\n") {
+            print("Headers:\n\(headersString)")
+        }
+        
+        if let body = urlRequest.httpBody {
+            if let json = String(data: body, encoding: .utf8) {
+                print("Body: \(json)")
+            } else {
+                print("Body: [Not JSON]")
+            }
+        }
+    }
+    
+    public func printResponse() {
+        print("RESPONSE [\(urlRequest.httpMethod!)] (\(statusCode.rawValue)) \(urlRequest.url!)")
+        
+        let headersString = httpResponse.allHeaderFields.map({ "    \($0): \($1)" }).joined(separator: "\n")
+        print("Headers:\n\(headersString)")
+        
+        if data != nil {
+            do {
+                let json = try decodeString(encoding: .utf8)
+                print("Body: \(json)")
+            } catch {
+                print("Body: \(error)")
+            }
+        }
+    }
+}
