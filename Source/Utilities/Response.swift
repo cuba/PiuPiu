@@ -1,5 +1,5 @@
 //
-//  Response.swift
+//  ResponseInterface.swift
 //  NetworkKit iOS
 //
 //  Created by Jacob Sikorski on 2019-02-21.
@@ -9,7 +9,7 @@
 import Foundation
 
 /// The protocol wrapping the response object.
-public protocol Response {
+public protocol ResponseInterface {
     associatedtype T
     
     var data: T { get }
@@ -19,7 +19,7 @@ public protocol Response {
 }
 
 /// A successful response object. This is retuned when there is any 2xx response.
-public struct SuccessResponse<T>: Response {
+public struct SuccessResponse<T>: ResponseInterface {
     public let data: T
     public let httpResponse: HTTPURLResponse
     public let urlRequest: URLRequest
@@ -39,7 +39,7 @@ public struct SuccessResponse<T>: Response {
         self.statusCode = statusCode
     }
     
-    public init<U: Response>(data: T, response: U) {
+    public init<U: ResponseInterface>(data: T, response: U) {
         self.data = data
         self.httpResponse = response.httpResponse
         self.urlRequest = response.urlRequest
@@ -48,7 +48,7 @@ public struct SuccessResponse<T>: Response {
 }
 
 /// A failed response object. This is retuned when the response is not a 2xx response.
-public struct ErrorResponse<T>: Response {
+public struct ErrorResponse<T>: ResponseInterface {
     public let data: T
     public let httpResponse: HTTPURLResponse
     public let urlRequest: URLRequest
@@ -71,7 +71,7 @@ public struct ErrorResponse<T>: Response {
         self.error = error
     }
     
-    public init<U: Response>(data: T, response: U, error: ResponseError) {
+    public init<U: ResponseInterface>(data: T, response: U, error: ResponseError) {
         self.data = data
         self.error = error
         self.httpResponse = response.httpResponse

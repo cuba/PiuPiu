@@ -1,5 +1,5 @@
 //
-//  Response+Extensions.swift
+//  ResponseInterface+Extensions.swift
 //  NetworkKit iOS
 //
 //  Created by Jacob Sikorski on 2019-02-21.
@@ -9,7 +9,7 @@
 import Foundation
 import MapCodableKit
 
-public extension Response where T == Data? {
+public extension ResponseInterface where T == Data? {
     
     /// Attempt to unwrap the response data.
     ///
@@ -85,7 +85,7 @@ public extension Response where T == Data? {
     }
 }
 
-public extension Response where Self.T == Data? {
+public extension ResponseInterface where Self.T == Data? {
     public func printRequest() {
         print("REQUEST [\(urlRequest.httpMethod!)] \(urlRequest.url!)")
         
