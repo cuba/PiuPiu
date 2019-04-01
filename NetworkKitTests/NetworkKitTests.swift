@@ -233,7 +233,7 @@ class NetworkKitTests: XCTestCase {
         XCTAssertNotNil(request.httpBody)
     }
     
-    func testWrappedPromise() {
+    func testWrappedResponseFuture() {
         // Given
         let codable = MockCodable()
         let successExpectation = self.expectation(description: "Success response triggered")
@@ -250,7 +250,7 @@ class NetworkKitTests: XCTestCase {
                 return try response.decode(MockCodable.self)
             }).thenFailure({ response in
                 return try response.decode(MockDecodable.self)
-            }).fullfill(promise)
+            }).fulfill(promise)
         }).success({ response in
             // Then
             XCTAssertEqual(response, codable)
@@ -262,6 +262,39 @@ class NetworkKitTests: XCTestCase {
         }).completion({
             completionExpectation.fulfill()
         }).start()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testPromise() {
+        // Given
+        let codable = MockCodable()
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let url = URL(string: "https://jsonplaceholder.typicode.com")!
+        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+        let request = BasicRequest(method: .get, path: "/posts")
+        
+        do {
+            try dispatcher.setMockData(codable)
+        } catch {
+            XCTFail("Should not fail serialization")
+        }
+        
+        // When
+        dispatcher.future(from: request).then({ response -> MockCodable in
+            if let error = response.error {
+                throw error
+            } else {
+                return try response.decode(MockCodable.self)
+            }
+        }).success({ object in
+            successExpectation.fulfill()
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }

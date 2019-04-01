@@ -53,10 +53,7 @@ public struct BasicRequest: Request {
     ///   - options: Writing options for serializing the `MapEncodable` object.
     /// - Throws: Any serialization errors thrown by `MapCodableKit`.
     mutating public func setJSONBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        if !self.headers.keys.contains("Content-Type") {
-            self.headers["Content-Type"] = "application/json"
-        }
-        
+        ensureJSONContentType()
         self.httpBody = try mapEncodable.jsonData(options: options)
     }
     
