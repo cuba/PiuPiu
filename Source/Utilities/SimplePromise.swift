@@ -11,7 +11,7 @@ import Foundation
 /// A ResponseFuture is a delayed action that is performed after calling `start()`.
 public class ResponseFuture<T> {
     public typealias ActionCallback = (ResponseFuture<T>) throws -> Void
-    public typealias SuccessHandler = (T) throws -> Void
+    public typealias ResponseHandler = (T) throws -> Void
     public typealias ErrorHandler = (Error) -> Void
     public typealias CompletionHandler = () -> Void
     
@@ -32,7 +32,7 @@ public class ResponseFuture<T> {
     }
     
     private let action: ActionCallback
-    private var successHandler: SuccessHandler?
+    private var responseHandler: ResponseHandler?
     private var errorHandler: ErrorHandler?
     private var completionHandler: CompletionHandler?
     
@@ -52,7 +52,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter promise: The promise that fullfils this one.
     public func fulfill(_ promise: ResponseFuture<T>) {
-        self.success({ result in
+        self.response({ result in
             promise.succeed(with: result)
         }).error({ error in
             promise.fail(with: error)
@@ -64,7 +64,7 @@ public class ResponseFuture<T> {
     /// - Parameter object: The succeeded object required by the promise success callback.
     public func succeed(with object: T) {
         do {
-            try successHandler?(object)
+            try responseHandler?(object)
             status = .success
             completionHandler?()
             return
@@ -86,8 +86,8 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This promise for chaining.
-    public func success(_ handler: @escaping SuccessHandler) -> ResponseFuture<T> {
-        self.successHandler = handler
+    public func response(_ handler: @escaping ResponseHandler) -> ResponseFuture<T> {
+        self.responseHandler = handler
         return self
     }
     
@@ -115,7 +115,7 @@ public class ResponseFuture<T> {
     /// - Returns: The coverted promise
     public func then<U>(_ callback: @escaping (T) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U>() { promise in
-            self.success({ result in
+            self.response({ result in
                 let transformed = try callback(result)
                 promise.succeed(with: transformed)
             }).error({ error in

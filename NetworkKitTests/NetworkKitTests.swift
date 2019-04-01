@@ -288,7 +288,7 @@ class NetworkKitTests: XCTestCase {
             } else {
                 return try response.decode(MockCodable.self)
             }
-        }).success({ object in
+        }).response({ object in
             successExpectation.fulfill()
         }).error({ error in
             XCTFail("Should not trigger the failure")

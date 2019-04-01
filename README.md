@@ -85,7 +85,7 @@ dispatcher.future(from: request).then({ response -> Post in
     } else {
         return try response.decode(Post.self)
     }
-}).success({ post in
+}).response({ post in
     // Handles any success responses.
     // In this case the object returned in the `then` method.
 }).error({ error in
@@ -160,7 +160,7 @@ It might be beneficial to wrap the request creation in a ResponseFuture. This wi
 To quickly do this, there is a convenience method on the Dispatcher.
 
 ```swift
-dispatcher.makeRequest(from: {
+dispatcher.future(from: {
     var request = BasicRequest(method: .post, path: "/posts")
     try request.setJSONBody(myCodable)
     return request
@@ -267,7 +267,7 @@ dispatcher.future(from: request).then({ response -> Post in
         // If anything is thrown, it will be caught in the `error` callback.
         return try response.decode(Post.self)
     }
-}).success({ post in
+}).response({ post in
     // Handles any success responses.
     // In this case the object returned in the `then` method.
 }).error({ error in
@@ -311,9 +311,9 @@ dispatcher.make(request).then({ response -> Post in
 }).send()
 ```
 
-### Convert a `ResponseFuture` to a `ResponseFuture`
+### Convert a `Promise` to a `ResponseFuture`
 
-You can easily convert a `ResponseFuture` to a `ResponseFuture` with the following code:
+You can easily convert a `Promise` to a `ResponseFuture` with the following code:
 
 ```swift
 dispatcher.make(request).future({ failedResponse in
@@ -325,7 +325,7 @@ dispatcher.make(request).future({ failedResponse in
     // You can simply return the response error or return something a little more custom
     // NOTE: You may want to use `dispatcher.future(from: request)` instead.
     return failedResponse.error
-}).success({ response in
+}).response({ response in
     // A success response. Because we used a ResponseFuture, this returns a `SuccessResponse`.
     // However we can have a bit more control, if we use `dispatcher.future(from: request)` directly.
 }).error({ error in
@@ -336,7 +336,7 @@ dispatcher.make(request).future({ failedResponse in
 }).send()
 ```
 
-**NOTE**: This is just a convinience method.  You can simply use `dispatcher.future(from: request)`.
+As we can see, you have to add logic to convert the `failure` callback object to an `Error` object as no `failure` callback is available on a `ResponseFuture`. This is just a convinience method as you can simply use `dispatcher.future(from: request)`.
 
 ### Memory Managment
 
@@ -354,7 +354,7 @@ dispatcher.future(from: request).then({ response -> SuccessResponse<[Post]> in
     // [weak self] not needed as `self` is not called
     let posts = try response.decode([Post].self)
     return SuccessResponse<[Post]>(data: posts, response: response)
-}).success({ response in
+}).response({ response in
     self.show(response.data)
 }).send()
 ```
@@ -385,7 +385,7 @@ self.postResponseFuture = dispatcher.future(from: request).then({ response in
     // [weak self] not needed as `self` is not called
     let posts = try response.decode([Post].self)
     return SuccessResponse<[Post]>(data: posts, response: response)
-}).success({ [weak self] response in
+}).response({ [weak self] response in
     // [weak self] needed as `self` is called
     self?.show(response.data)
 }).completion({ [weak self] in
@@ -420,7 +420,6 @@ You may chose to have a weak reference to your ResponseFuture. This is fine, as 
 ```swift
 self.weakResponseFuture = dispatcher.future(from: request).completion({
     // Always triggered
-    expectation.fulfill()
 }).send()
 
 // This ResponseFuture may or may not be nil at this point.
@@ -439,7 +438,7 @@ self.weakResponseFuture = dispatcher.future(from: request).completion({
     expectation.fulfill()
 })
 
-// OOPS!!!!
+// WHOOPS!!!!
 // Our object is already nil because we have not established a strong reference to it.
 // The `send()` method will do nothing and no callback will be triggered.
 
@@ -450,7 +449,7 @@ self.weakResponseFuture?.send()
 
 #### `future` callback
 
-The `future` callback creates the first `ResponseFuture`. This future will will send the request once the `send()` method is triggered.  There is also a convenice `future` method that accepts a callback so that you can delay the send for a later time. It also allows you to wrap the request creation process into a callback so error are handled in the `error` callback.
+The `future` callback creates the first `ResponseFuture`. This future will will send the request once the `send()` method is triggered.  There is also a convenice `future` method that accepts a callback so that you can delay it until send is triggered. It also allows you to wrap the request creation process into a callback so error are handled in the `error` callback if any occur.
 
 ```swift
 return dispatcher.future(from: {
@@ -464,19 +463,37 @@ or
 
 ```swift
 let request = BasicRequest(method: .get, path: "/posts")
-dispatcher.future(from: request)
+return dispatcher.future(from: request)
 ```
 
-Notice that the above examples uses the make method for the `GET` request and make callback for the `POST` request.  This is intentional as we often serialize some data during the creation of the `POST` request and this can result in failures. A `GET` request, on the other hand, rarely requires any serailization during the request cration process.  
+Notice that the above examples uses the make method for the `GET` request and make callback for the `POST` request.  This is intentional as we often serialize some data during the creation of the `POST` request and this can result in failures. A `GET` request, on the other hand, rarely requires any serailization during the request cration process.
 
-#### `success` callback
+#### `resoibse` callback
+
+NOTE: `ResponseFuture` only.  This is only available when calling `response.future`.
+
 The success callback when the request is recieved and all chained `ResponseFuture` callbacks (such as then or success) don't thow any errors.  
 
-At the end of the request callback sequences, this callback gives you exactly what your expect to recieve in your ResponseFuture after all `then` callbacks are performed.
+At the end of the request callback sequences (including `then` callbacks), this gives you exactly what your expect to recieve in your `ResponseFuture`.
+
+```swift
+dispatcher.future(from: request).response({ response in
+    // When a response is recieved
+})
+```
+
+#### `success` callback
+
+NOTE: `Promise` only.  This is only available when calling `response.make`.
+
+The success callback when the request is recieved and all chained `Promise` callbacks (such as then or success) don't thow any errors.  
+
+At the end of the request callback sequences (including `then` callbacks), this callback gives you exactly what your expect to recieve in your `Promise`.
 
 ```swift
 dispatcher.future(from: request).success({ response in
     // When everything succeeds including the network call and deserialization
+    // Anything we throw here will be handled in the `error` callback.
 })
 ```
 
@@ -484,9 +501,9 @@ dispatcher.future(from: request).success({ response in
 
 NOTE: `Promise` only.  This is only available when calling `response.make`.
 
-The failure callback is triggered when the there is a response but it is not valid. In a nutshell it gets triggered for all non-2xx responses such as a 401, 403, 404 or 500 error. This callback will give you the http response, status code and a ResponseError.
+The failure callback is triggered when the there is a response but it is not valid. In a nutshell it gets triggered for all non-2xx responses such as a 401, 403, 404 or 500 error. This callback will give you the http response, status code and a `ResponseError`.
 
-At the end of the request callback sequences, this callback gives you exactly what your ResponseFuture had ResponseFutured you when a failed response occurs.
+At the end of the request callback sequences, this callback gives you exactly what your `Promise` had failed to promise.
 
 ```swift
 dispatcher.future(from: request).failure({ response in
@@ -495,17 +512,19 @@ dispatcher.future(from: request).failure({ response in
 ```
 
 #### `error` callback
-The error callbak is triggered whenever something is thrown inside a response.  This includes errors thrown when attempting to deserialize the body for both successful and unsuccessful responses.
+
+The error callbak is triggered whenever something is thrown when handling the request or response.  This includes errors thrown when attempting to deserialize the body for both successful and unsuccessful responses.
 
 ```swift
 dispatcher.future(from: request).error({ error in
-    // Any errors thrown in a `make`, `success`, `failure`, `then`, or `thenFailure`
-    // callback will trigger the `error` callback.
+    // Any errors thrown in a `make`, `future`, `success`, `failure`, `then`, or `thenFailure`
+    // callback will trigger this callback.
 })
 ```
 
 #### `completion` callback
-The completion callback is always triggered at the end after all ResponseFuture have been fulfulled.
+
+The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()`  (`Promise` only) is triggered.
 
 ```swift
 dispatcher.future(from: request).completion({
@@ -515,6 +534,7 @@ dispatcher.future(from: request).completion({
 ```
 
 #### `then` callback
+
 This callback transforms the `success` type to another type.
 
 ```swift
@@ -522,7 +542,7 @@ dispatcher.future(from: request).then({ response -> Post in
     // The `then` callback transforms a successful response
     // You can return any object here and this will be reflected on the success callback.
     return try response.decode(Post.self)
-}).success({ post in
+}).response({ post in
     // Handles any success responses.
     // In this case the object returned in the `then` method.
 })
@@ -532,7 +552,7 @@ dispatcher.future(from: request).then({ response -> Post in
 
 NOTE: `Promise` only.  This is only available when calling `response.make`.
 
-This callback transforms the `error` type to another type.
+This callback transforms the `failure` type to another type.
 
 ```swift
 dispatcher.make(request).thenFailure({ response -> ResponseError in
@@ -546,12 +566,22 @@ dispatcher.make(request).thenFailure({ response -> ResponseError in
 ```
 
 #### `fulfill`
-Fulfil a `ResponseFuture` (or a `Promise`) with the results of this `ResponseFuture` (or `Promise`). Both have to be identical (i.e. They have the same success and falure (`Promise`) objects).  In order to make them identical, first use `then` and `thenFailure` (`Promise` only) to transform them to the same type.
+
+Fulfil a `ResponseFuture` (or a `Promise`) with the results of this `ResponseFuture` (or `Promise`). Both have to be identical (i.e. They have the same success and failure (`Promise`) objects).  In order to make them identical, first use `then` and `thenFailure` (`Promise` only) to transform them to the same type.
 
 #### `send`
-This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server. If this method is not called, nothing will happen (no request will be made). 
 
-These methos should ALWAY be called AFTER declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
+This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server. If this method is not called, nothing will happen (no request will be made).
+
+These methos should **ALWAY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
+
+#### `start`
+
+NOTE: `Promise` only.  This is only available when calling `response.make`.
+
+Convience method for the `send` callback.
+
+These methos should **ALWAY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
 
 ## MockDispatcher
 

@@ -264,7 +264,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
                 // If anything is thrown, it will be caught in the `error` callback.
                 return try response.decode(Post.self)
             }
-        }).success({ post in
+        }).response({ post in
             // Handles any success responses.
             // In this case the object returned in the `then` method.
         }).error({ error in
@@ -316,9 +316,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             // You can simply return the response error or return something a little more custom
             // NOTE: You may want to use `dispatcher.promise(from: request)` instead.
             return failedResponse.error
-        }).success({ response in
+        }).response({ response in
             // A success response. Because we used a Promise, this returns a `SuccessResponse`.
-            // However we can have a bit more control, if we use `dispatcher.promise(from: request)` directly.
+            // However we can have had a bit more control, if we used `dispatcher.promise(from: request)` directly.
         }).error({ error in
             // This handles all errors thrown during the request creation process and
             // the error returned in the `promise` callback.

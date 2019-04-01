@@ -38,7 +38,7 @@ public extension Dispatcher {
     /// - Returns: The promise that will send the request.
     public func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
-            self.future(from: request).success({ response in
+            self.future(from: request).response({ response in
                 if let error = response.error {
                     let responseError = response.statusCode.makeError(cause: error) ?? ResponseError.unknown(cause: error)
                     let errorResponse = ErrorResponse(data: response.data, httpResponse: response.httpResponse, urlRequest: response.urlRequest, statusCode: response.statusCode, error: responseError)
