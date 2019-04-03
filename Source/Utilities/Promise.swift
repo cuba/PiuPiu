@@ -2,7 +2,7 @@
 //  Promise.swift
 //  NetworkKit iOS
 //
-//  Created by Jacob Sikorski on 2019-02-15.
+//  Created by Jacob Sikorski on 2019-03-31.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
 //
 
@@ -55,7 +55,7 @@ public class Promise<T, E> {
     /// The promise passed needs to be converted to the same type using the `then` and `thenFailure` methods.
     ///
     /// - Parameter promise: The promise that fullfils this one.
-    public func fullfill(_ promise: Promise<T, E>) {
+    public func fulfill(_ promise: Promise<T, E>) {
         self.success({ result in
             promise.succeed(with: result)
         }).failure({ result in
@@ -183,6 +183,19 @@ public class Promise<T, E> {
                 promise.fail(with: transformed)
             }).error({ error in
                 promise.catch(error)
+            }).start()
+        }
+    }
+    
+    public func future(_ callback: @escaping (E) throws -> Error) -> ResponseFuture<T> {
+        return ResponseFuture<T>() { promise in
+            self.success({ response in
+                promise.succeed(with: response)
+            }).failure({ response in
+                let error = try callback(response)
+                promise.fail(with: error)
+            }).error({ error in
+                promise.fail(with: error)
             }).start()
         }
     }

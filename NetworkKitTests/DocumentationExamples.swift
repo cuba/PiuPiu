@@ -247,7 +247,37 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testFullExample() {
+    func testFullResponseFutureExample() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = BasicRequest(method: .get, path: "/posts")
+        
+        dispatcher.future(from: request).then({ response -> Post in
+            // Handles any responses and transforms them to another type
+            // This includes negative responses such as 400s and 500s
+            
+            if let error = response.error {
+                // We throw the error so we can handle it in the `error` callback.
+                // We can also handle the error response in a more custom way if we chose.
+                throw error
+            } else {
+                // if we have no error, we just return the decoded object
+                // If anything is thrown, it will be caught in the `error` callback.
+                return try response.decode(Post.self)
+            }
+        }).response({ post in
+            // Handles any success responses.
+            // In this case the object returned in the `then` method.
+        }).error({ error in
+            // Handles any errors during the request process,
+            // including all request creation errors and anything
+            // thrown in the `then` or `success` callbacks.
+        }).completion({
+            // The completion callback guaranteed to be called once
+            // for every time the `start` method is triggered on the callback.
+        }).send()
+    }
+    
+    func testFullPromiseExample() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
@@ -270,6 +300,30 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).completion({
             // The completion callback guaranteed to be called once
             // for every time the `send` or `start` method is triggered on the callback.
+        }).send()
+    }
+    
+    func testPromiseFromResponseFutureExample() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = BasicRequest(method: .get, path: "/posts")
+        
+        dispatcher.make(request).future({ failedResponse in
+            // Sice a `SimplePromse` does not handle `failure` callbacks,
+            // we have to transform this to an `Error` object.
+            // This is triggered when a failed response is recieved
+            // But it always transforms the `FutreResponse` to a `Promse`.
+            
+            // You can simply return the response error or return something a little more custom
+            // NOTE: You may want to use `dispatcher.promise(from: request)` instead.
+            return failedResponse.error
+        }).response({ response in
+            // A success response. Because we used a Promise, this returns a `SuccessResponse`.
+            // However we can have had a bit more control, if we used `dispatcher.promise(from: request)` directly.
+        }).error({ error in
+            // This handles all errors thrown during the request creation process and
+            // the error returned in the `promise` callback.
+        }).completion({
+            // Always triggered for every time we trigger `start()`
         }).send()
     }
     
@@ -433,10 +487,10 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let request = BasicRequest(method: .get, path: "/posts/1")
         
         Promise<Post, ServerErrorDetails>(action: { promise in
-            // `fullfill` calls the succeed and fail methods.
+            // `fulfill` calls the succeed and fail methods.
             // The promise that is fullfilling another promise must be transformed
             // first using `then` and `thenFailure` so that it is of the same type
-            // before the fullfill method can be called.
+            // before the fulfill method can be called.
             // You may also succeed or fail the promise manually.
             // `fulfill `calls `start` so there is no need to call it.
             
@@ -446,7 +500,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             }).thenFailure({ response in
                 // `thenFailure` callback is triggered only when an unsusccessful response comes back.
                 return try response.decode(ServerErrorDetails.self)
-            }).fullfill(promise)
+            }).fulfill(promise)
         }).completion({
             // Perform operation on completion
             expectation.fulfill()

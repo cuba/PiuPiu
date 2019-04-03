@@ -64,6 +64,8 @@
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA245C7F2207E4A100A92C1D /* MapCodableKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapCodableKit.framework; path = Carthage/Build/iOS/MapCodableKit.framework; sourceTree = "<group>"; };
+		DA59D684225442A30083AB84 /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = SOURCE_ROOT; };
+		DA59D685225442A30083AB84 /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = SOURCE_ROOT; };
 		DADDFF4D1FEF2578005FEC56 /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NetworkKit.xcodeproj; sourceTree = "<group>"; };
 		DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6722190A0200D1990B /* NetworkKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkKitTests.swift; sourceTree = "<group>"; };
@@ -114,6 +116,8 @@
 		8CC508121ED35E7D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DA59D684225442A30083AB84 /* Cartfile */,
+				DA59D685225442A30083AB84 /* Cartfile.resolved */,
 				8CC508131ED35E7D00C19524 /* AppDelegate.swift */,
 				8CC508151ED35E7D00C19524 /* ViewController.swift */,
 				8CC5081A1ED35E7D00C19524 /* Assets.xcassets */,
