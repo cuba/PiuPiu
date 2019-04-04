@@ -33,7 +33,7 @@ open class NetworkDispatcher: Dispatcher {
             let urlRequest = try serverProvider.urlRequest(from: request)
             
             let task = URLSession.shared.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
-                // Ensure there is a status code (ex: 200)
+                // Ensure there is a http response
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     let error = ResponseError.unknown(cause: error)
                     
@@ -44,6 +44,7 @@ open class NetworkDispatcher: Dispatcher {
                     return
                 }
                 
+                // Create the response
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
                 let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: error)
                 
