@@ -11,7 +11,7 @@ import Foundation
 public extension Bundle {
     
     /// Access to the `NetworkKit` Bundle
-    public static var networkKit: Bundle {
+    static var networkKit: Bundle {
         return Bundle(identifier: "com.jacobsikorski.NetworkKit")!
     }
 }

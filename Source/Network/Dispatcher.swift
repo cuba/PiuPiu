@@ -28,7 +28,7 @@ public extension Dispatcher {
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
     @available(*, deprecated, renamed: "makeRequest(from:)")
-    public func make(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
+    func make(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return makeRequest(from: callback)
     }
     
@@ -36,7 +36,7 @@ public extension Dispatcher {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
-    public func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
+    func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             self.future(from: request).response({ response in
                 if let error = response.error {
@@ -57,7 +57,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    public func makeRequest(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
+    func makeRequest(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.make(request)
@@ -69,7 +69,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    public func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
+    func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.future(from: request)

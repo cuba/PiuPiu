@@ -10,13 +10,13 @@ import Foundation
 
 public extension JSONEncoder.DateEncodingStrategy {
     
-    public static var rfc3339: JSONEncoder.DateEncodingStrategy {
+    static var rfc3339: JSONEncoder.DateEncodingStrategy {
         return JSONEncoder.DateEncodingStrategy.formatted(DateFormatter.rfc3339)
     }
 }
 
 public extension JSONDecoder.DateDecodingStrategy {
-    public static var rfc3339: JSONDecoder.DateDecodingStrategy {
+    static var rfc3339: JSONDecoder.DateDecodingStrategy {
         return JSONDecoder.DateDecodingStrategy.formatted(DateFormatter.rfc3339)
     }
 }

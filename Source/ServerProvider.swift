@@ -21,7 +21,7 @@ public extension ServerProvider {
     /// - Parameter request: The request that will be sent.
     /// - Returns: A url to which the request will be sent.
     /// - Throws: Any errors when trying to create the url.
-    public func url(from request: Request) throws -> URL {
+    func url(from request: Request) throws -> URL {
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
         urlComponents?.queryItems = request.queryItems
@@ -39,7 +39,7 @@ public extension ServerProvider {
     /// - Parameter request: The request that will be converted
     /// - Returns: The created URLRequest
     /// - Throws: A RequstError object
-    public func urlRequest(from request: Request) throws -> URLRequest {
+    func urlRequest(from request: Request) throws -> URLRequest {
         do {
             let url = try self.url(from: request)
             var urlRequest = URLRequest(url: url)

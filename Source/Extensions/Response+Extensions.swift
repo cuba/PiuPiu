@@ -14,7 +14,7 @@ public extension ResponseInterface where T == Data? {
     /// Attempt to unwrap the response data.
     ///
     /// - Returns: The unwrapped object
-    public func unwrapData() throws -> Data {
+    func unwrapData() throws -> Data {
         // Check if we have the data we need
         guard let unwrappedData = data else {
             throw SerializationError.unexpectedEmptyResponse
@@ -26,7 +26,7 @@ public extension ResponseInterface where T == Data? {
     /// Attempt to deserialize the response data into a JSON string.
     ///
     /// - Returns: The decoded object
-    public func decodeString(encoding: String.Encoding = .utf8) throws -> String {
+    func decodeString(encoding: String.Encoding = .utf8) throws -> String {
         let data = try unwrapData()
         
         // Attempt to deserialize the object.
@@ -40,7 +40,7 @@ public extension ResponseInterface where T == Data? {
     /// Attempt to deserialize the response data into a MapDecodable object.
     ///
     /// - Returns: The decoded object
-    public func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
+    func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
         let data = try self.unwrapData()
         
         do {
@@ -55,7 +55,7 @@ public extension ResponseInterface where T == Data? {
     /// Attempt to decode the response data into a MapDecodable array.
     ///
     /// - Returns: The decoded array
-    public func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
+    func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
         let data = try self.unwrapData()
         
         do {
@@ -70,7 +70,7 @@ public extension ResponseInterface where T == Data? {
     /// Attempt to Decode the response data into a Decodable object.
     ///
     /// - Returns: The decoded object
-    public func decode<D: Decodable>(_ type: D.Type, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .rfc3339) throws  -> D {
+    func decode<D: Decodable>(_ type: D.Type, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .rfc3339) throws  -> D {
         let data = try self.unwrapData()
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = dateDecodingStrategy
@@ -86,7 +86,7 @@ public extension ResponseInterface where T == Data? {
 }
 
 public extension ResponseInterface where Self.T == Data? {
-    public func printRequest() {
+    func printRequest() {
         print("REQUEST [\(urlRequest.httpMethod!)] \(urlRequest.url!)")
         
         if let headersString = urlRequest.allHTTPHeaderFields?.map({ "    \($0): \($1)" }).joined(separator: "\n") {
@@ -102,7 +102,7 @@ public extension ResponseInterface where Self.T == Data? {
         }
     }
     
-    public func printResponse() {
+    func printResponse() {
         print("RESPONSE [\(urlRequest.httpMethod!)] (\(statusCode.rawValue)) \(urlRequest.url!)")
         
         let headersString = httpResponse.allHeaderFields.map({ "    \($0): \($1)" }).joined(separator: "\n")
