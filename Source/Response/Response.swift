@@ -26,6 +26,10 @@ public struct Response<T>: ResponseInterface {
     public let statusCode: StatusCode
     public let error: Error?
     
+    public var responseError: ResponseError? {
+        return statusCode.makeError(cause: error)
+    }
+    
     /// Create a successful response object.
     ///
     /// - Parameters:

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MapCodableKit
 
 /// The class that will be making the API call.
 open class NetworkDispatcher: Dispatcher {

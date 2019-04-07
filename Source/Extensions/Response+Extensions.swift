@@ -86,6 +86,14 @@ public extension ResponseInterface where T == Data? {
 }
 
 public extension ResponseInterface where Self.T == Data? {
+    func debug() {
+        print("===========================================")
+        printRequest()
+        print("-------------------------------------------")
+        printResponse()
+        print("===========================================")
+    }
+    
     func printRequest() {
         print("REQUEST [\(urlRequest.httpMethod!)] \(urlRequest.url!)")
         

@@ -62,13 +62,15 @@ class ViewController: UIViewController {
         
         let dispatcher = NetworkDispatcher(serverProvider: self)
         
-        dispatcher.makeRequest(from: {
+        dispatcher.future(from: {
             return BasicRequest(method: .get, path: self.pathTextField.text ?? "")
-        }).printResponse().success({ [weak self] response in
+        }).response({ [weak self] response in
+            #if DEBUG
+            response.debug()
+            #endif
+            
             let jsonString = try response.decodeString(encoding: .utf8)
             self?.textView.text = jsonString
-        }).failure({ [weak self] response in
-            self?.textView.text = response.error.localizedDescription
         }).error({ [weak self] error in
             self?.textView.text = error.localizedDescription
         }).send()
