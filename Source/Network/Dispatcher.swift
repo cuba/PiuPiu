@@ -17,7 +17,6 @@ public protocol Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    func make(_ request: Request) -> ResponsePromise<Data?, Data?>
     func future(from request: Request) -> ResponseFuture<Response<Data?>>
 }
 

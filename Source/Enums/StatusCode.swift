@@ -114,7 +114,7 @@ public enum StatusCode: Equatable {
         }
     }
     
-    var type: StatusCodeType {
+    public var type: StatusCodeType {
         switch rawValue {
         case 100..<200: return .informational
         case 200..<300: return .success
@@ -133,7 +133,7 @@ public enum StatusCode: Equatable {
         }
     }
     
-    func makeError(cause: Error?) -> ResponseError? {
+    public func makeError(cause: Error?) -> ResponseError? {
         switch self {
         case .badRequest:           return ResponseError.badRequest(cause: cause)
         case .unauthorized:         return ResponseError.unauthorized(cause: cause)
