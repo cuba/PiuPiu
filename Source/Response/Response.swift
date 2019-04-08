@@ -24,11 +24,11 @@ public struct Response<T>: ResponseInterface {
     public let httpResponse: HTTPURLResponse
     public let urlRequest: URLRequest
     public let statusCode: StatusCode
-    public let error: Error?
     
-    public var responseError: ResponseError? {
-        return statusCode.makeError(cause: error)
-    }
+    /// Handles common errors like 4xx and 5xx errors.
+    /// Network related errorrs are handled directly in
+    /// The error callback.
+    let error: ResponseError?
     
     /// Create a successful response object.
     ///
@@ -37,7 +37,7 @@ public struct Response<T>: ResponseInterface {
     ///   - httpResponse: The `HTTPURLresponse` that is returned.
     ///   - urlRequest: The original `URLRequest` that was created.
     ///   - statusCode: The status code enum that is returned.
-    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: Error?) {
+    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError?) {
         self.data = data
         self.httpResponse = httpResponse
         self.urlRequest = urlRequest

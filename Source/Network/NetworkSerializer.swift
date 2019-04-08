@@ -13,6 +13,7 @@ import MapCodableKit
 public typealias ErrorHandler = (Error) -> Void
 public typealias CompletionHandler = () -> Void
 
+@available(*, deprecated, message: "NetworkSerializer will be removed. Use the dispatcher directly using promises.")
 open class NetworkSerializer {
     public var dispatcher: Dispatcher
     

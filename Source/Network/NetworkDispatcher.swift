@@ -45,7 +45,8 @@ open class NetworkDispatcher: Dispatcher {
                 
                 // Create the response
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-                let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: error)
+                let responseError = statusCode.makeError(cause: error)
+                let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
                 
                 DispatchQueue.main.async {
                     promise.succeed(with: response)

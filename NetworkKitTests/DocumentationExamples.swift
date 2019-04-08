@@ -247,11 +247,56 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testFullConvertExample() {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        
+        dispatcher.makeRequest(from: {
+            /// Here we can construct our request.
+            /// Any errors will throw here will be handled in the `error` callback.
+            /// So we can deal with them in one place.
+            /// Note (the errors thrown here are likely due to programmer mistakes).
+            /// Nowever you may chose to do some a validation here.
+            var request = BasicRequest(method: .post, path: "/posts")
+            try request.setJSONBody(newPost)
+            return request
+        }).future({ response in
+            /// Convert the `Promise` to a `ResponseFuture` This forces us to convert
+            /// failed response callback to an error.
+            
+            /// NOTE: This callback will change the object from a `Promise` to a `ResponseFuture`
+            /// You will no longer have access to callbacks like `thenFailure`, `success` or `failed`.
+            
+            /// We transform the failed response to anything we want
+            /// We can even parse the response body to get a server error object.
+            /// for now we will just return the response error.
+            return response.error
+        }).then({ response -> Post in
+            return try response.decode(Post.self)
+        }).response({ post in
+            /// We already transformed the success request
+            /// Handles any successful responses.
+            /// In this case the object returned in the `then` method.
+        }).error({ error in
+            /// Handles any errors during the request process,
+            /// including all request creation errors and anything
+            /// thrown in the `then` or `success` callbacks or returned
+            /// in the `future` callback.
+        }).completion({
+            /// The completion callback guaranteed to be called once
+            /// for every time the `start` method is triggered on the callback.
+        }).send()
+    }
+    
     func testFullResponseFutureExample() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
+        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
-        dispatcher.future(from: request).then({ response -> Post in
+        dispatcher.future(from: {
+            var request = BasicRequest(method: .post, path: "/posts")
+            try request.setJSONBody(newPost)
+            return request
+        }).then({ response -> Post in
             // Handles any responses and transforms them to another type
             // This includes negative responses such as 400s and 500s
             
@@ -327,7 +372,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func testMakeCallback() {
+    func testMakeRequestCallback() {
         let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         let dispatcher = NetworkDispatcher(serverProvider: self)
         

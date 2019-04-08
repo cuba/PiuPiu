@@ -249,8 +249,6 @@ A `ResponseFuture` is similar to a `Promse` except that it is simpler in that it
 
 Here is an example of a request that returns a `ResponseFuture` instead of a `ResponseFuture`
 
-**NOTE**: `SimplePromise` will eventually be renamed to `ResponseFuture`.
-
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
     // Handles any responses and transforms them to another type
@@ -284,7 +282,7 @@ dispatcher.future(from: request).then({ response -> Post in
 
 #### `future` callback
 
-The `future` callback creates the first `ResponseFuture`. This future will will send the request once the `send()` method is triggered.  
+The `future` callback creates the first `ResponseFuture`. This future will will send the request once the `send()` method is triggered.  The combination of callbacks you can create is endless.  You can transform, you can change your responses in any way as you go.  
 
 ```swift
 return dispatcher.future(from: {
@@ -364,9 +362,7 @@ These methos should **ALWAY** be called **AFTER** declaring all of your callback
 
 ## Promise
 
-NOTE: Although useful in some situations, this way of making network requests is not suggested. Instead, we should use a  `ResponseFuture` (see above).
-
-This works the same way as a `ResponseFuture` except that a `Promise` will treat the success and failure callbacks seperately.  This however creates more problems as it forces you to always handle successes and failures seperately, even if you decide to transform a failed response to an `Error`. Most of the time failures and errors are treates the same way and there is no reason why we can't transform failed responses into a custom `Error` object and have one way of dealing with failed responses and request errors.
+This works the same way as a `ResponseFuture` except that a `Promise` will treat the success and failure callbacks seperately. 
 
 ### Full Example
 
