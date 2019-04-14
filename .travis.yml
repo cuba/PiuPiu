@@ -1,6 +1,6 @@
 language: swift
 xcode_project: Example/Example.xcodeproj # path to your xcodeproj folder
-xcode_scheme: NetworkKitTests
+xcode_scheme: Example
 xcode_destination: platform=iOS Simulator,OS=12.2,name=iPhone X
 
 cache:
