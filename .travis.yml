@@ -1,5 +1,1 @@
 language: swift
-os: ios
-script:
-- swift --version
-- swift test
