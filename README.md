@@ -1,5 +1,8 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-[![Platform](https://img.shields.io/badge/platform-ios%20%7C%20osx%20%7C%20watchos%20%7C%20tvos-lightgray.svg?style=flat)](https://dashboard.buddybuild.com/apps/592348f0b74ee700016fbbe6/build/latest?branch=master)
+[![Swift 4.2](https://img.shields.io/badge/swift-4.2-lightgrey.svg?style=for-the-badge)](https://swift.org)
+![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
+![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/NetworkKit/blob/master/LICENSE)
 
 NetworkKit
 ============
