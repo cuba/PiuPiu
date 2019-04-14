@@ -8,7 +8,6 @@
 
 import UIKit
 import NetworkKit
-import MapCodableKit
 
 class ViewController: UIViewController {
     lazy var sendButton: UIButton = {
@@ -60,7 +59,7 @@ class ViewController: UIViewController {
     @objc private func tappedSendButton() {
         currentTextField?.resignFirstResponder()
         
-        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let dispatcher = AlamofireDispatcher(serverProvider: self)
         
         dispatcher.future(from: {
             return BasicRequest(method: .get, path: self.pathTextField.text ?? "")

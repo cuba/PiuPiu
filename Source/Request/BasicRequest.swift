@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MapCodableKit
 
 /// A convenience Request object for encoding JSON data.
 public struct BasicRequest: Request {
@@ -33,38 +32,6 @@ public struct BasicRequest: Request {
         for (key, value) in headers {
             self.headers[key] = value
         }
-    }
-    
-    /// Add JSON body to the request from a `MapEncodable` object.
-    ///
-    /// - Parameters:
-    ///   - mapEncodable: The `MapEncodable` object to serialize into JSON.
-    ///   - options: Writing options for serializing the `MapEncodable` object.
-    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    @available(*, deprecated, renamed: "setJSONBody(mapEncodable:options:)")
-    mutating public func setHTTPBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        try setJSONBody(mapEncodable: mapEncodable, options: options)
-    }
-    
-    /// Add body to the request from a `MapEncodable` object.
-    ///
-    /// - Parameters:
-    ///   - mapEncodable: The `MapEncodable` object to serialize into JSON.
-    ///   - options: Writing options for serializing the `MapEncodable` object.
-    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    mutating public func setJSONBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        ensureJSONContentType()
-        self.httpBody = try mapEncodable.jsonData(options: options)
-    }
-    
-    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
-    ///
-    /// - Parameters:
-    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
-    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    @available(*, deprecated, renamed: "setJSONBody(encodable:dateEncodingStrategy:)")
-    mutating public func setHTTPBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
-        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
     }
     
     /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
@@ -108,37 +75,6 @@ public struct BasicRequest: Request {
         ensureJSONContentType()
     }
     
-    /// Add JSON body to the request from a `MapEncodable` object.
-    ///
-    /// - Parameters:
-    ///   - encodable: The `MapEncodable` object to serialize into JSON.
-    ///   - options: Writing options for serializing the `MapEncodable` object.
-    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    @available(*, deprecated, renamed: "setJSONBody(_:options:)")
-    mutating public func setHTTPBody<T: MapEncodable>(_ encodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        try setJSONBody(mapEncodable: encodable, options: options)
-    }
-    
-    /// Add JSON body to the request from a `MapEncodable` object.
-    ///
-    /// - Parameters:
-    ///   - encodable: The `MapEncodable` object to serialize into JSON.
-    ///   - options: Writing options for serializing the `MapEncodable` object.
-    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    mutating public func setJSONBody<T: MapEncodable>(_ encodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        try setJSONBody(mapEncodable: encodable)
-    }
-    
-    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
-    ///
-    /// - Parameters:
-    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
-    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    @available(*, deprecated, renamed: "setJSONBody(_:dateEncodingStrategy:)")
-    mutating public func setHTTPBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
-        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
-    }
-    
     /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
     ///
     /// - Parameters:
@@ -148,11 +84,9 @@ public struct BasicRequest: Request {
         try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
     }
     
-    mutating private func ensureJSONContentType() {
+    mutating public func ensureJSONContentType() {
         if !self.headers.keys.contains("Content-Type") {
             self.headers["Content-Type"] = "application/json"
         }
     }
 }
-
-public typealias JSONRequest = BasicRequest

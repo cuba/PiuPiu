@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import MapCodableKit
 
 public extension ResponseInterface where T == Data? {
     
@@ -35,36 +34,6 @@ public extension ResponseInterface where T == Data? {
         }
         
         return string
-    }
-    
-    /// Attempt to deserialize the response data into a MapDecodable object.
-    ///
-    /// - Returns: The decoded object
-    func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
-        let data = try self.unwrapData()
-        
-        do {
-            // Attempt to deserialize the object.
-            return try D(jsonData: data)
-        } catch {
-            // Wrap this error so that we're controlling the error type and return a safe message to the user.
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
-    }
-    
-    /// Attempt to decode the response data into a MapDecodable array.
-    ///
-    /// - Returns: The decoded array
-    func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
-        let data = try self.unwrapData()
-        
-        do {
-            // Attempt to deserialize the object.
-            return try D.parseArray(jsonData: data)
-        } catch {
-            // Wrap this error so that we're controlling the error type and return a safe message to the user.
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
     }
     
     /// Attempt to Decode the response data into a Decodable object.

@@ -7,115 +7,96 @@
 //
 
 import XCTest
+@testable import Example
 @testable import NetworkKit
 
 class DocumentationExamples: XCTestCase, ServerProvider {
     
-    struct Post: Codable {
-        let id: Int?
-        let userId: Int
-        let title: String
-        let body: String
-    }
-    
     struct ServerErrorDetails: Codable {
-    }
-    
-    struct User: Codable {
-        // TODO: Make this MapCodable to test properly.
-        
-        var id: Int
-        var name: String
     }
     
     var baseURL: URL {
         return URL(string: "https://jsonplaceholder.typicode.com")!
     }
     
-    private var strongPromise: ResponsePromise<[Post], Data?>?
-    private weak var weakPromise: ResponsePromise<Data?, Data?>?
-
-    func testPostExample() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
+    private var strongFuture: ResponseFuture<[Post]>?
+    private weak var weakFuture: ResponseFuture<Response<Data?>>?
+    
+    func testSimpleRequest() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        dispatcher.make(request).success({ response in
-            let posts = try response.decode([Post].self)
-            print(posts)
-            // This method is triggered when a 2xx response comes in.
-        }).failure({ response in
-            // This method is triggered when a non 2xx response comes in.
-            // All errors in the response object are ResponseError
-            if let message = try? response.decodeString(encoding: .utf8) {
-                print(message)
+        dispatcher.future(from: request).response({ response in
+            // Handles any responses including negative responses such as 4xx and 5xx
+            
+            // The error object is available if we get an
+            // undesirable status code such as a 4xx or 5xx
+            if let error = response.error {
+                // Throwing an error in any callback will trigger the `error` callback.
+                // This allows us to pool all failures in one place.
+                throw error
             }
+            
+            let post = try response.decode(Post.self)
+            // Do something with our deserialized object
+            // ...
+            print(post)
+        }).error({ error in
+            // Handles any errors during the request process,
+            // including all request creation errors and anything
+            // thrown in the `then` or `success` callbacks.
+        }).completion({
+            // The completion callback is guaranteed to be called once
+            // for every time the `start` method is triggered on the future.
+        }).send()
+    }
+
+    func testGetPostsExample() {
+        let responseExpectation = self.expectation(description: "Response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        
+        responseExpectation.expectedFulfillmentCount = 1
+        completionExpectation.expectedFulfillmentCount = 1
+        errorExpectation.isInverted = true
+        
+        getPosts().response({ posts in
+            // Handle the success which will give your posts.
+            responseExpectation.fulfill()
         }).error({ error in
             // Triggers whenever an error is thrown.
             // This includes deserialization errors, unwraping failures, and anything else that is thrown
-            // in a `success`, `error`, `then` or `thenFailure` block in any chained promise.
-            // These errors are often application related errors but can be caused
-            // because of invalid server responses (example: when deserializing the response data).
-            print(error)
+            // in a any other throwable callback.
+            errorExpectation.fulfill()
         }).completion({
-            expectation.fulfill()
+            // Always triggered at the very end to inform you this future has been satisfied.
+            completionExpectation.fulfill()
         }).send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testAddDataToRequest() {
-        // Given
-        let myData = Data(count: 0)
+    private func getPosts() -> ResponseFuture<[Post]> {
+        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let request = BasicRequest(method: .get, path: "/posts")
         
-        var request = BasicRequest(method: .post, path: "/users")
-        request.httpBody = myData
-    }
-    
-    func testEncodeJsonString() {
-        // Given
-        let jsonString = """
-            {
-                "name": "Jim Halpert"
+        // We create a future and tell it to transform the response using the
+        // `then` callback.
+        return dispatcher.future(from: request).then({ response -> [Post] in
+            if let error = response.error {
+                // The error is available when a non-2xx response comes in
+                // Such as a 4xx or 5xx
+                // You may also parse a custom error object here.
+                throw error
+            } else {
+                // Return the decoded object. If an error is thrown while decoding,
+                // It will be caught in the `error` callback.
+                return try response.decode([Post].self)
             }
-        """
-        
-        // Example
-        var request = BasicRequest(method: .post, path: "/users")
-        request.setHTTPBody(string: jsonString, encoding: .utf8)
+        })
     }
     
-    func testEncodeJsonObject() {
-        do {
-            let jsonObject: [String: Any?] = [
-                "id": "123",
-                "name": "Kevin Malone"
-            ]
-            
-            var request = BasicRequest(method: .post, path: "/users")
-            try request.setHTTPBody(jsonObject: jsonObject)
-        } catch {
-            XCTFail("Should not throw")
-        }
-    }
-    
-    func testEncodeEncodable() {
-        let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(encodable: myCodable)
-        } catch {
-            XCTFail("Should not throw")
-        }
-    }
-    
-    func testEncodeMapEncodable() {
-        // TODO
-    }
-    
-    func testWrapEncodingInAPromise() {
+    func testWrapEncodingInAFuture() {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
@@ -123,7 +104,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // Example
-        dispatcher.makeRequest(from: {
+        dispatcher.future(from: {
             var request = BasicRequest(method: .post, path: "")
             try request.setJSONBody(myCodable)
             return request
@@ -136,122 +117,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testUnwrappingData() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let data = try response.unwrapData()
-            
-            // do something with data.
-            print(data)
-        }).error({ error in
-            // Triggered when unwrapData fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testDecodingString() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let string = try response.decodeString(encoding: .utf8)
-            
-            // do something with string.
-            print(string)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testDecodingDecodable() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let posts = try response.decode(Post.self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testDecodingMapDecodable() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/users/1")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let post = try response.decode(User.self)
-            
-            // do something with string.
-            print(post)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testDecodingMapDecodableArray() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/users")
-        
-        // Example
-        dispatcher.make(request).success({ response in
-            let posts = try response.decode([User].self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-            print(error)
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
     func testFullConvertExample() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
-        dispatcher.makeRequest(from: {
+        dispatcher.promise(from: {
             /// Here we can construct our request.
             /// Any errors will throw here will be handled in the `error` callback.
             /// So we can deal with them in one place.
@@ -270,7 +140,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             /// We transform the failed response to anything we want
             /// We can even parse the response body to get a server error object.
             /// for now we will just return the response error.
-            return response.error
+            throw response.error
         }).then({ response -> Post in
             return try response.decode(Post.self)
         }).response({ post in
@@ -326,7 +196,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        dispatcher.make(request).then({ response -> Post in
+        dispatcher.promise(from: request).then({ response -> Post in
             // The `then` callback transforms a successful response
             return try response.decode(Post.self)
         }).thenFailure({ response -> ServerErrorDetails in
@@ -348,84 +218,27 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func testPromiseFromResponseFutureExample() {
+    func testConvertPromiseToResponseFuture() {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        dispatcher.make(request).future({ failedResponse in
-            // Sice a `SimplePromse` does not handle `failure` callbacks,
-            // we have to transform this to an `Error` object.
-            // This is triggered when a failed response is recieved
-            // But it always transforms the `FutreResponse` to a `Promse`.
+        dispatcher.promise(from: request).future({ failedResponse in
+            // Sice a `Promise` does not handle `failure` callbacks,
+            // we have to transform this to a response or error object.
+            // This callback will only be trigged if a `failure` callback
+            // would otherwise be triggered.
             
-            // You can simply return the response error or return something a little more custom
-            // NOTE: You may want to use `dispatcher.promise(from: request)` instead.
-            return failedResponse.error
+            // WARNING: This replaces any `success` callback you made prior to this one.
+            
+            // You can simply throw the response error or throw something a little more custom
+            throw failedResponse.error
         }).response({ response in
-            // A success response. Because we used a Promise, this returns a `SuccessResponse`.
-            // However we can have had a bit more control, if we used `dispatcher.promise(from: request)` directly.
+            // Because we used a Promise initially, this callback will return a `SuccessResponse`.
         }).error({ error in
-            // This handles all errors thrown during the request creation process and
-            // the error returned in the `promise` callback.
+            // Because we used a Promise initially, this callback will handle all errors the promise
+            // handled, plus anything we throw in the `future` callback.
         }).completion({
             // Always triggered for every time we trigger `start()`
-        }).send()
-    }
-    
-    func testMakeRequestCallback() {
-        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        
-        dispatcher.makeRequest(from: {
-            var request = BasicRequest(method: .post, path: "/post")
-            try request.setJSONBody(newPost)
-            return request
-        }).send()
-        
-        
-        let request = BasicRequest(method: .get, path: "/posts")
-        dispatcher.make(request).send()
-    }
-    
-    func testSuccessCallback() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
-        
-        dispatcher.make(request).success({ response in
-            // When everything succeeds including the network call and deserialization
-        }).send()
-    }
-
-    func testThenCallback() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
-        
-        dispatcher.make(request).then({ response -> SuccessResponse<Post> in
-            // The `then` callback transforms a successful response
-            // You can return any object here and this will be reflected on the success callback.
-            let post = try response.decode(Post.self)
-            return SuccessResponse<Post>(data: post, response: response)
-        }).success({ post in
-            // Handles any success responses.
-            // In this case the object returned in the `then` method.
-        }).send()
-    }
-    
-    func testThenFailureCallback() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts")
-        
-        dispatcher.make(request).thenFailure({ response -> ErrorResponse<ServerErrorDetails?> in
-            // The `thenFailure` callback transforms a failed response.
-            // You can return any object here and this will be reflected on the failure callback.
-            
-            // Note: You should make this non-failing since server errors can be unpredictable,
-            // especially in the case of 5xx errors.
-            let post = try? response.decode(ServerErrorDetails.self)
-            return ErrorResponse<ServerErrorDetails?>(data: post, response: response)
-        }).failure({ response in
-            // Handles any failed responses.
-            // In this case the object returned in the `thenFailure` method.
         }).send()
     }
     
@@ -434,13 +247,12 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        dispatcher.make(request).then({ response -> SuccessResponse<[Post]> in
+        dispatcher.future(from: request).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
-            let posts = try response.decode([Post].self)
-            return SuccessResponse<[Post]>(data: posts, response: response)
-        }).success({ [weak self] response in
+            return try response.decode([Post].self)
+        }).response({ [weak self] post in
             // [weak self] needed as `self` is called
-            self?.show(response.data)
+            self?.show(post)
         }).completion({
             // [weak self] needed as `self` is called
             // You can use an optional self directly.
@@ -456,23 +268,22 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        self.strongPromise = dispatcher.make(request).then({ response in
+        self.strongFuture = dispatcher.future(from: request).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
-            let posts = try response.decode([Post].self)
-            return SuccessResponse<[Post]>(data: posts, response: response)
-        }).success({ [weak self] response in
+            return try response.decode([Post].self)
+        }).response({ [weak self] post in
             // [weak self] needed as `self` is called
-            self?.show(response.data)
+            self?.show(post)
         }).completion({ [weak self] in
             // [weak self] needed as `self` is called
-            self?.strongPromise = nil
+            self?.strongFuture = nil
             expectation.fulfill()
         })
         
         // Perform other logic, add delay, do whatever you would do that forced you
         // to store a reference to this promise in the first place
         
-        self.strongPromise?.send()
+        self.strongFuture?.send()
         waitForExpectations(timeout: 5, handler: nil)
     }
     
@@ -482,7 +293,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        self.weakPromise = dispatcher.make(request).completion({
+        self.weakFuture = dispatcher.future(from: request).completion({
             // [weak self] needed as `self` is not called
             expectation.fulfill()
         })
@@ -490,8 +301,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         // Our object is already nil because we have not established a strong reference to it.
         // The `send` method will do nothing. No callback will be triggered.
         
-        XCTAssertNil(self.weakPromise)
-        self.weakPromise?.send()
+        XCTAssertNil(self.weakFuture)
+        self.weakFuture?.send()
         waitForExpectations(timeout: 2, handler: nil)
     }
     
@@ -500,65 +311,18 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
         
-        self.weakPromise = dispatcher.make(request).completion({
+        self.weakFuture = dispatcher.future(from: request).completion({
             // Always triggered
             expectation.fulfill()
         }).send()
         
-        XCTAssertNotNil(self.weakPromise)
+        XCTAssertNotNil(self.weakFuture)
         
         // This promise may still be nil at this point
         // if the request is still pending and no errors
         // are thrown during the request creation process.
         waitForExpectations(timeout: 5, handler: nil)
-        XCTAssertNil(self.weakPromise)
-    }
-    
-    func testReturnedPromiseExample() {
-        fetchPost(id: 1).success({ response in
-            // Show success
-        }).failure({ response in
-            // Show error response
-        }).error({ error in
-            // Show error
-        }).send()
-    }
-    
-    func testAdvancedPromise() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        
-        Promise<Post, ServerErrorDetails>(action: { promise in
-            // `fulfill` calls the succeed and fail methods.
-            // The promise that is fullfilling another promise must be transformed
-            // first using `then` and `thenFailure` so that it is of the same type
-            // before the fulfill method can be called.
-            // You may also succeed or fail the promise manually.
-            // `fulfill `calls `start` so there is no need to call it.
-            
-            dispatcher.make(request).then({ response in
-                // `then` callback is triggered only when a successful response comes back.
-                return try response.decode(Post.self)
-            }).thenFailure({ response in
-                // `thenFailure` callback is triggered only when an unsusccessful response comes back.
-                return try response.decode(ServerErrorDetails.self)
-            }).fulfill(promise)
-        }).completion({
-            // Perform operation on completion
-            expectation.fulfill()
-        }).start()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    private func fetchPost(id: Int) -> Promise<SuccessResponse<Data?>, ErrorResponse<Data?>> {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let request = BasicRequest(method: .get, path: "/posts/\(id)")
-        
-        return dispatcher.make(request)
+        XCTAssertNil(self.weakFuture)
     }
     
     private func show(_ posts: [Post]) {
