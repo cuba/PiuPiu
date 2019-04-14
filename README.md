@@ -1,4 +1,3 @@
-[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Swift 4.2](https://img.shields.io/badge/swift-4.2-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 ![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)
