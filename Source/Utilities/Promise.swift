@@ -138,21 +138,6 @@ public class Promise<T, E> {
         return self
     }
     
-    /// This method triggers the action method defined on this promise.
-    ///
-    /// - Returns: `self`
-    @discardableResult
-    public func start() -> Promise<T, E> {
-        do {
-            self.status = .started
-            try action(self)
-        } catch {
-            self.catch(error)
-        }
-        
-        return self
-    }
-    
     /// Convert the success callback to another type.
     ///
     /// - Parameter callback: The callback that does the conversion.
@@ -187,16 +172,36 @@ public class Promise<T, E> {
         }
     }
     
-    public func future(_ callback: @escaping (E) throws -> Error) -> ResponseFuture<T> {
+    
+    /// Transform this object to a future
+    ///
+    /// - Parameter callback: Since futures don't support failure, callback, we need to transform it to an error
+    /// - Returns: <#return value description#>
+    public func future(_ callback: @escaping (E) throws -> T) -> ResponseFuture<T> {
         return ResponseFuture<T>() { promise in
             self.success({ response in
                 promise.succeed(with: response)
             }).failure({ response in
-                let error = try callback(response)
-                promise.fail(with: error)
+                let result = try callback(response)
+                promise.succeed(with: result)
             }).error({ error in
                 promise.fail(with: error)
             }).start()
         }
+    }
+    
+    /// This method triggers the action method defined on this promise.
+    ///
+    /// - Returns: `self`
+    @discardableResult
+    public func start() -> Promise<T, E> {
+        do {
+            self.status = .started
+            try action(self)
+        } catch {
+            self.catch(error)
+        }
+        
+        return self
     }
 }

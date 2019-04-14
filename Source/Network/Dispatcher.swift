@@ -35,7 +35,16 @@ public extension Dispatcher {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
+    @available(*, deprecated, renamed: "promise(from:)")
     func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
+        return self.promise(from: request)
+    }
+    
+    /// Make a promise to send the request.
+    ///
+    /// - Parameter request: The request to send.
+    /// - Returns: The promise that will send the request.
+    func promise(from request: Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             self.future(from: request).response({ response in
                 if let responseError = response.error {
@@ -55,10 +64,19 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
+    @available(*, deprecated, renamed: "promise(from:)")
     func makeRequest(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
+        return promise(from: callback)
+    }
+    
+    /// Make a promise to send the network call.
+    ///
+    /// - Parameter callback: A callback that constructs the Request object.
+    /// - Returns: A promise to make the network call.
+    func promise(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
-            let requestPromise = self.make(request)
+            let requestPromise = self.promise(from: request)
             requestPromise.fulfill(promise)
         }
     }

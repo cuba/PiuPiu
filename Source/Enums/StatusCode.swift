@@ -39,7 +39,7 @@ import Foundation
 /// - httpVersionNotSupported: 505
 /// - other: Any status codes not covered by this enum.
 public enum StatusCode: Equatable {
-    
+   
     static let predefined: [StatusCode] = [
         .ok, .created, .accepted, .noContent, .resetContent, .partialContent, .multiStatus, .alreadyReported, .imUsed,
         .badRequest, .unauthorized, .paymentRequired, .forbidden, .notFound, .methodNotAllowed, .notAcceptable, .unprocessableEntity, .conflict, .gone, .lengthRequired, .unsupportedMediaType,
@@ -163,6 +163,14 @@ public enum StatusCode: Equatable {
     
     public static func == (lhs: StatusCode, rhs: StatusCode) -> Bool {
         return lhs.rawValue == rhs.rawValue
+    }
+}
+
+extension StatusCode: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(Int.self)
+        self = StatusCode(rawValue: rawValue)
     }
 }
 

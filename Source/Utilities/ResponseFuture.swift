@@ -124,11 +124,74 @@ public class ResponseFuture<T> {
         }
     }
     
+    /// Return a new future with the results of both futures.
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+        return ResponseFuture<(T, U)>() { future in
+            self.response({ response in
+                let newPromise = try callback(response)
+                
+                newPromise.response({ newResponse in
+                    future.succeed(with: (response, newResponse))
+                }).error({ error in
+                    future.fail(with: error)
+                }).send()
+            }).error({ error in
+                future.fail(with: error)
+            }).send()
+        }
+    }
+    
+    /// Await the completion of another future
+    ///
+    /// - Parameter callback: The callback that retuns the nested future. If a null is returned, it succeeds this future.
+    /// - Returns: This future
+    public func await<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<T> {
+        return ResponseFuture<T>() { future in
+            self.response({ response in
+                guard let newPromise = try callback(response) else {
+                    future.succeed(with: response)
+                    return
+                }
+                
+                newPromise.response({ newResponse in
+                    future.succeed(with: response)
+                }).error({ error in
+                    future.fail(with: error)
+                }).send()
+            }).error({ error in
+                future.fail(with: error)
+            }).send()
+        }
+    }
+    
+    /// Return a new future with the results of the future retuned in the callback.
+    ///
+    /// - Parameter callback: The future that returns the results we want to return.
+    /// - Returns: The
+    public func replace<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<U> {
+        return ResponseFuture<U>() { future in
+            self.response({ response in
+                let newPromise = try callback(response)
+                
+                newPromise.response({ newResponse in
+                    future.succeed(with: newResponse)
+                }).error({ error in
+                    future.fail(with: error)
+                }).send()
+            }).error({ error in
+                future.fail(with: error)
+            }).send()
+        }
+    }
+    
     /// This method triggers the action method defined on this promise.
     ///
     /// - Returns: `self`
     @discardableResult
-    public func send() -> ResponseFuture<T> {
+    public func start() -> ResponseFuture<T> {
         do {
             self.status = .started
             try action(self)
@@ -137,5 +200,13 @@ public class ResponseFuture<T> {
         }
         
         return self
+    }
+    
+    /// This method triggers the action method defined on this promise.
+    ///
+    /// - Returns: `self`
+    @discardableResult
+    public func send() -> ResponseFuture<T> {
+        return start()
     }
 }
