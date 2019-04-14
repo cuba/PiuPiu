@@ -28,6 +28,8 @@
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F591226303B4002CDAAF /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F58D22630365002CDAAF /* NetworkKit.framework */; };
 		DAA9F592226303B4002CDAAF /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F58D22630365002CDAAF /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */; };
+		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
 		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
 
@@ -94,6 +96,8 @@
 		DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NetworkKit.xcodeproj; path = ../NetworkKit.xcodeproj; sourceTree = "<group>"; };
 		DAA9F595226303FC002CDAAF /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
+		DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockDispatcher+Extensions.swift"; sourceTree = "<group>"; };
+		DAA9F5E42263D513002CDAAF /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationExamples.swift; sourceTree = "<group>"; };
@@ -160,6 +164,7 @@
 			children = (
 				DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */,
 				DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */,
+				DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -215,6 +220,7 @@
 				DAA9F546226231A5002CDAAF /* PlaygroundTests.swift */,
 				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
 				DAE5EF6922190A0200D1990B /* Info.plist */,
+				DAA9F5E42263D513002CDAAF /* TestHelper.swift */,
 			);
 			path = NetworkKitTests;
 			sourceTree = "<group>";
@@ -368,6 +374,7 @@
 				DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
+				DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */,
 				DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */,
@@ -380,6 +387,7 @@
 			files = (
 				DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */,
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
+				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAA9F5692262473A002CDAAF /* PromiseTests.swift in Sources */,
 				DAA9F547226231A5002CDAAF /* PlaygroundTests.swift in Sources */,

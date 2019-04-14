@@ -81,10 +81,9 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<User> {
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
         let request = BasicRequest(method: .get, path: "/users/\(id)")
         let user = User(id: id, name: "Jim Halpert")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: user, status: .ok)
         
         do {
             try dispatcher.setMockData(user)
@@ -99,10 +98,9 @@ class ResponseFutureTests: XCTestCase {
     
     func testFuture() {
         let expectation = self.expectation(description: "Success response triggered")
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
         let request = BasicRequest(method: .get, path: "/posts")
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         do {
             try dispatcher.setMockData([post])

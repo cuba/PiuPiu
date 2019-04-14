@@ -23,8 +23,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     private weak var weakFuture: ResponseFuture<Response<Data?>>?
     
     func testSimpleRequest() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         dispatcher.future(from: request).response({ response in
             // Handles any responses including negative responses such as 4xx and 5xx
@@ -77,8 +78,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     private func getPosts() -> ResponseFuture<[Post]> {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         // We create a future and tell it to transform the response using the
         // `then` callback.
@@ -97,16 +99,17 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testWrapEncodingInAFuture() {
+        // Given
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        
+        // Then
         let expectation = self.expectation(description: "Success response triggered")
         
-        // Given
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        // Example
+        // When
         dispatcher.future(from: {
-            var request = BasicRequest(method: .post, path: "")
-            try request.setJSONBody(myCodable)
+            var request = BasicRequest(method: .post, path: "/posts")
+            try request.setJSONBody(post)
             return request
         }).error({ error in
             // Any error thrown while creating the request will trigger this callback.
@@ -118,8 +121,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testFullConvertExample() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         dispatcher.promise(from: {
             /// Here we can construct our request.
@@ -128,7 +131,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             /// Note (the errors thrown here are likely due to programmer mistakes).
             /// Nowever you may chose to do some a validation here.
             var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(newPost)
+            try request.setJSONBody(post)
             return request
         }).future({ response in
             /// Convert the `Promise` to a `ResponseFuture` This forces us to convert
@@ -159,12 +162,12 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testFullResponseFutureExample() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
-        let newPost = Post(id: nil, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: post, status: .ok)
         
         dispatcher.future(from: {
             var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(newPost)
+            try request.setJSONBody(post)
             return request
         }).then({ response -> Post in
             // Handles any responses and transforms them to another type
@@ -193,8 +196,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testFullPromiseExample() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         dispatcher.promise(from: request).then({ response -> Post in
             // The `then` callback transforms a successful response
@@ -219,8 +223,9 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testConvertPromiseToResponseFuture() {
-        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
         
         dispatcher.promise(from: request).future({ failedResponse in
             // Sice a `Promise` does not handle `failure` callbacks,
@@ -244,8 +249,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     func testWeakCallbacks() {
         let expectation = self.expectation(description: "Success response triggered")
-        let dispatcher = NetworkDispatcher(serverProvider: self)
+        
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
         
         dispatcher.future(from: request).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
@@ -265,8 +273,10 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     func testWeakCallbacksStrongReference() {
         let expectation = self.expectation(description: "Success response triggered")
-        let dispatcher = NetworkDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
         
         self.strongFuture = dispatcher.future(from: request).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
@@ -290,8 +300,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     func testWeakCallbacksWeakReferenceDealocated() {
         let expectation = self.expectation(description: "Success response should not be triggered")
         expectation.isInverted = true
-        let dispatcher = NetworkDispatcher(serverProvider: self)
+        
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
         
         self.weakFuture = dispatcher.future(from: request).completion({
             // [weak self] needed as `self` is not called
@@ -308,8 +321,11 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     
     func testWeakCallbacksWeakReference() {
         let expectation = self.expectation(description: "Success response triggered")
-        let dispatcher = NetworkDispatcher(serverProvider: self)
+        
         let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
         
         self.weakFuture = dispatcher.future(from: request).completion({
             // Always triggered

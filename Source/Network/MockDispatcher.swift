@@ -13,6 +13,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     open var mockData: Data?
     open var mockStatusCode: StatusCode
     open var mockHeaders: [String: String]
+    open var delay: TimeInterval = 0
     public var baseURL: URL
     
     func response(from request: Request) throws -> Response<Data?> {
@@ -47,7 +48,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     ///
     /// - Parameter encodable: The object to encode into JSON
     /// - Throws: Throws if the object cannot be encoded
-    func setMockData<T: Encodable>(encodable: T) throws {
+    public func setMockData<T: Encodable>(encodable: T) throws {
         self.mockData = try JSONEncoder().encode(encodable)
     }
     
@@ -57,7 +58,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     ///   - jsonObject: The object to encode into JSON
     ///   - options: The encoding options
     /// - Throws: Throws if the object cannot be encoded.
-    func setMockData(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
+    public func setMockData(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
         self.mockData = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
     }
     
@@ -66,7 +67,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     /// - Parameters:
     ///   - jsonString: The string to encode
     ///   - encoding: The string encoding that will be used
-    func setMockData(jsonString: String, encoding: String.Encoding = .utf8) {
+    public func setMockData(jsonString: String, encoding: String.Encoding = .utf8) {
         self.mockData = jsonString.data(using: encoding)
     }
     
@@ -74,7 +75,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     ///
     /// - Parameter encodable: The object to encode into JSON
     /// - Throws: Throws if the object cannot be encoded
-    func setMockData<T: Encodable>(_ encodable: T) throws {
+    public func setMockData<T: Encodable>(_ encodable: T) throws {
         try setMockData(encodable: encodable)
     }
     
@@ -85,7 +86,10 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     public func future(from request: Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             let response = try self.response(from: request)
-            promise.succeed(with: response)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + self.delay) { // Change `2.0` to the desired
+                promise.succeed(with: response)
+            }
         }
     }
 }
