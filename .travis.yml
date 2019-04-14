@@ -1,5 +1,5 @@
 language: swift
-os: osx
+os: ios
 script:
 - swift --version
 - swift test
