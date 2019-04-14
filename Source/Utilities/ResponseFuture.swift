@@ -128,7 +128,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
-    func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+    public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
         return ResponseFuture<(T, U)>() { future in
             self.response({ response in
                 let newPromise = try callback(response)
@@ -148,7 +148,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that retuns the nested future. If a null is returned, it succeeds this future.
     /// - Returns: This future
-    func await<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<T> {
+    public func await<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<T> {
         return ResponseFuture<T>() { future in
             self.response({ response in
                 guard let newPromise = try callback(response) else {
@@ -171,7 +171,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
-    func replace<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<U> {
+    public func replace<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<U> {
         return ResponseFuture<U>() { future in
             self.response({ response in
                 let newPromise = try callback(response)
