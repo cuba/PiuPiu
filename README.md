@@ -13,8 +13,9 @@ NetworkKit
 - [Decoding](#decoding)
 - [ResponseFuture](#responsefuture)
 - [Memory Managment](#memory-managment)
-- [Custom Decoder](#custom-decoder)
-- [MockDispatcher](#mockdispatcher)
+- [Custom Encoding](#custom-encoding)
+- [Custom Decoding](#custom-decoding)
+- [Mock Dispatcher](#mock-dispatcher)
 - [Future Features](#future-features)
 - [Dependencies](#dependencies)
 - [Credits](#credits)
@@ -613,7 +614,7 @@ extension BasicRequest {
 }
 ```
 
-## Custom Decoder
+## Custom Decoding
 
 Similar to encoding, you can also add Decoding support for whatever decoder you are using, including `ObjectMapper` by extending the `ResponseInterface`
 
@@ -690,7 +691,7 @@ extension ResponseInterface where T == Data? {
 }
 ```
 
-## MockDispatcher
+## Mock Dispatcher
 
 Testing network calls is always a pain.  That's why we included the `MockDispatcher`.  It allows you to simulate network responses without actually making network calls.
 
