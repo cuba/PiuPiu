@@ -4,14 +4,11 @@ xcode_project: Example/Example.xcodeproj # path to your xcodeproj folder
 xcode_scheme: Example
 xcode_destination: platform=iOS Simulator,OS=12.2,name=iPhone Xs
 
-cache:
-  directories:
-  - Carthage
-
 before_install:
   - brew install carthage || true
   - brew outdated carthage || brew upgrade carthage
 
 before_script:
   # bootstrap the dependencies for the project
-  - carthage bootstrap --platform iOS --no-use-binaries --cache-builds
+  - cd Example
+  - carthage bootstrap --platform iOS
