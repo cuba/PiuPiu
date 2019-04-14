@@ -1,6 +1,6 @@
 //
 //  HTTPMethod.swift
-//  NetworkKit iOS
+//  PewPew iOS
 //
 //  Created by Jacob Sikorski on 2018-12-02.
 //  Copyright © 2018 Jacob Sikorski. All rights reserved.

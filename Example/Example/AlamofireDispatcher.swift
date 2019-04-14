@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import NetworkKit
+import PewPew
 import Alamofire
 
 class AlamofireDispatcher: Dispatcher {
@@ -22,7 +22,7 @@ class AlamofireDispatcher: Dispatcher {
         self.sessionManager = SessionManager()
     }
     
-    func future(from request: NetworkKit.Request) -> ResponseFuture<Response<Data?>> {
+    func future(from request: PewPew.Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             guard let serverProvider = self.serverProvider else {
                 throw RequestError.missingServerProvider

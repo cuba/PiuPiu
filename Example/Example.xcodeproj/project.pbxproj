@@ -26,27 +26,27 @@
 		DAA9F5692262473A002CDAAF /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5682262473A002CDAAF /* PromiseTests.swift */; };
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
-		DAA9F591226303B4002CDAAF /* NetworkKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F58D22630365002CDAAF /* NetworkKit.framework */; };
-		DAA9F592226303B4002CDAAF /* NetworkKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F58D22630365002CDAAF /* NetworkKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
+		DAA9F5EE2263EEA8002CDAAF /* PewPew.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */; };
+		DAA9F5EF2263EEA8002CDAAF /* PewPew.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DAA9F58C22630365002CDAAF /* PBXContainerItemProxy */ = {
+		DAA9F5EC2263EE9E002CDAAF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */;
+			containerPortal = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8CC507E41ED35A8D00C19524;
-			remoteInfo = "NetworkKit iOS";
+			remoteInfo = "PewPew iOS";
 		};
-		DAA9F593226303B5002CDAAF /* PBXContainerItemProxy */ = {
+		DAA9F5F02263EEA8002CDAAF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */;
+			containerPortal = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8CC507E31ED35A8D00C19524;
-			remoteInfo = "NetworkKit iOS";
+			remoteInfo = "PewPew iOS";
 		};
 		DAE5EF6A22190A0200D1990B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -64,7 +64,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DAA9F592226303B4002CDAAF /* NetworkKit.framework in Embed Frameworks */,
+				DAA9F5EF2263EEA8002CDAAF /* PewPew.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -93,7 +93,7 @@
 		DAA9F5682262473A002CDAAF /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
-		DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = NetworkKit.xcodeproj; path = ../NetworkKit.xcodeproj; sourceTree = "<group>"; };
+		DAA9F58822630365002CDAAF /* PewPew.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PewPew.xcodeproj; path = ../PewPew.xcodeproj; sourceTree = "<group>"; };
 		DAA9F595226303FC002CDAAF /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockDispatcher+Extensions.swift"; sourceTree = "<group>"; };
@@ -108,9 +108,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA9F5EE2263EEA8002CDAAF /* PewPew.framework in Frameworks */,
 				DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */,
 				DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */,
-				DAA9F591226303B4002CDAAF /* NetworkKit.framework in Frameworks */,
 				DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -128,7 +128,7 @@
 		8CC508071ED35E7D00C19524 = {
 			isa = PBXGroup;
 			children = (
-				DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */,
+				DAA9F58822630365002CDAAF /* PewPew.xcodeproj */,
 				8CC508121ED35E7D00C19524 /* Source */,
 				DAA9F5862262E47C002CDAAF /* Supporting Files */,
 				DAE5EF6622190A0200D1990B /* NetworkKitTests */,
@@ -192,10 +192,10 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		DAA9F58922630365002CDAAF /* Products */ = {
+		DAA9F5E92263EE9E002CDAAF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DAA9F58D22630365002CDAAF /* NetworkKit.framework */,
+				DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -241,7 +241,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DAA9F594226303B5002CDAAF /* PBXTargetDependency */,
+				DAA9F5F12263EEA8002CDAAF /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = Example;
@@ -303,8 +303,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DAA9F58922630365002CDAAF /* Products */;
-					ProjectRef = DAA9F58822630365002CDAAF /* NetworkKit.xcodeproj */;
+					ProductGroup = DAA9F5E92263EE9E002CDAAF /* Products */;
+					ProjectRef = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -316,11 +316,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DAA9F58D22630365002CDAAF /* NetworkKit.framework */ = {
+		DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = NetworkKit.framework;
-			remoteRef = DAA9F58C22630365002CDAAF /* PBXContainerItemProxy */;
+			path = PewPew.framework;
+			remoteRef = DAA9F5EC2263EE9E002CDAAF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -398,10 +398,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DAA9F594226303B5002CDAAF /* PBXTargetDependency */ = {
+		DAA9F5F12263EEA8002CDAAF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "NetworkKit iOS";
-			targetProxy = DAA9F593226303B5002CDAAF /* PBXContainerItemProxy */;
+			name = "PewPew iOS";
+			targetProxy = DAA9F5F02263EEA8002CDAAF /* PBXContainerItemProxy */;
 		};
 		DAE5EF6B22190A0200D1990B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

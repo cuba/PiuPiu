@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import NetworkKit
+import PewPew
 
 class ViewController: UIViewController {
     lazy var sendButton: UIButton = {
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
-        title = "Example "
+        title = "PewPew"
         setupLayout()
         
         // Configure the Text Fields

@@ -10,8 +10,8 @@ import Foundation
 
 public extension Bundle {
     
-    /// Access to the `NetworkKit` Bundle
+    /// Access to the `PewPew` Bundle
     static var networkKit: Bundle {
-        return Bundle(identifier: "com.jacobsikorski.NetworkKit")!
+        return Bundle(identifier: "com.jacobsikorski.PewPew")!
     }
 }

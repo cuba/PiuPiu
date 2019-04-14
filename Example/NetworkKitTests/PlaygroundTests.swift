@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import NetworkKit
+@testable import PewPew
 
 class PlaygroundTests: XCTestCase, ServerProvider {
     

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import NetworkKit
+import PewPew
 import ObjectMapper
 import MapCodableKit
 

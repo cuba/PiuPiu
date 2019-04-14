@@ -1,6 +1,6 @@
 //
 //  SerializationError.swift
-//  NetworkKit iOS
+//  PewPew iOS
 //
 //  Created by Jacob Sikorski on 2017-12-23.
 //  Copyright © 2017 Jacob Sikorski. All rights reserved.
@@ -43,7 +43,7 @@ extension SerializationError: LocalizedError {
 
 extension SerializationError: CustomNSError {
     public static var errorDomain: String {
-        return "NetworkKit.SerializationError"
+        return "PewPew.SerializationError"
     }
     
     public var errorCode: Int {

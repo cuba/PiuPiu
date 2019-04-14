@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import NetworkKit
+@testable import PewPew
 @testable import Example
 
 class PromiseTests: XCTestCase {

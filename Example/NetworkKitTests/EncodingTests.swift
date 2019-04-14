@@ -8,7 +8,7 @@
 
 import XCTest
 @testable import Example
-@testable import NetworkKit
+@testable import PewPew
 
 class EncodingTests: XCTestCase {
 
