@@ -354,13 +354,50 @@ dispatcher.future(from: request).then({ response -> Post in
 })
 ```
 
-#### `send`
+#### `send` or `start`
 
 This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server. 
 
 **NOTE**: If this method is not called, nothing will happen (no request will be made).
 **NOTE**: This method should **ALWAYS** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
 **NOTE**:  This method should **ONLY** be called **ONCE**.
+
+### Creating your own ResponseFuture
+
+You can create your own ResponseFuture for a variety of reasons. If you do, you will have all the benefits you have seen so far.
+
+Here is an example of a response future that does decoding in another thread.
+
+```
+return ResponseFuture<[Post]>(action: { future in
+    // This is an example of how a future is executed and
+    // fulfilled.
+
+    // You should always syncronize
+    DispatchQueue.global(qos: .userInitiated).async {
+        // lets make an expensive operation on a background thread.
+        // The below is just an example of how you can parse on a seperate thread.
+
+        do {
+            // Do an expensive operation here ....
+            let posts = try response.decode([Post].self)
+
+            DispatchQueue.main.async {
+                // We should syncronyze the result back to the main thread.
+                future.succeed(with: posts)
+            }
+        } catch {
+            // We can handle any errors as well.
+            DispatchQueue.main.async {
+                // We should syncronize the error to the main thread.
+                future.fail(with: error)
+            }
+        }
+    }
+})
+```
+
+**NOTE** You should **ALWAYS** syncronize the results on the main thread before succeeding or failing your future
 
 ## Memory Managment
 

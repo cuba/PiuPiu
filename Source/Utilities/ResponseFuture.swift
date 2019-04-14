@@ -191,7 +191,7 @@ public class ResponseFuture<T> {
     ///
     /// - Returns: `self`
     @discardableResult
-    public func send() -> ResponseFuture<T> {
+    public func start() -> ResponseFuture<T> {
         do {
             self.status = .started
             try action(self)
@@ -200,5 +200,13 @@ public class ResponseFuture<T> {
         }
         
         return self
+    }
+    
+    /// This method triggers the action method defined on this promise.
+    ///
+    /// - Returns: `self`
+    @discardableResult
+    public func send() -> ResponseFuture<T> {
+        return start()
     }
 }
