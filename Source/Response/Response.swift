@@ -26,9 +26,9 @@ public struct Response<T>: ResponseInterface {
     public let statusCode: StatusCode
     
     /// Handles common errors like 4xx and 5xx errors.
-    /// Network related errorrs are handled directly in
+    /// Network related errors are handled directly in
     /// The error callback.
-    let error: ResponseError?
+    public let error: ResponseError?
     
     /// Create a successful response object.
     ///
