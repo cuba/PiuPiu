@@ -1,3 +1,17 @@
 language: swift
 xcode_project: Example/NetworkKit.xcodeproj # path to your xcodeproj folder
 xcode_scheme: NetworkKitTests
+xcode_destination: platform=iOS Simulator,OS=12.2,name=iPhone X
+
+cache:
+  directories:
+  - Carthage
+
+before_install:
+  - brew install carthage || true
+  - brew outdated carthage || brew upgrade carthage
+  - gem install xcpretty-travis-formatter --no-rdoc --no-ri --no-document --quiet
+
+before_script:
+  # bootstrap the dependencies for the project
+  - carthage bootstrap --platform iOS --no-use-binaries --cache-builds
