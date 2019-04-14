@@ -45,7 +45,7 @@ A: Because "pew pew" is the sound of lazers. And lazers are from the future.
 
 ### Carthage
 
-[Carthage](https://github.com/cuba/NetworkKit) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
 
 You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
 
@@ -54,20 +54,20 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate NetworkKit into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate PewPew into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/NetworkKit" ~> 4.2
+github "cuba/PewPew" ~> 1.0
 ```
 
-Run `carthage update` to build the framework and drag the built `NetworkKit.framework` into your Xcode project.
+Run `carthage update` to build the framework and drag the built `PewPew.framework` into your Xcode project.
 
 ## Usage
 
-### 1. Import `NetworkKit` into your file
+### 1. Import `PewPew` into your file
 
 ```swift
-import NetworkKit
+import PewPew
 ```
 
 ### 2. Implement a  `ServerProvider`
@@ -172,7 +172,7 @@ getPosts().response({ posts in
 
 ## Encoding
 
-NetworkKit has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
+PewPew has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
 
 ### Encode JSON `String`
 Since this is a JSON Request, this string should be encoded as JSON.
@@ -230,7 +230,7 @@ dispatcher.future(from: {
 
 ## Decoding
 
-NetworkKit can decode any number of object types.
+PewPew can decode any number of object types.
 
 ### Unwrapping `Data`
 
@@ -725,12 +725,12 @@ dispatcher.future(from: request).send()
 
 ## Dependencies
 
-NetworkKit includes. This is a light-weight library.
+PewPew includes...nothing. This is a light-weight library.
 
 ## Credits
 
-NetworkKit is owned and maintained by Jacob Sikorski.
+PewPew is owned and maintained by Jacob Sikorski.
 
 ## License
 
-NetworkKit is released under the MIT license. [See LICENSE](https://github.com/cuba/NetworkKit/blob/master/LICENSE) for details
+PewPew is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
