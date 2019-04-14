@@ -59,8 +59,7 @@ import NetworkKit
 
 ### 2. Implement a  `ServerProvider`
 
-The server provider is held on weakly by the NetworkDispatcher. Therefore it must be implemented on a class such as a ViewController or another class that is held strongly.
-The reason for this is so that you can dynamically return a url (ex: it changes based on an environment picker).
+The server provider gives the server url.  The reason a simple URL is not used is so that you can dynamically change the url.  Say for example you have an environment picker.  You would have to recreate the dispatcher every time you change the environment.  The simplest way to create a ServerProvider is to just implement the protocol on your ViewController.
 
 ```swift
 extension ViewController: ServerProvider {
@@ -70,16 +69,18 @@ extension ViewController: ServerProvider {
 }
 ```
 
+But you may chose to use a seperate object to implement the server provider or create a singleton.  Because the reference to the server provider on the `NetworkDispatcher` is weak, you don't have to worry about circular references.
+
 ### 3. Making a request.
 
-Now that we have our ServerProvider established, we can start making api calls. 
+Now that we have our `ServerProvider` established, we can start making api calls. 
 
 ```swift
 let dispatcher = NetworkDispatcher(serverProvider: self)
 let request = BasicRequest(method: .get, path: "/posts")
 
 dispatcher.future(from: request).response({ response in
-    // Handles any responses including negative responses such as 4xx and 5xx
+    // Handles all responses including negative responses such as 4xx and 5xx
 
     // The error object is available if we get an
     // undesirable status code such as a 4xx or 5xx
@@ -94,23 +95,25 @@ dispatcher.future(from: request).response({ response in
     // ...
 }).error({ error in
     // Handles any errors during the request process,
-    // including all request creation errors and anything
-    // thrown in the `then` or `success` callbacks.
+    // including anything thrown in any of the callback (except this one).
 }).completion({
     // The completion callback is guaranteed to be called once
-    // for every time the `start` method is triggered on the future.
+    // for every time the `start()` or `send()` method is triggered on the future.
+    // 
 }).start()
 ```
 
 **NOTE**: Nothing will happen if you don't call `start()`.
+**NOTE**: Strange things might happen if you call  `start()` more than once.  Don't do it.
 
 ### 4. Splitting up concerns and transforming the future
 
 *Pun not indended (honestly)*
 
-Now lets decode our object somewhere else.  This way, our business logic is not mixed up with our serialization logic. One of the great thing about futures is that we can return them! So now we can move the serialization part of our logic somewhere else.
+Now lets decode our object somewhere else.  This way, our business logic is not mixed up with our serialization logic.
+One of the great thing about using futures is that we can return them! So now we can move the serialization part of our logic somewhere else without heavy restructuring of our code.
 
-If we have the following method
+If we have the following method, 
 
 ```swift
 private func getPosts() -> ResponseFuture<[Post]> {
@@ -155,15 +158,8 @@ getPosts().response({ posts in
 ```
 
 ## Encoding
-NetworkKit has convenience methods to encode objects into JSON using the `BasicRequest` object. `BasicRequest` simply adds the "Content-Type" type request an allows you to encode some basic data types into JSON, including:
 
-### Data
-You can manually create your data object if you wish.
-
-```swift
-var request = BasicRequest(method: .post, path: "/users")
-request.httpBody = myData
-```
+NetworkKit has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
 
 ### Encode JSON `String`
 Since this is a JSON Request, this string should be encoded as JSON.
@@ -192,13 +188,22 @@ var request = BasicRequest(method: .post, path: "/posts")
 try request.setJSONBody(encodable: myCodable)
 ```
 
+### Custom Encoding (By setting the `Data` object)
+
+You can add a simple data object if you need to add some custom data encoding.
+
+```swift
+var request = BasicRequest(method: .post, path: "/users")
+request.httpBody = myData
+```
+
 ### Wrap Encoding In a ResponseFuture
 
-It might be beneficial to wrap the request creation in a ResponseFuture. This will allow you to:
+It might be beneficial to wrap the Request creation in a ResponseFuture. This will allow you to:
 1. Delay the request creation at a later time when submitting the request.
 2. Combine any errors thrown while creating the request in the error callback.
 
-To quickly do this, there is a convenience method on the Dispatcher.
+To quickly do this, there is a convenience method on the Dispatcher protocol.
 
 ```swift
 dispatcher.future(from: {
@@ -216,6 +221,8 @@ NetworkKit can decode any number of object types.
 
 ### Unwrapping `Data`
 
+This will unwrap the data object for you or throw a ResponseError if it not there. This is convenent so that you don't have to deal with those pesky optionals. 
+
 ```swift
 dispatcher.future(from: request).response({ response in
     let data = try response.unwrapData()
@@ -223,7 +230,7 @@ dispatcher.future(from: request).response({ response in
     // do something with data.
     print(data)
 }).error({ error in 
-    // Triggered when decoding fails.
+    // Triggered when the data object is not there.
 }).send()
 ```
 
@@ -268,7 +275,7 @@ dispatcher.future(from: request).success({ response in
 
 ## ResponseFuture
 
-You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around.  But besides the simple example above, there is so much more you can do.
+You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around.  But besides the simple example above, there is so much more you can do to make your code amazingly clean.
 
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
@@ -289,7 +296,7 @@ dispatcher.future(from: request).then({ response -> Post in
     // such as something heavy like markdown parsing.
     return self.enrich(post: post)
 }).join({ enrichedPost -> ResponseFuture<User> in
-    // Joins a future with another one
+    // Joins a future with another one returning both results
     return self.fetchUser(forId: post.userId)
 }).response({ enrichedPost, user in
     // The final response callback includes all the transformations and
@@ -297,7 +304,7 @@ dispatcher.future(from: request).then({ response -> Post in
 }).error({ error in
     // Handles any errors throw in any callbacks
 }).completion({
-    // At the end of all the callbacks, this is triggered.
+    // At the end of all the callbacks, this is triggered once.
 }).send()
 ```
 
@@ -305,7 +312,7 @@ dispatcher.future(from: request).then({ response -> Post in
 
 #### `response` callback
 
-The success callback when the request is recieved and all chained `ResponseFuture` callbacks (such as then or success) don't thow any errors.  
+The success callback when the request is recieved and no errors are thrown in any chained callbacks (such as `then` or `join`).  
 At the end of the callback sequences, this gives you exactly what your transforms promised to return.
 
 ```swift
@@ -353,6 +360,37 @@ dispatcher.future(from: request).then({ response -> Post in
 }).response({ post in
     // Handles any success responses.
     // In this case the object returned in the `then` method.
+})
+```
+
+#### `replace` callback
+
+This callback transforms the future to another type using another callback.  This allows us to make asyncronous calls inside our callbacks.
+
+```swift
+dispatcher.future(from: request).then({ response -> Post in
+    return try response.decode(Post.self)
+}).replace({ post -> ResponseFuture<EnrichedPost> in
+    // Perform some operation operation that itself requires a future
+    // such as something heavy like markdown parsing.
+    return self.enrich(post: post)
+}).response({ enrichedPost in
+    // The final response callback has the enriched post.
+})
+```
+
+#### `join` callback
+
+This callback transforms the future to another type containing its original results plus the results of the returned callback. This allows us to make asyncronous calls in series.
+
+```swift
+dispatcher.future(from: request).then({ response -> Post in
+    return try response.decode(Post.self)
+}).join({ post -> ResponseFuture<User> in
+    // Joins a future with another one returning both results
+    return self.fetchUser(forId: post.userId)
+}).response({ post, user in
+    // The final response callback includes both results.
 })
 ```
 
