@@ -1,10 +1,18 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 ![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/NetworkKit/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
 
-NetworkKit
+PewPew
 ============
+
+Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
+PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
+
+The most important thing in this framework is cleanliness.
+
+Q: Why the stupid name? 
+A: Because "pew pew" is the sound of lazers. And lazers are from the future.
 
 - [Features](#features)
 - [Installation](#installation)
@@ -24,13 +32,14 @@ NetworkKit
 ## Features
 
 - [x] A wrapper around network requests
-- [x] Uses ResponseFuture to allow scalablity and dryness
+- [x] Uses `Futures` (ie. `Promises`) to allow scalablity and dryness
 - [x] Convenience methods for deserializing Decodable and JSON 
 - [x] Easy integration
 - [x] Handles common http errors
 - [x] Returns production safe error messages
 - [x] Strongly typed and safely unwrapped responses
-- [x] Easily extensible to support other networking tools and frameworks such as Alamofire, ObjectMapper and MapCodableKit
+- [x] Easily extensible. Can easily work with frameworks such as `Alamofire`, `ObjectMapper` and `MapCodableKit`
+- [x] Clean!
 
 ## Installation
 
@@ -712,6 +721,7 @@ dispatcher.future(from: request).send()
 - [ ] Custom translations
 - [ ] More futuresque request creation
 - [ ] A more generic dispatcher. The response object is way too specific.
+- [ ] Better multi-threading support
 
 ## Dependencies
 
