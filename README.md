@@ -707,11 +707,11 @@ dispatcher.future(from: request).send()
 
 ## Future Features
 
-[  ] Parallel calls
-[x] Sequential calls: 
-[  ] Custom translations
-[  ] More futuresque request creation
-[  ] A more generic dispatcher. The response object is way too specific.
+- [ ] Parallel calls
+- [x] Sequential calls: 
+- [ ] Custom translations
+- [ ] More futuresque request creation
+- [ ] A more generic dispatcher. The response object is way too specific.
 
 ## Dependencies
 
