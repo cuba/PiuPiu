@@ -205,7 +205,7 @@ dispatcher.future(from: request).then({ response -> Post in
 }).error({ error in
     // Handles any errors throw in any callbacks
 }).completion({
-    // At the end of all the callbacks, this is triggered once.
+    // At the end of all the callbacks, this is triggered once. Error or no error.
 }).send()
 ```
 
@@ -215,12 +215,12 @@ dispatcher.future(from: request).then({ response -> Post in
 
 #### `response` callback
 
-The success callback when the request is recieved and no errors are thrown in any chained callbacks (such as `then` or `join`).  
-At the end of the callback sequences, this gives you exactly what your transforms promised to return.
+The `response` callback is triggered when the request is recieved and no errors are thrown in any chained callbacks (such as `then` or `join`).
+At the end of the callback sequences, this gives you exactly what your transforms "promised" to return.
 
 ```swift
 dispatcher.future(from: request).response({ response in
-    // When a response is recieved
+    // Triggered when a response is recieved and all callbacks succeed.
 })
 ```
 
@@ -228,11 +228,12 @@ dispatcher.future(from: request).response({ response in
 
 #### `error` callback
 
-The error callback is triggered whenever something is thrown during the callback sequence from the moment you trigger `send()`.  This includes errors thrown when attempting to deserialize the body for both successful and unsuccessful responses, errors in any `then`, `join`, `replace` and `response` callbacks.
+Think of this as a `catch` on a `do` block. From the moment you trigger `send()`, the error callback is triggered whenever something is thrown during the callback sequence. This includes errors thrown in any other callback.
 
 ```swift
 dispatcher.future(from: request).error({ error in
-    // Any errors thrown in any of the callbacks (except this one)
+    // Any errors thrown in any other callback will be triggered here.
+    // Think of this as the `catch` on a `do` block.
 })
 ```
 
@@ -257,8 +258,8 @@ This callback transforms the `success` type to another type.
 
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
-    // The `then` callback transforms a successful response
-    // You can return any object here and this will be reflected on the success callback.
+    // The `then` callback transforms a successful response to another object
+    // You can return any object here and this will be reflected on the `success` callback.
     return try response.decode(Post.self)
 }).response({ post in
     // Handles any success responses.
@@ -302,7 +303,7 @@ dispatcher.future(from: request).then({ response -> Post in
 This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server. 
 
 **NOTE**: If this method is not called, nothing will happen (no request will be made).
-**NOTE**: This method should **ALWAYS** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
+**NOTE**: This method should **ONLY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
 **NOTE**:  This method should **ONLY** be called **ONCE**.
 
 ### Creating your own ResponseFuture
