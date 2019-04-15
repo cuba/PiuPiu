@@ -2,6 +2,7 @@
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 ![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
+[![Build](https://img.shields.io/travis/cuba/PewPew/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PewPew)
 
 PewPew
 ============
