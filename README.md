@@ -21,14 +21,13 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Future](#future)
 - [Encoding](#encoding)
 - [Decoding](#decoding)
-- [ResponseFuture](#responsefuture)
 - [Memory Managment](#memory-managment)
 - [Custom Encoding](#custom-encoding)
 - [Custom Decoding](#custom-decoding)
 - [Mock Dispatcher](#mock-dispatcher)
-- [Future Features](#future-features)
 - [Dependencies](#dependencies)
 - [Credits](#credits)
 - [License](#license)
@@ -86,7 +85,7 @@ extension ViewController: ServerProvider {
 }
 ```
 
-But you may chose to use a seperate object to implement the server provider or create a singleton.  Because the reference to the server provider on the `NetworkDispatcher` is weak, you don't have to worry about circular references.
+But you may chose to use a seperate object to implement the server provider or create a singleton object so you can share it througout your application. Because the reference to the server provider on the `NetworkDispatcher` is weak, you don't have to worry about any circular references.
 
 ### 3. Making a request.
 
@@ -127,10 +126,10 @@ dispatcher.future(from: request).response({ response in
 
 *Pun not indended (honestly)*
 
-Now lets decode our object somewhere else.  This way, our business logic is not mixed up with our serialization logic.
-One of the great thing about using futures is that we can return them! So now we can move the serialization part of our logic somewhere else without heavy restructuring of our code.
+Now lets move the part of the future that decodes our object to another method.  This way, our business logic is not mixed up with our serialization logic.
+One of the great thing about using futures is that we can return them!
 
-If we have the following method, 
+Lets create a method similar to this:
 
 ```swift
 private func getPosts() -> ResponseFuture<[Post]> {
@@ -159,7 +158,7 @@ private func getPosts() -> ResponseFuture<[Post]> {
 
 **NOTE**: We intentionally did not call `start()` in this case. 
 
-Then we can simply do this:
+Then we can simply call it like this:
 
 ```swift
 getPosts().response({ posts in
@@ -174,125 +173,9 @@ getPosts().response({ posts in
 }).send()
 ```
 
-## Encoding
+## Future
 
-PewPew has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
-
-### Encode JSON `String`
-Since this is a JSON Request, this string should be encoded as JSON.
-
-```
-var request = BasicRequest(method: .post, path: "/users")
-request.setJSONBody(string: jsonString, encoding: .utf8)
-```
-
-### Encode JSON Object
-
-```
-let jsonObject: [String: Any?] = [
-    "id": "123",
-    "name": "Kevin Malone"
-]
-
-var request = BasicRequest(method: .post, path: "/users")
-try request.setJSONBody(jsonObject: jsonObject)
-```
-
-### Encode `Encodable`
-
-```
-var request = BasicRequest(method: .post, path: "/posts")
-try request.setJSONBody(encodable: myCodable)
-```
-
-### Custom Encoding (By setting the `Data` object)
-
-You can add a simple data object if you need to add some custom data encoding.
-
-```swift
-var request = BasicRequest(method: .post, path: "/users")
-request.httpBody = myData
-```
-
-### Wrap Encoding In a ResponseFuture
-
-It might be beneficial to wrap the Request creation in a ResponseFuture. This will allow you to:
-1. Delay the request creation at a later time when submitting the request.
-2. Combine any errors thrown while creating the request in the error callback.
-
-To quickly do this, there is a convenience method on the Dispatcher protocol.
-
-```swift
-dispatcher.future(from: {
-    var request = BasicRequest(method: .post, path: "/posts")
-    try request.setJSONBody(myCodable)
-    return request
-}).error({ error in
-    // Any error thrown while creating the request will trigger this callback.
-}).send()
-```
-
-## Decoding
-
-PewPew can decode any number of object types.
-
-### Unwrapping `Data`
-
-This will unwrap the data object for you or throw a ResponseError if it not there. This is convenent so that you don't have to deal with those pesky optionals. 
-
-```swift
-dispatcher.future(from: request).response({ response in
-    let data = try response.unwrapData()
-
-    // do something with data.
-    print(data)
-}).error({ error in 
-    // Triggered when the data object is not there.
-}).send()
-```
-
-### Decode `String`
-
-```swift
-dispatcher.future(from: request).response({ response in
-    let string = try response.decodeString(encoding: .utf8)
-
-    // do something with string.
-    print(string)
-}).error({ error in
-    // Triggered when decoding fails.
-}).send()
-```
-
-### Decode `Decodable`
-
-```swift
-dispatcher.future(from: request).response({ response in
-    let posts = try response.decode([Post].self)
-
-    // do something with string.
-    print(posts)
-}).error({ error in
-    // Triggered when decoding fails.
-}).send()
-```
-
-For arrays:
-
-```swift
-dispatcher.future(from: request).success({ response in
-    let posts = try response.decodeMapDecodable([Post].self)
-
-    // do something with string.
-    print(posts)
-}).error({ error in
-    // Triggered when decoding fails.
-}).send()
-```
-
-## ResponseFuture
-
-You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around.  But besides the simple example above, there is so much more you can do to make your code amazingly clean.
+You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around. But besides the simple examples above, there is so much more you can do to make your code amazingly clean!
 
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
@@ -303,14 +186,15 @@ dispatcher.future(from: request).then({ response -> Post in
     // undesirable status code such as a 4xx or 5xx
     if let error = response.error {
         // Throwing an error in any callback will trigger the `error` callback.
-        // This allows us to pool all our errors in one place.
+        // This allows us to pool all the errors in one place.
         throw error
     }
     
     return try response.decode(Post.self)
 }).replace({ post -> ResponseFuture<EnrichedPost> in
-    // Perform some operation operation that itself requires a future
+    // Perform some operation that itself uses a future
     // such as something heavy like markdown parsing.
+    // Any callback can be transformed to a future.
     return self.enrich(post: post)
 }).join({ enrichedPost -> ResponseFuture<User> in
     // Joins a future with another one returning both results
@@ -324,6 +208,8 @@ dispatcher.future(from: request).then({ response -> Post in
     // At the end of all the callbacks, this is triggered once.
 }).send()
 ```
+
+**NOTE**: See the section on [Future](#response-future) to transforming a callback to a future.
 
 ### Callbacks
 
@@ -429,8 +315,6 @@ Here is an example of a response future that does decoding in another thread.
 return ResponseFuture<[Post]>(action: { future in
     // This is an example of how a future is executed and
     // fulfilled.
-
-    // You should always syncronize
     DispatchQueue.global(qos: .userInitiated).async {
         // lets make an expensive operation on a background thread.
         // The below is just an example of how you can parse on a seperate thread.
@@ -454,7 +338,103 @@ return ResponseFuture<[Post]>(action: { future in
 })
 ```
 
-**NOTE** You should **ALWAYS** syncronize the results on the main thread before succeeding or failing your future
+**NOTE** You should **ALWAYS** syncronize the results on the main thread before succeeding or failing your future.
+
+## Encoding
+
+PewPew has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
+
+### Encode JSON `String`
+
+```
+var request = BasicRequest(method: .post, path: "/users")
+request.setJSONBody(string: jsonString, encoding: .utf8)
+```
+
+### Encode JSON Object
+
+```
+let jsonObject: [String: Any?] = [
+    "id": "123",
+    "name": "Kevin Malone"
+]
+
+var request = BasicRequest(method: .post, path: "/users")
+try request.setJSONBody(jsonObject: jsonObject)
+```
+
+### Encode `Encodable`
+
+```
+var request = BasicRequest(method: .post, path: "/posts")
+try request.setJSONBody(encodable: myCodable)
+```
+
+### Custom Encoding (By setting the `Data` object)
+
+```swift
+var request = BasicRequest(method: .post, path: "/users")
+request.httpBody = myData
+```
+
+### Wrap Encoding In a ResponseFuture
+
+It might be beneficial to wrap the Request creation in a ResponseFuture. This will allow you to:
+1. Delay the request creation at a later time when submitting the request.
+2. Combine any errors thrown while creating the request in the error callback.
+
+```swift
+dispatcher.future(from: {
+    var request = BasicRequest(method: .post, path: "/posts")
+    try request.setJSONBody(myCodable)
+    return request
+}).error({ error in
+    // Any error thrown while creating the request will trigger this callback.
+}).send()
+```
+
+## Decoding
+
+### Unwrapping `Data`
+
+This will unwrap the data object for you or throw a ResponseError if it not there. This is convenent so that you don't have to deal with those pesky optionals. 
+
+```swift
+dispatcher.future(from: request).response({ response in
+    let data = try response.unwrapData()
+
+    // do something with data.
+    print(data)
+}).error({ error in 
+    // Triggered when the data object is not there.
+}).send()
+```
+
+### Decode `String`
+
+```swift
+dispatcher.future(from: request).response({ response in
+    let string = try response.decodeString(encoding: .utf8)
+
+    // do something with string.
+    print(string)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
+```
+
+### Decode `Decodable`
+
+```swift
+dispatcher.future(from: request).response({ response in
+    let posts = try response.decode([Post].self)
+
+    // do something with the decodable object.
+    print(posts)
+}).error({ error in
+    // Triggered when decoding fails.
+}).send()
+```
 
 ## Memory Managment
 
@@ -465,24 +445,24 @@ The `ResponseFuture` may have 3 types of strong references:
 
 ### Strong callbacks
 
-When **ONLY**  `1` and `2` applies to you, no circular reference is created. However the object reference as `self` is held on stongly temporarily until the request returns or an error is thrown.  You may wish to use `[weak self]` in this case but it is not necessary.
+When **ONLY**  `1` and `2` applies to your case, no circular reference is created. However the object reference as `self` is held on stongly (temporarily) until the request returns or an error is thrown. You may wish to use `[weak self]` in this case but it is not necessary.
 
 ```swift
 dispatcher.future(from: request).then({ response -> [Post] in
-    // [weak self] not needed as `self` is not called
+    // [weak self] not needed as `self` is not called but it doesn't hurt
     return try response.decode([Post].self)
 }).response({ posts in
     self.show(posts)
 }).send()
 ```
 
-**WARNING** If you use `[weak self]` do not forcefully unwrap `self` and never forcefully unwrap anything on `self`.
+**WARNING** If you use `[weak self]` do not forcefully unwrap `self` and never forcefully unwrap anything on `self` either. Thats just asking for crashes.
 
-**!! DO NOT DO THIS !!**:
+**!! DO NOT DO THIS. !!** Never do this. Not even if you're a programming genius. It's just asking for problems.
 
 ```swift
 dispatcher.future(from: request).success({ response in
-    // We are foce unwrapping a text field! DON NOT DO THIS!
+    // We are foce unwrapping a text field! DO NOT DO THIS!
     let textField = self.textField!
 
     // If we dealocated textField by the time the 
@@ -491,7 +471,10 @@ dispatcher.future(from: request).success({ response in
 }).send()
 ```
 
-You will have crashes if you force unwrap anything in your callbacks (i.e. usign a `!`).  We suggest you **ALWAYS** avoid force unwrapping anything in your callbacks. Always unwrap your objects before using them including any `IBOutlet`s that the system generates. 
+You will have crashes if you force unwrap anything in your callbacks (i.e. usign a `!`).  We suggest you **ALWAYS** avoid force unwrapping anything in your callbacks. 
+
+Always unwrap your objects before using them. This includes any `IBOutlet`s that the system generates. Use a guard, Use an assert. Use anything but a `!`.
+
 
 ### Strong reference to a `ResponseFuture`
 
