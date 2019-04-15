@@ -9,10 +9,14 @@ PewPew
 Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
 PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
 
-The most important thing in this framework is cleanliness.
+**Q**: Why should I use this framework?
+**A**: Because, you like clean code.
 
-Q: Why the stupid name? 
-A: Because "pew pew" is the sound of lazers. And lazers are from the future.
+**Q**: Why the stupid name?
+**A**: Because "pew pew" is the sound of lazers. And lazers are from the future.
+
+**Q**: What sort of bear is best?
+**A**: False! Black bear!
 
 - [Features](#features)
 - [Installation](#installation)
