@@ -122,7 +122,7 @@ dispatcher.future(from: request).response({ response in
 **NOTE**: Nothing will happen if you don't call `start()`.
 **NOTE**: Strange things might happen if you call  `start()` more than once.  Don't do it.
 
-### 4. Splitting up concerns and transforming the future
+### 4. Separating concerns and transforming the future
 
 *Pun not indended (honestly)*
 
