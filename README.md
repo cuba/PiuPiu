@@ -254,7 +254,7 @@ dispatcher.future(from: request).completion({
 
 #### `then` callback
 
-This callback transforms the `success` type to another type.
+This callback transforms the `response` type to another type.
 
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
