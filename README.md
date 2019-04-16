@@ -18,7 +18,7 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 **A**: Because "pew pew" is the sound of lazers. And lazers are from the future.
 
 **Q**: What sort of bear is best?
-**A**: False! Black bear!
+**A**: False! A black bear!
 
 - [Features](#features)
 - [Installation](#installation)
