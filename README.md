@@ -211,8 +211,6 @@ dispatcher.future(from: request).then({ response -> Post in
 }).send()
 ```
 
-**NOTE**: See the section on [Future](#response-future) to transforming a callback to a future.
-
 ### Callbacks
 
 #### `response` callback
