@@ -241,7 +241,7 @@ dispatcher.future(from: request).error({ error in
 
 #### `completion` callback
 
-The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()`  (`Promise` only) is triggered.
+The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()` is triggered.
 
 ```swift
 dispatcher.future(from: request).completion({
