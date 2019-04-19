@@ -11,7 +11,7 @@ import Foundation
 public extension Bundle {
     
     /// Access to the `PewPew` Bundle
-    static var networkKit: Bundle {
+    static var pewPew: Bundle {
         return Bundle(identifier: "com.jacobsikorski.PewPew")!
     }
 }
