@@ -20,6 +20,7 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 **Q**: What sort of bear is best?
 **A**: False! A black bear!
 
+- [Updates](#updates)
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -33,6 +34,17 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 - [Dependencies](#dependencies)
 - [Credits](#credits)
 - [License](#license)
+
+## Updates
+
+### 1.1.0
+Removed default translations.  
+
+To migrate to this you **should** include your own translations by extending `ResponseError`, `RequestError` and `SerializationError` 
+conforming to `LocalizedError` and (optionally) `CustomNSError`
+
+### 1.0.1 
+Fixed crash when translating
 
 ## Features
 
