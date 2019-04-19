@@ -112,7 +112,7 @@
 		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockDispatcher+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F5E42263D513002CDAAF /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
-		DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAE5EF6522190A0100D1990B /* PewPewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PewPewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationExamples.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,7 +145,7 @@
 				DAA9F58822630365002CDAAF /* PewPew.xcodeproj */,
 				8CC508121ED35E7D00C19524 /* Source */,
 				DAA9F5862262E47C002CDAAF /* Supporting Files */,
-				DAE5EF6622190A0200D1990B /* NetworkKitTests */,
+				DAE5EF6622190A0200D1990B /* PewPewTests */,
 				8CC508111ED35E7D00C19524 /* Products */,
 				DADDFF601FEF2631005FEC56 /* Frameworks */,
 			);
@@ -155,7 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				8CC508101ED35E7D00C19524 /* Example.app */,
-				DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */,
+				DAE5EF6522190A0100D1990B /* PewPewTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -238,7 +238,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DAE5EF6622190A0200D1990B /* NetworkKitTests */ = {
+		DAE5EF6622190A0200D1990B /* PewPewTests */ = {
 			isa = PBXGroup;
 			children = (
 				DA78758E226A763900A626AF /* TranslationTests.swift */,
@@ -251,7 +251,7 @@
 				DAE5EF6922190A0200D1990B /* Info.plist */,
 				DAA9F5E42263D513002CDAAF /* TestHelper.swift */,
 			);
-			path = NetworkKitTests;
+			path = PewPewTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,9 +277,9 @@
 			productReference = 8CC508101ED35E7D00C19524 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DAE5EF6422190A0100D1990B /* NetworkKitTests */ = {
+		DAE5EF6422190A0100D1990B /* PewPewTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DAE5EF6C22190A0200D1990B /* Build configuration list for PBXNativeTarget "NetworkKitTests" */;
+			buildConfigurationList = DAE5EF6C22190A0200D1990B /* Build configuration list for PBXNativeTarget "PewPewTests" */;
 			buildPhases = (
 				DAE5EF6122190A0100D1990B /* Sources */,
 				DAE5EF6222190A0100D1990B /* Frameworks */,
@@ -290,9 +290,9 @@
 			dependencies = (
 				DAE5EF6B22190A0200D1990B /* PBXTargetDependency */,
 			);
-			name = NetworkKitTests;
+			name = PewPewTests;
 			productName = NetworkKitTests;
-			productReference = DAE5EF6522190A0100D1990B /* NetworkKitTests.xctest */;
+			productReference = DAE5EF6522190A0100D1990B /* PewPewTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -339,7 +339,7 @@
 			projectRoot = "";
 			targets = (
 				8CC5080F1ED35E7D00C19524 /* Example */,
-				DAE5EF6422190A0100D1990B /* NetworkKitTests */,
+				DAE5EF6422190A0100D1990B /* PewPewTests */,
 			);
 		};
 /* End PBXProject section */
@@ -610,12 +610,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = NetworkKitTests/Info.plist;
+				INFOPLIST_FILE = PewPewTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -642,11 +642,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = NetworkKitTests/Info.plist;
+				INFOPLIST_FILE = PewPewTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKitTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -675,7 +675,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DAE5EF6C22190A0200D1990B /* Build configuration list for PBXNativeTarget "NetworkKitTests" */ = {
+		DAE5EF6C22190A0200D1990B /* Build configuration list for PBXNativeTarget "PewPewTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DAE5EF6D22190A0200D1990B /* Debug */,

@@ -1,6 +1,6 @@
 //
 //  DocumentationExamples.swift
-//  NetworkKitTests
+//  PewPewTests
 //
 //  Created by Jacob Sikorski on 2019-02-20.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
