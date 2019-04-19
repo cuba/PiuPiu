@@ -5,6 +5,9 @@
 .Spotlight-V100
 *.swp
 
+## Merge files
+*.orig
+
 ## Xcode build files
 DerivedData/
 build/
