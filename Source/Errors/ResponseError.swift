@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public enum ResponseError: BaseNetworkError {
     case badRequest(cause: Error?)
     case unauthorized(cause: Error?)
