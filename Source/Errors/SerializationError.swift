@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum SerializationError: BaseNetworkError {
+public enum SerializationError: Error {
     case failedToDecodeResponseData(cause: Error?)
     case unexpectedEmptyResponse
     
@@ -16,40 +16,6 @@ public enum SerializationError: BaseNetworkError {
         switch self {
         case .failedToDecodeResponseData: return "InvalidObject"
         case .unexpectedEmptyResponse: return "EmptyResponse"
-        }
-    }
-}
-
-extension SerializationError: LocalizedError {
-    
-    public var failureReason: String? {
-        switch self {
-        case .failedToDecodeResponseData:
-            return "ErrorReason.UnexpectedResponse".localized()
-        case .unexpectedEmptyResponse:
-            return "ErrorReason.EmptyResponse".localized()
-        }
-    }
-    
-    public var recoverySuggestion: String? {
-        switch self {
-        case .failedToDecodeResponseData:
-            return "RecoverySuggestion.UpdateVersion".localized()
-        case .unexpectedEmptyResponse:
-            return "RecoverySuggestion.UpdateVersion".localized()
-        }
-    }
-}
-
-extension SerializationError: CustomNSError {
-    public static var errorDomain: String {
-        return "PewPew.SerializationError"
-    }
-    
-    public var errorCode: Int {
-        switch self {
-        case .failedToDecodeResponseData: return 0
-        case .unexpectedEmptyResponse: return 1
         }
     }
 }

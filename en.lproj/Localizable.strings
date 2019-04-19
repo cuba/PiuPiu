@@ -5,24 +5,3 @@
   Created by Jacob Sikorski on 2017-05-22.
   Copyright © 2017 Jacob Sikorski. All rights reserved.
 */
-
-// Reason
-"ErrorReason.ApplicationError" = "There was an unknow problem with the request.";
-"ErrorReason.InvalidRequest" = "The request is invalid.";
-"ErrorReason.NotAuthenticated" = "You are not authenticated.";
-"ErrorReason.NotAuthorized" = "You are not authorized to perform this action.";
-"ErrorReason.ResourceNotFound" = "The resouce you requested is not found.";
-"ErrorReason.SubmissionError" = "There were errors with your submission.";
-"ErrorReason.UnexpectedResponse" = "Got an unexpected response from the server.";
-"ErrorReason.EmptyResponse" = "Got an empty response from the server.";
-"ErrorReason.UnknownNetworkError" = "An unknown network error has occured.";
-"ErrorReason.ServiceUnavailable" = "The service is currently unavailable. Try back at a later time.";
-"ErrorReason.NoConnection" = "It appears that you do not have an internet connection.";
-"ErrorReason.Conflict" = "There is a conflict with your submission.";
-
-// Recovery Suggestion
-"RecoverySuggestion.EstablishConnection" = "Connect to the internet and try your request again.";
-"RecoverySuggestion.UpdateVersion" = "This issue might be solved by updating to the lastest version of the application. If you have the latest version of this application and this issue persists, please contact technical support.";
-"RecoverySuggestion.TemporaryDowntime" = "This is usually only temporary. However if this persists, we suggest you contact technical support.";
-"RecoverySuggestion.ContactSupport" = "If this issue persists, please contact technical support.";
-"RecoverySuggestion.LogIn" = "Please log in to continue.";
