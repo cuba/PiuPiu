@@ -43,6 +43,8 @@ Removed default translations.
 To migrate to this you **should** include your own translations by extending `ResponseError`, `RequestError` and `SerializationError` 
 conforming to `LocalizedError` and (optionally) `CustomNSError`
 
+To re-introduce the previous behaviour, you should include the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings)
+
 ### 1.0.1 
 Fixed crash when translating
 
