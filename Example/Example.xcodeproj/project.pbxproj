@@ -11,7 +11,6 @@
 		8CC508161ED35E7D00C19524 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* ViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
-		DA78757A226A6C8700A626AF /* StringExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787579226A6C8700A626AF /* StringExtensionsTests.swift */; };
 		DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */; };
 		DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */; };
 		DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */; };
@@ -79,7 +78,6 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
-		DA787579226A6C8700A626AF /* StringExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionsTests.swift; sourceTree = "<group>"; };
 		DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireDispatcher.swift; sourceTree = "<group>"; };
@@ -215,7 +213,6 @@
 		DAE5EF6622190A0200D1990B /* NetworkKitTests */ = {
 			isa = PBXGroup;
 			children = (
-				DA787579226A6C8700A626AF /* StringExtensionsTests.swift */,
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
 				DAA9F56A22624A25002CDAAF /* DecodingTests.swift */,
 				DAA9F5682262473A002CDAAF /* PromiseTests.swift */,
@@ -388,7 +385,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA78757A226A6C8700A626AF /* StringExtensionsTests.swift in Sources */,
 				DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */,
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
@@ -534,7 +530,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKit.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};
@@ -553,7 +549,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.NetworkKit.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};

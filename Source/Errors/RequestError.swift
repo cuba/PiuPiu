@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum RequestError: BaseNetworkError {
+public enum RequestError: Error {
     case invalidURL(cause: Error)
     case missingServerProvider
     
@@ -16,36 +16,6 @@ public enum RequestError: BaseNetworkError {
         switch self {
         case .invalidURL            : return "InvalidURL"
         case .missingServerProvider : return "MissingServerProvider"
-        }
-    }
-}
-
-extension RequestError: LocalizedError {
-    
-    public var failureReason: String? {
-        switch self {
-        case .invalidURL            : return "ErrorReason.ApplicationError".localized()
-        case .missingServerProvider : return "ErrorReason.ApplicationError".localized()
-        }
-    }
-    
-    public var recoverySuggestion: String? {
-        switch self {
-        case .invalidURL            : return "RecoverySuggestion.UpdateVersion".localized()
-        case .missingServerProvider : return "RecoverySuggestion.UpdateVersion".localized()
-        }
-    }
-}
-
-extension RequestError: CustomNSError {
-    public static var errorDomain: String {
-        return "PewPew.RequestError"
-    }
-    
-    public var errorCode: Int {
-        switch self {
-        case .invalidURL            : return 0
-        case .missingServerProvider : return 1
         }
     }
 }
