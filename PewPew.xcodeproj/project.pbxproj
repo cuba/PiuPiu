@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8CC507F51ED35A8E00C19524 /* NetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* NetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC507F51ED35A8E00C19524 /* PewPew.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* PewPew.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */; };
 		8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508001ED35AA900C19524 /* ServerProvider.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
@@ -36,7 +36,7 @@
 
 /* Begin PBXFileReference section */
 		8CC507E41ED35A8D00C19524 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8CC507E71ED35A8D00C19524 /* NetworkKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkKit.h; path = Source/NetworkKit.h; sourceTree = "<group>"; };
+		8CC507E71ED35A8D00C19524 /* PewPew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PewPew.h; path = Source/PewPew.h; sourceTree = "<group>"; };
 		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
 		8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDispatcher.swift; sourceTree = "<group>"; };
 		8CC508001ED35AA900C19524 /* ServerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
@@ -126,7 +126,7 @@
 				DAA9F59822630828002CDAAF /* Cartfile */,
 				DAA9F59722630828002CDAAF /* Cartfile.resolved */,
 				8CC507E81ED35A8D00C19524 /* Info.plist */,
-				8CC507E71ED35A8D00C19524 /* NetworkKit.h */,
+				8CC507E71ED35A8D00C19524 /* PewPew.h */,
 				8CC508AF1ED3745A00C19524 /* Localizable.strings */,
 			);
 			name = SupportingFiles;
@@ -206,7 +206,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC507F51ED35A8E00C19524 /* NetworkKit.h in Headers */,
+				8CC507F51ED35A8E00C19524 /* PewPew.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

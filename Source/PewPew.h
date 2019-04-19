@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 //! Project version number for PewPew.
-FOUNDATION_EXPORT double NetworkKitVersionNumber;
+FOUNDATION_EXPORT double PewPewVersionNumber;
 
 //! Project version string for PewPew.
-FOUNDATION_EXPORT const unsigned char NetworkKitVersionString[];
+FOUNDATION_EXPORT const unsigned char PewPewVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <PewPew/PublicHeader.h>
 
