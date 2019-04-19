@@ -7,12 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8CC507F51ED35A8E00C19524 /* PewPew.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* PewPew.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC507F51ED35A8E00C19524 /* PewPew-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */; };
 		8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508001ED35AA900C19524 /* ServerProvider.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
 		DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
 		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
+		DA1ED7AF226A86770058EE26 /* PewPew_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA1ED7BF226A87160058EE26 /* PewPew_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA1ED7CC226A878C0058EE26 /* PewPew_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
 		DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
@@ -36,13 +39,22 @@
 
 /* Begin PBXFileReference section */
 		8CC507E41ED35A8D00C19524 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8CC507E71ED35A8D00C19524 /* PewPew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PewPew.h; path = Source/PewPew.h; sourceTree = "<group>"; };
-		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = "<group>"; };
+		8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PewPew-iOS.h"; sourceTree = "<group>"; };
+		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDispatcher.swift; sourceTree = "<group>"; };
 		8CC508001ED35AA900C19524 /* ServerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
 		8CC508AE1ED3745A00C19524 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
+		DA1ED79F226A86760058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_tvOS.h; sourceTree = "<group>"; };
+		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA1ED7BB226A87160058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_macOS.h; sourceTree = "<group>"; };
+		DA1ED7BE226A87160058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DA1ED7C8226A878C0058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_watchOS.h; sourceTree = "<group>"; };
+		DA1ED7CB226A878C0058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFuture.swift; sourceTree = "<group>"; };
 		DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Extensions.swift"; sourceTree = "<group>"; };
 		DA3D80A32218AE7E00D49CD0 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
@@ -73,6 +85,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DA1ED79C226A86760058EE26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7B8226A87160058EE26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7C5226A878C0058EE26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -91,6 +124,10 @@
 			children = (
 				8CC507E61ED35A8D00C19524 /* Source */,
 				8CC508061ED35DFE00C19524 /* SupportingFiles */,
+				DA1ED7D0226A87F30058EE26 /* PewPew iOS */,
+				DA1ED7A0226A86760058EE26 /* PewPew tvOS */,
+				DA1ED7BC226A87160058EE26 /* PewPew macOS */,
+				DA1ED7C9226A878C0058EE26 /* PewPew watchOS */,
 				8CC507E51ED35A8D00C19524 /* Products */,
 				8CC5085A1ED3641500C19524 /* Frameworks */,
 			);
@@ -100,6 +137,9 @@
 			isa = PBXGroup;
 			children = (
 				8CC507E41ED35A8D00C19524 /* PewPew.framework */,
+				DA1ED79F226A86760058EE26 /* PewPew.framework */,
+				DA1ED7BB226A87160058EE26 /* PewPew.framework */,
+				DA1ED7C8226A878C0058EE26 /* PewPew.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,8 +165,6 @@
 				DAA9F5E12263B9EE002CDAAF /* PewPew.podspec */,
 				DAA9F59822630828002CDAAF /* Cartfile */,
 				DAA9F59722630828002CDAAF /* Cartfile.resolved */,
-				8CC507E81ED35A8D00C19524 /* Info.plist */,
-				8CC507E71ED35A8D00C19524 /* PewPew.h */,
 				8CC508AF1ED3745A00C19524 /* Localizable.strings */,
 			);
 			name = SupportingFiles;
@@ -148,6 +186,42 @@
 				DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DA1ED7A0226A86760058EE26 /* PewPew tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */,
+				DA1ED7A2226A86760058EE26 /* Info.plist */,
+			);
+			path = "PewPew tvOS";
+			sourceTree = "<group>";
+		};
+		DA1ED7BC226A87160058EE26 /* PewPew macOS */ = {
+			isa = PBXGroup;
+			children = (
+				DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */,
+				DA1ED7BE226A87160058EE26 /* Info.plist */,
+			);
+			path = "PewPew macOS";
+			sourceTree = "<group>";
+		};
+		DA1ED7C9226A878C0058EE26 /* PewPew watchOS */ = {
+			isa = PBXGroup;
+			children = (
+				DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */,
+				DA1ED7CB226A878C0058EE26 /* Info.plist */,
+			);
+			path = "PewPew watchOS";
+			sourceTree = "<group>";
+		};
+		DA1ED7D0226A87F30058EE26 /* PewPew iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8CC507E81ED35A8D00C19524 /* Info.plist */,
+				8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */,
+			);
+			path = "PewPew iOS";
 			sourceTree = "<group>";
 		};
 		DA3E506921B458BA001450EC /* Request */ = {
@@ -206,7 +280,31 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC507F51ED35A8E00C19524 /* PewPew.h in Headers */,
+				8CC507F51ED35A8E00C19524 /* PewPew-iOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED79A226A86760058EE26 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA1ED7AF226A86770058EE26 /* PewPew_tvOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7B6226A87160058EE26 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA1ED7BF226A87160058EE26 /* PewPew_macOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7C3226A878C0058EE26 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA1ED7CC226A878C0058EE26 /* PewPew_watchOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,13 +329,67 @@
 			productReference = 8CC507E41ED35A8D00C19524 /* PewPew.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		DA1ED79E226A86760058EE26 /* PewPew tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PewPew tvOS" */;
+			buildPhases = (
+				DA1ED79A226A86760058EE26 /* Headers */,
+				DA1ED79B226A86760058EE26 /* Sources */,
+				DA1ED79C226A86760058EE26 /* Frameworks */,
+				DA1ED79D226A86760058EE26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PewPew tvOS";
+			productName = "PewPew tvOS";
+			productReference = DA1ED79F226A86760058EE26 /* PewPew.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		DA1ED7BA226A87160058EE26 /* PewPew macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PewPew macOS" */;
+			buildPhases = (
+				DA1ED7B6226A87160058EE26 /* Headers */,
+				DA1ED7B7226A87160058EE26 /* Sources */,
+				DA1ED7B8226A87160058EE26 /* Frameworks */,
+				DA1ED7B9226A87160058EE26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PewPew macOS";
+			productName = "PewPew macOS";
+			productReference = DA1ED7BB226A87160058EE26 /* PewPew.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		DA1ED7C7226A878C0058EE26 /* PewPew watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PewPew watchOS" */;
+			buildPhases = (
+				DA1ED7C3226A878C0058EE26 /* Headers */,
+				DA1ED7C4226A878C0058EE26 /* Sources */,
+				DA1ED7C5226A878C0058EE26 /* Frameworks */,
+				DA1ED7C6226A878C0058EE26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PewPew watchOS";
+			productName = "PewPew watchOS";
+			productReference = DA1ED7C8226A878C0058EE26 /* PewPew.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		8CC507DB1ED35A8D00C19524 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Jacob Sikorski";
 				TargetAttributes = {
@@ -246,6 +398,21 @@
 						DevelopmentTeam = 5P99QDD6WR;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
+					};
+					DA1ED79E226A86760058EE26 = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = 5P99QDD6WR;
+						ProvisioningStyle = Automatic;
+					};
+					DA1ED7BA226A87160058EE26 = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = 5P99QDD6WR;
+						ProvisioningStyle = Automatic;
+					};
+					DA1ED7C7226A878C0058EE26 = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = 5P99QDD6WR;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -263,6 +430,9 @@
 			projectRoot = "";
 			targets = (
 				8CC507E31ED35A8D00C19524 /* PewPew iOS */,
+				DA1ED79E226A86760058EE26 /* PewPew tvOS */,
+				DA1ED7BA226A87160058EE26 /* PewPew macOS */,
+				DA1ED7C7226A878C0058EE26 /* PewPew watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -275,6 +445,27 @@
 				DAA9F59A22630828002CDAAF /* Cartfile in Resources */,
 				8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */,
 				DAA9F59922630828002CDAAF /* Cartfile.resolved in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED79D226A86760058EE26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7B9226A87160058EE26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7C6226A878C0058EE26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +497,27 @@
 				DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */,
 				DA3E506B21B458CB001450EC /* Request.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED79B226A86760058EE26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7B7226A87160058EE26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA1ED7C4226A878C0058EE26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,7 +661,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INFOPLIST_FILE = "PewPew iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -476,7 +688,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/Info.plist";
+				INFOPLIST_FILE = "PewPew iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -486,6 +698,195 @@
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		DA1ED7B0226A86770058EE26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew tvOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Debug;
+		};
+		DA1ED7B1226A86770058EE26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew tvOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
+			};
+			name = Release;
+		};
+		DA1ED7C1226A87160058EE26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DA1ED7C2226A87160058EE26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew macOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		DA1ED7CE226A878C0058EE26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		DA1ED7CF226A878C0058EE26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5P99QDD6WR;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = "PewPew watchOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
+				PRODUCT_NAME = "${PROJECT_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -506,6 +907,33 @@
 			buildConfigurations = (
 				8CC507F91ED35A8E00C19524 /* Debug */,
 				8CC507FA1ED35A8E00C19524 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PewPew tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA1ED7B0226A86770058EE26 /* Debug */,
+				DA1ED7B1226A86770058EE26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PewPew macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA1ED7C1226A87160058EE26 /* Debug */,
+				DA1ED7C2226A87160058EE26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PewPew watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA1ED7CE226A878C0058EE26 /* Debug */,
+				DA1ED7CF226A878C0058EE26 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
