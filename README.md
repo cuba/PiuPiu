@@ -40,13 +40,12 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 ### 1.1.0
 Removed default translations.  
 
-To migrate to this you **should** include your own translations by extending `ResponseError`, `RequestError` and `SerializationError` 
-conforming to `LocalizedError` and (optionally) `CustomNSError`
+You can add back this behaviour by extending `ResponseError`, `RequestError` and `SerializationError` and conforming to `LocalizedError` and (optionally) `CustomNSError`
 
-To re-introduce the previous behaviour, you should include the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings)
+To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
 
 ### 1.0.1 
-Fixed crash when translating
+Fixed crash when translating caused by renaming the project.
 
 ## Features
 
