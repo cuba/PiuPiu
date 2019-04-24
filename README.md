@@ -54,7 +54,6 @@ Fixed crash when translating caused by renaming the project.
 - [x] Convenience methods for deserializing Decodable and JSON 
 - [x] Easy integration
 - [x] Handles common http errors
-- [x] Returns production safe error messages
 - [x] Strongly typed and safely unwrapped responses
 - [x] Easily extensible. Can easily work with frameworks such as `Alamofire`, `ObjectMapper` and `MapCodableKit`
 - [x] Clean!
