@@ -74,7 +74,7 @@ $ brew install carthage
 To integrate PewPew into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PewPew" ~> 1.0
+github "cuba/PewPew" ~> 1.1
 ```
 
 Run `carthage update` to build the framework and drag the built `PewPew.framework` into your Xcode project.
