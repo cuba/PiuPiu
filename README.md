@@ -718,7 +718,6 @@ dispatcher.future(from: request).send()
 
 - [ ] Parallel calls
 - [x] Sequential calls: 
-- [ ] Custom translations
 - [ ] More futuresque request creation
 - [ ] A more generic dispatcher. The response object is way too specific.
 - [ ] Better multi-threading support
