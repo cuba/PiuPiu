@@ -319,7 +319,7 @@
 			dependencies = (
 			);
 			name = "PiuPiu iOS";
-			productName = NetworkKit;
+			productName = PiuPiu;
 			productReference = 8CC507E41ED35A8D00C19524 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
@@ -337,7 +337,7 @@
 			dependencies = (
 			);
 			name = "PiuPiu tvOS";
-			productName = "PewPew tvOS";
+			productName = "PiuPiu tvOS";
 			productReference = DA1ED79F226A86760058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
@@ -355,7 +355,7 @@
 			dependencies = (
 			);
 			name = "PiuPiu macOS";
-			productName = "PewPew macOS";
+			productName = "PiuPiu macOS";
 			productReference = DA1ED7BB226A87160058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
@@ -373,7 +373,7 @@
 			dependencies = (
 			);
 			name = "PiuPiu watchOS";
-			productName = "PewPew watchOS";
+			productName = "PiuPiu watchOS";
 			productReference = DA1ED7C8226A878C0058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
