@@ -97,7 +97,7 @@ The server provider gives the server url.  The reason a simple URL is not used i
 
 ```swift
 extension ViewController: ServerProvider {
-    var baseURL: URL {
+    var baseURL: URL? {
         return URL(string: "https://example.com")!
     }
 }
