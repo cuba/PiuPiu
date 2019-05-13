@@ -37,6 +37,10 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.2.0
+* Make `ServerProvider` return an optional URL.  This will safely handle invalid URLs instead of forcing the developer to use a !.
+* Add JSON array serialization method to BasicRequest
+
 ### 1.1.0
 Removed default translations.  
 
