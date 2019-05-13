@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0900"
+   LastUpgradeVersion = "1020"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8CC507E31ED35A8D00C19524"
-               BuildableName = "PewPew.framework"
-               BlueprintName = "PewPew iOS"
-               ReferencedContainer = "container:PewPew.xcodeproj">
+               BuildableName = "PiuPiu.framework"
+               BlueprintName = "PiuPiu iOS"
+               ReferencedContainer = "container:PiuPiu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,26 +28,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8CC507EC1ED35A8E00C19524"
-               BuildableName = "NetworkKit iOS Tests.xctest"
-               BlueprintName = "NetworkKit iOS Tests"
-               ReferencedContainer = "container:PewPew.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "8CC507E31ED35A8D00C19524"
-            BuildableName = "PewPew.framework"
-            BlueprintName = "PewPew iOS"
-            ReferencedContainer = "container:PewPew.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -65,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8CC507E31ED35A8D00C19524"
-            BuildableName = "PewPew.framework"
-            BlueprintName = "PewPew iOS"
-            ReferencedContainer = "container:PewPew.xcodeproj">
+            BuildableName = "PiuPiu.framework"
+            BlueprintName = "PiuPiu iOS"
+            ReferencedContainer = "container:PiuPiu.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +64,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8CC507E31ED35A8D00C19524"
-            BuildableName = "PewPew.framework"
-            BlueprintName = "PewPew iOS"
-            ReferencedContainer = "container:PewPew.xcodeproj">
+            BuildableName = "PiuPiu.framework"
+            BlueprintName = "PiuPiu iOS"
+            ReferencedContainer = "container:PiuPiu.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
