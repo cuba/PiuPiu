@@ -10,7 +10,7 @@ import Foundation
 
 /// The object that returns the server host or base url
 public protocol ServerProvider: class {
-    var baseURL: URL { get }
+    var baseURL: URL? { get }
 }
 
 /// Extensions used by NetworkDispatcher
@@ -22,6 +22,9 @@ public extension ServerProvider {
     /// - Returns: A url to which the request will be sent.
     /// - Throws: Any errors when trying to create the url.
     func url(from request: Request) throws -> URL {
+        guard let baseURL = baseURL else {
+            throw RequestError.missingURL
+        }
         
         var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
         urlComponents?.queryItems = request.queryItems

@@ -131,7 +131,7 @@ extension ViewController: UITextFieldDelegate {
 }
 
 extension ViewController: ServerProvider {
-    var baseURL: URL {
-        return URL(string: baseUrlTextField.text!)!
+    var baseURL: URL? {
+        return URL(string: baseUrlTextField.text!)
     }
 }

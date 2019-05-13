@@ -14,7 +14,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     open var mockStatusCode: StatusCode
     open var mockHeaders: [String: String]
     open var delay: TimeInterval = 0
-    public var baseURL: URL
+    public var baseURL: URL?
     
     func response(from request: Request) throws -> Response<Data?> {
         let urlRequest = try self.urlRequest(from: request)

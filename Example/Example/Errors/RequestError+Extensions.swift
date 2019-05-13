@@ -15,6 +15,7 @@ extension RequestError: BaseNetworkError {
         switch self {
         case .invalidURL            : return "ErrorReason.ApplicationError".localized()
         case .missingServerProvider : return "ErrorReason.ApplicationError".localized()
+        case .missingURL            : return "ErrorReason.ApplicationError".localized()
         }
     }
     
@@ -22,6 +23,7 @@ extension RequestError: BaseNetworkError {
         switch self {
         case .invalidURL            : return "RecoverySuggestion.UpdateVersion".localized()
         case .missingServerProvider : return "RecoverySuggestion.UpdateVersion".localized()
+        case .missingURL            : return "RecoverySuggestion.UpdateVersion".localized()
         }
     }
     
@@ -33,6 +35,7 @@ extension RequestError: BaseNetworkError {
         switch self {
         case .invalidURL            : return 0
         case .missingServerProvider : return 1
+        case .missingURL            : return 2
         }
     }
 }
