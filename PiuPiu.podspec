@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint PewPew.podspec' to ensure this is a
+#  Be sure to run `pod spec lint PiuPiu.podspec' to ensure this is a
 #  valid spec and to remove all comments including this before submitting the spec.
 #
 #  To learn more about Podspec attributes see https://docs.cocoapods.org/specification.html
@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |spec|
-  spec.name             = "PewPew"
+  spec.name             = "PiuPiu"
   spec.version          = "1.2.0"
   spec.summary          = "A swift framework for easily making network calls and serializing them to objects."
   spec.description      = <<-DESC

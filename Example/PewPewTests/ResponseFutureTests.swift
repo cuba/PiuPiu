@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import PewPew
+@testable import PiuPiu
 @testable import Example
 
 class ResponseFutureTests: XCTestCase {

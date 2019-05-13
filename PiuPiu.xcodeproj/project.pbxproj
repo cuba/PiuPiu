@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8CC507F51ED35A8E00C19524 /* PewPew-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CC507F51ED35A8E00C19524 /* PiuPiu-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CC507E71ED35A8D00C19524 /* PiuPiu-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */; };
 		8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508001ED35AA900C19524 /* ServerProvider.swift */; };
 		8CC508AD1ED3745A00C19524 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8CC508AF1ED3745A00C19524 /* Localizable.strings */; };
 		DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
 		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
-		DA1ED7AF226A86770058EE26 /* PewPew_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DA1ED7BF226A87160058EE26 /* PewPew_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		DA1ED7CC226A878C0058EE26 /* PewPew_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA1ED7AF226A86770058EE26 /* PiuPiu_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
 		DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
@@ -38,22 +38,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8CC507E41ED35A8D00C19524 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PewPew-iOS.h"; sourceTree = "<group>"; };
+		8CC507E41ED35A8D00C19524 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CC507E71ED35A8D00C19524 /* PiuPiu-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PiuPiu-iOS.h"; sourceTree = "<group>"; };
 		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDispatcher.swift; sourceTree = "<group>"; };
 		8CC508001ED35AA900C19524 /* ServerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
 		8CC508AE1ED3745A00C19524 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
-		DA1ED79F226A86760058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_tvOS.h; sourceTree = "<group>"; };
+		DA1ED79F226A86760058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_tvOS.h; sourceTree = "<group>"; };
 		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DA1ED7BB226A87160058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_macOS.h; sourceTree = "<group>"; };
+		DA1ED7BB226A87160058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_macOS.h; sourceTree = "<group>"; };
 		DA1ED7BE226A87160058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DA1ED7C8226A878C0058EE26 /* PewPew.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PewPew.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PewPew_watchOS.h; sourceTree = "<group>"; };
+		DA1ED7C8226A878C0058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_watchOS.h; sourceTree = "<group>"; };
 		DA1ED7CB226A878C0058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFuture.swift; sourceTree = "<group>"; };
 		DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Extensions.swift"; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 		DA74C6C622517ECC00B7005D /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
 		DAA9F59722630828002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		DAA9F59822630828002CDAAF /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
-		DAA9F5E12263B9EE002CDAAF /* PewPew.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PewPew.podspec; sourceTree = "<group>"; };
+		DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PiuPiu.podspec; sourceTree = "<group>"; };
 		DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAE5EF95221EBD5B00D1990B /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
 		DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseError.swift; sourceTree = "<group>"; };
@@ -125,22 +125,21 @@
 			children = (
 				8CC507E61ED35A8D00C19524 /* Source */,
 				8CC508061ED35DFE00C19524 /* SupportingFiles */,
-				DA1ED7D0226A87F30058EE26 /* PewPew iOS */,
-				DA1ED7A0226A86760058EE26 /* PewPew tvOS */,
-				DA1ED7BC226A87160058EE26 /* PewPew macOS */,
-				DA1ED7C9226A878C0058EE26 /* PewPew watchOS */,
+				DA1ED7D0226A87F30058EE26 /* PiuPiu iOS */,
+				DA1ED7A0226A86760058EE26 /* PiuPiu tvOS */,
+				DA1ED7BC226A87160058EE26 /* PiuPiu macOS */,
+				DA1ED7C9226A878C0058EE26 /* PiuPiu watchOS */,
 				8CC507E51ED35A8D00C19524 /* Products */,
-				8CC5085A1ED3641500C19524 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		8CC507E51ED35A8D00C19524 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8CC507E41ED35A8D00C19524 /* PewPew.framework */,
-				DA1ED79F226A86760058EE26 /* PewPew.framework */,
-				DA1ED7BB226A87160058EE26 /* PewPew.framework */,
-				DA1ED7C8226A878C0058EE26 /* PewPew.framework */,
+				8CC507E41ED35A8D00C19524 /* PiuPiu.framework */,
+				DA1ED79F226A86760058EE26 /* PiuPiu.framework */,
+				DA1ED7BB226A87160058EE26 /* PiuPiu.framework */,
+				DA1ED7C8226A878C0058EE26 /* PiuPiu.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,19 +163,12 @@
 			isa = PBXGroup;
 			children = (
 				DA53DA932289CDA900722CD8 /* README.md */,
-				DAA9F5E12263B9EE002CDAAF /* PewPew.podspec */,
+				DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */,
 				DAA9F59822630828002CDAAF /* Cartfile */,
 				DAA9F59722630828002CDAAF /* Cartfile.resolved */,
 				8CC508AF1ED3745A00C19524 /* Localizable.strings */,
 			);
 			name = SupportingFiles;
-			sourceTree = "<group>";
-		};
-		8CC5085A1ED3641500C19524 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		8CC508A61ED3740800C19524 /* Extensions */ = {
@@ -190,40 +182,40 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		DA1ED7A0226A86760058EE26 /* PewPew tvOS */ = {
+		DA1ED7A0226A86760058EE26 /* PiuPiu tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				DA1ED7A1226A86760058EE26 /* PewPew_tvOS.h */,
+				DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */,
 				DA1ED7A2226A86760058EE26 /* Info.plist */,
 			);
-			path = "PewPew tvOS";
+			path = "PiuPiu tvOS";
 			sourceTree = "<group>";
 		};
-		DA1ED7BC226A87160058EE26 /* PewPew macOS */ = {
+		DA1ED7BC226A87160058EE26 /* PiuPiu macOS */ = {
 			isa = PBXGroup;
 			children = (
-				DA1ED7BD226A87160058EE26 /* PewPew_macOS.h */,
+				DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */,
 				DA1ED7BE226A87160058EE26 /* Info.plist */,
 			);
-			path = "PewPew macOS";
+			path = "PiuPiu macOS";
 			sourceTree = "<group>";
 		};
-		DA1ED7C9226A878C0058EE26 /* PewPew watchOS */ = {
+		DA1ED7C9226A878C0058EE26 /* PiuPiu watchOS */ = {
 			isa = PBXGroup;
 			children = (
-				DA1ED7CA226A878C0058EE26 /* PewPew_watchOS.h */,
+				DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */,
 				DA1ED7CB226A878C0058EE26 /* Info.plist */,
 			);
-			path = "PewPew watchOS";
+			path = "PiuPiu watchOS";
 			sourceTree = "<group>";
 		};
-		DA1ED7D0226A87F30058EE26 /* PewPew iOS */ = {
+		DA1ED7D0226A87F30058EE26 /* PiuPiu iOS */ = {
 			isa = PBXGroup;
 			children = (
 				8CC507E81ED35A8D00C19524 /* Info.plist */,
-				8CC507E71ED35A8D00C19524 /* PewPew-iOS.h */,
+				8CC507E71ED35A8D00C19524 /* PiuPiu-iOS.h */,
 			);
-			path = "PewPew iOS";
+			path = "PiuPiu iOS";
 			sourceTree = "<group>";
 		};
 		DA3E506921B458BA001450EC /* Request */ = {
@@ -282,7 +274,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC507F51ED35A8E00C19524 /* PewPew-iOS.h in Headers */,
+				8CC507F51ED35A8E00C19524 /* PiuPiu-iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +282,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA1ED7AF226A86770058EE26 /* PewPew_tvOS.h in Headers */,
+				DA1ED7AF226A86770058EE26 /* PiuPiu_tvOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,7 +290,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA1ED7BF226A87160058EE26 /* PewPew_macOS.h in Headers */,
+				DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,16 +298,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA1ED7CC226A878C0058EE26 /* PewPew_watchOS.h in Headers */,
+				DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		8CC507E31ED35A8D00C19524 /* PewPew iOS */ = {
+		8CC507E31ED35A8D00C19524 /* PiuPiu iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8CC507F81ED35A8E00C19524 /* Build configuration list for PBXNativeTarget "PewPew iOS" */;
+			buildConfigurationList = 8CC507F81ED35A8E00C19524 /* Build configuration list for PBXNativeTarget "PiuPiu iOS" */;
 			buildPhases = (
 				8CC507DF1ED35A8D00C19524 /* Sources */,
 				8CC507E01ED35A8D00C19524 /* Frameworks */,
@@ -326,14 +318,14 @@
 			);
 			dependencies = (
 			);
-			name = "PewPew iOS";
+			name = "PiuPiu iOS";
 			productName = NetworkKit;
-			productReference = 8CC507E41ED35A8D00C19524 /* PewPew.framework */;
+			productReference = 8CC507E41ED35A8D00C19524 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DA1ED79E226A86760058EE26 /* PewPew tvOS */ = {
+		DA1ED79E226A86760058EE26 /* PiuPiu tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PewPew tvOS" */;
+			buildConfigurationList = DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu tvOS" */;
 			buildPhases = (
 				DA1ED79A226A86760058EE26 /* Headers */,
 				DA1ED79B226A86760058EE26 /* Sources */,
@@ -344,14 +336,14 @@
 			);
 			dependencies = (
 			);
-			name = "PewPew tvOS";
+			name = "PiuPiu tvOS";
 			productName = "PewPew tvOS";
-			productReference = DA1ED79F226A86760058EE26 /* PewPew.framework */;
+			productReference = DA1ED79F226A86760058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DA1ED7BA226A87160058EE26 /* PewPew macOS */ = {
+		DA1ED7BA226A87160058EE26 /* PiuPiu macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PewPew macOS" */;
+			buildConfigurationList = DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu macOS" */;
 			buildPhases = (
 				DA1ED7B6226A87160058EE26 /* Headers */,
 				DA1ED7B7226A87160058EE26 /* Sources */,
@@ -362,14 +354,14 @@
 			);
 			dependencies = (
 			);
-			name = "PewPew macOS";
+			name = "PiuPiu macOS";
 			productName = "PewPew macOS";
-			productReference = DA1ED7BB226A87160058EE26 /* PewPew.framework */;
+			productReference = DA1ED7BB226A87160058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DA1ED7C7226A878C0058EE26 /* PewPew watchOS */ = {
+		DA1ED7C7226A878C0058EE26 /* PiuPiu watchOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PewPew watchOS" */;
+			buildConfigurationList = DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu watchOS" */;
 			buildPhases = (
 				DA1ED7C3226A878C0058EE26 /* Headers */,
 				DA1ED7C4226A878C0058EE26 /* Sources */,
@@ -380,9 +372,9 @@
 			);
 			dependencies = (
 			);
-			name = "PewPew watchOS";
+			name = "PiuPiu watchOS";
 			productName = "PewPew watchOS";
-			productReference = DA1ED7C8226A878C0058EE26 /* PewPew.framework */;
+			productReference = DA1ED7C8226A878C0058EE26 /* PiuPiu.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -418,7 +410,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8CC507DE1ED35A8D00C19524 /* Build configuration list for PBXProject "PewPew" */;
+			buildConfigurationList = 8CC507DE1ED35A8D00C19524 /* Build configuration list for PBXProject "PiuPiu" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -431,10 +423,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8CC507E31ED35A8D00C19524 /* PewPew iOS */,
-				DA1ED79E226A86760058EE26 /* PewPew tvOS */,
-				DA1ED7BA226A87160058EE26 /* PewPew macOS */,
-				DA1ED7C7226A878C0058EE26 /* PewPew watchOS */,
+				8CC507E31ED35A8D00C19524 /* PiuPiu iOS */,
+				DA1ED79E226A86760058EE26 /* PiuPiu tvOS */,
+				DA1ED7BA226A87160058EE26 /* PiuPiu macOS */,
+				DA1ED7C7226A878C0058EE26 /* PiuPiu watchOS */,
 			);
 		};
 /* End PBXProject section */
@@ -663,12 +655,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "PewPew iOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = PewPew;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -690,12 +682,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "PewPew iOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = PewPew;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -719,13 +711,13 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew tvOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -750,12 +742,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew tvOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu tvOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -783,14 +775,14 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew macOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -816,13 +808,13 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew macOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -846,13 +838,13 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew watchOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu watchOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -878,12 +870,12 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PewPew watchOS/Info.plist";
+				INFOPLIST_FILE = "PiuPiu watchOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew;
-				PRODUCT_NAME = "${PROJECT_NAME}";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
+				PRODUCT_NAME = PiuPiu;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -895,7 +887,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8CC507DE1ED35A8D00C19524 /* Build configuration list for PBXProject "PewPew" */ = {
+		8CC507DE1ED35A8D00C19524 /* Build configuration list for PBXProject "PiuPiu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8CC507F61ED35A8E00C19524 /* Debug */,
@@ -904,7 +896,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8CC507F81ED35A8E00C19524 /* Build configuration list for PBXNativeTarget "PewPew iOS" */ = {
+		8CC507F81ED35A8E00C19524 /* Build configuration list for PBXNativeTarget "PiuPiu iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8CC507F91ED35A8E00C19524 /* Debug */,
@@ -913,7 +905,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PewPew tvOS" */ = {
+		DA1ED7B4226A86770058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DA1ED7B0226A86770058EE26 /* Debug */,
@@ -922,7 +914,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PewPew macOS" */ = {
+		DA1ED7C0226A87160058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DA1ED7C1226A87160058EE26 /* Debug */,
@@ -931,7 +923,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PewPew watchOS" */ = {
+		DA1ED7CD226A878C0058EE26 /* Build configuration list for PBXNativeTarget "PiuPiu watchOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DA1ED7CE226A878C0058EE26 /* Debug */,

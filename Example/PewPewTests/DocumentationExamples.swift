@@ -8,7 +8,7 @@
 
 import XCTest
 @testable import Example
-@testable import PewPew
+@testable import PiuPiu
 
 class DocumentationExamples: XCTestCase, ServerProvider {
     

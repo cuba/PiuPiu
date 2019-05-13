@@ -1,21 +1,21 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 [![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PewPew)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
-[![Build](https://img.shields.io/travis/cuba/PewPew/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PewPew)
+[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PiuPiu)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
+[![Build](https://img.shields.io/travis/cuba/PiuPiu/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PiuPiu)
 
-PewPew
+PiuPiu
 ============
 
 Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
-PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
+PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
 
 **Q**: Why should I use this framework?
 **A**: Because, you like clean code.
 
 **Q**: Why the stupid name?
-**A**: Because "pew pew" is the sound of lazers. And lazers are from the future.
+**A**: Because "piu piu" is the sound of lazers. And lazers are from the future.
 
 **Q**: What sort of bear is best?
 **A**: False! A black bear!
@@ -46,7 +46,7 @@ Removed default translations.
 
 You can add back this behaviour by extending `ResponseError`, `RequestError` and `SerializationError` and conforming to `LocalizedError` and (optionally) `CustomNSError`
 
-To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
+To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PiuPiu/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PiuPiu/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
 
 ### 1.0.1 
 Fixed crash when translating caused by renaming the project.
@@ -75,20 +75,20 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate PewPew into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PewPew" ~> 1.1
+github "cuba/PiuPiu" ~> 1.1
 ```
 
-Run `carthage update` to build the framework and drag the built `PewPew.framework` into your Xcode project.
+Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
 
 ## Usage
 
-### 1. Import `PewPew` into your file
+### 1. Import `PiuPiu` into your file
 
 ```swift
-import PewPew
+import PiuPiu
 ```
 
 ### 2. Implement a  `ServerProvider`
@@ -359,7 +359,7 @@ return ResponseFuture<[Post]>(action: { future in
 
 ## Encoding
 
-PewPew has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
+PiuPiu has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
 
 ### Encode JSON `String`
 
@@ -728,12 +728,12 @@ dispatcher.future(from: request).send()
 
 ## Dependencies
 
-PewPew includes...nothing. This is a light-weight library.
+PiuPiu includes...nothing. This is a light-weight library.
 
 ## Credits
 
-PewPew is owned and maintained by Jacob Sikorski.
+PiuPiu is owned and maintained by Jacob Sikorski.
 
 ## License
 
-PewPew is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
+PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PiuPiu/blob/master/LICENSE) for details
