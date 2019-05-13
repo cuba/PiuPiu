@@ -37,6 +37,11 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.3.0
+* Rename `PewPew` to `PiuPiu`
+* Fix build for Carthage
+* Delete unnecessary files
+
 ### 1.2.0
 * Make `ServerProvider` return an optional URL.  This will safely handle invalid URLs instead of forcing the developer to use a !.
 * Add JSON array serialization method to BasicRequest
