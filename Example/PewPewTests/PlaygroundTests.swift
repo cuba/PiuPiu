@@ -19,8 +19,8 @@ class PlaygroundTests: XCTestCase, ServerProvider {
         var result: T
     }
     
-    var baseURL: URL {
-        return URL(string: "https://jsonplaceholder.typicode.com")!
+    var baseURL: URL? {
+        return URL(string: "https://jsonplaceholder.typicode.com")
     }
     
     func testAnnasExample() {

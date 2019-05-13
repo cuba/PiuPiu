@@ -62,6 +62,7 @@
 		DA3E506C21B458DD001450EC /* BasicRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicRequest.swift; sourceTree = "<group>"; };
 		DA3E506F21B4590F001450EC /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
 		DA3E507121B4595E001450EC /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		DA53DA932289CDA900722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DA74C476224B2DA500B7005D /* MultiPartRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPartRequest.swift; sourceTree = "<group>"; };
 		DA74C6BD22517D9600B7005D /* MockDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDispatcher.swift; sourceTree = "<group>"; };
 		DA74C6BF22517DA400B7005D /* Dispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
@@ -162,6 +163,7 @@
 		8CC508061ED35DFE00C19524 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
+				DA53DA932289CDA900722CD8 /* README.md */,
 				DAA9F5E12263B9EE002CDAAF /* PewPew.podspec */,
 				DAA9F59822630828002CDAAF /* Cartfile */,
 				DAA9F59722630828002CDAAF /* Cartfile.resolved */,

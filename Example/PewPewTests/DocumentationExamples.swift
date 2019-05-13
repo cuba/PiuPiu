@@ -15,8 +15,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     struct ServerErrorDetails: Codable {
     }
     
-    var baseURL: URL {
-        return URL(string: "https://jsonplaceholder.typicode.com")!
+    var baseURL: URL? {
+        return URL(string: "https://jsonplaceholder.typicode.com")
     }
     
     private var strongFuture: ResponseFuture<[Post]>?
