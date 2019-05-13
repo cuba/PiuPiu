@@ -64,6 +64,7 @@ public struct BasicRequest: Request {
         ensureJSONContentType()
     }
     
+    
     /// Add JSON body to the request from a JSON Object.
     ///
     /// - Parameters:
@@ -72,6 +73,37 @@ public struct BasicRequest: Request {
     /// - Throws: Any errors thrown by `JSONSerialization`.
     mutating public func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
+    }
+    
+    /// Add HTTP body to the request from a JSON Object.
+    ///
+    /// - Parameters:
+    ///   - jsonObject: The JSON Object to encode into the request body using `JSONSerialization`. This does the same thing as the `setHTTPBody(jsonArray:options:)` method except that it also adds to `Content-Type` header.
+    ///   - options: The writing options to use when encoding.
+    /// - Throws: Any errors thrown by `JSONSerialization`.
+    mutating public func setJSONBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
+        try setHTTPBody(jsonObject: jsonObject, options: options)
+        ensureJSONContentType()
+    }
+    
+    /// Add HTTP body to the request from a JSON Array.
+    ///
+    /// - Parameters:
+    ///   - jsonArray: The JSON Object array to encode into the request body using `JSONSerialization`.
+    ///   - options: The writing options to use when encoding.
+    /// - Throws: Any errors thrown by `JSONSerialization`.
+    mutating public func setHTTPBody(jsonArray: [[String: Any?]], options: JSONSerialization.WritingOptions = []) throws {
+        self.httpBody = try JSONSerialization.data(withJSONObject: jsonArray, options: options)
+    }
+    
+    /// Add JSON body to the request from a JSON Array. This does the same thing as the `setHTTPBody(jsonArray:options:)` method except that it also adds to `Content-Type` header.
+    ///
+    /// - Parameters:
+    ///   - jsonArray: The JSON Object array to encode into the request body using `JSONSerialization`.
+    ///   - options: The writing options to use when encoding.
+    /// - Throws: Any errors thrown by `JSONSerialization`.
+    mutating public func setJSONBody(jsonArray: [[String: Any?]], options: JSONSerialization.WritingOptions = []) throws {
+        try setHTTPBody(jsonArray: jsonArray, options: options)
         ensureJSONContentType()
     }
     

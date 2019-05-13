@@ -43,7 +43,7 @@ class EncodingTests: XCTestCase {
             ]
             
             var request = BasicRequest(method: .post, path: "/users")
-            try request.setHTTPBody(jsonObject: jsonObject)
+            try request.setJSONBody(jsonObject: jsonObject)
             XCTAssertNotNil(request.httpBody)
         } catch {
             XCTFail("Should not throw")
