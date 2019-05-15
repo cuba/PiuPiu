@@ -1,11 +1,11 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 [![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PiuPiu)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
-[![Build](https://img.shields.io/travis/cuba/PiuPiu/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PiuPiu)
+[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PewPew)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
+[![Build](https://img.shields.io/travis/cuba/PewPew/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PewPew)
 
-PiuPiu
+PiuPiu (PewPew)
 ============
 
 Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
@@ -51,7 +51,7 @@ Removed default translations.
 
 You can add back this behaviour by extending `ResponseError`, `RequestError` and `SerializationError` and conforming to `LocalizedError` and (optionally) `CustomNSError`
 
-To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PiuPiu/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PiuPiu/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
+To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
 
 ### 1.0.1 
 Fixed crash when translating caused by renaming the project.
@@ -83,7 +83,7 @@ $ brew install carthage
 To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PiuPiu" ~> 1.1
+github "cuba/PewPew" ~> 1.1
 ```
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
@@ -640,9 +640,14 @@ Similar to encoding, you can also add Decoding support for whatever decoder you 
 
 ```swift
 extension ResponseInterface where T == Data? {
+
     /// Attempt to Decode the response data into an BaseMappable object.
     ///
+    /// - Parameters:
+    ///   - type: The mappable type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: D.Type, context: MapContext? = nil) throws  -> D {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
@@ -656,12 +661,52 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to decode the response data into a BaseMappable array.
     ///
+    /// - Parameters:
+    ///   - type: The array type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: [D].Type, context: MapContext? = nil) throws  -> [D] {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
 
         guard let result = mapper.mapArray(JSONString: jsonString) else {
+            throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+
+        return result
+    }
+
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: D].Type, context: MapContext? = nil) throws  -> [String: D] {
+        let jsonString = try self.decodeString()
+        let mapper = Mapper<D>(context: context)
+
+        guard let result = mapper.mapDictionary(JSONString: jsonString) else {
+        throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+
+        return result
+    }
+
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary of arrays type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: [D]].Type, context: MapContext? = nil) throws  -> [String: [D]] {
+        let jsonObject = try self.decodeJSONObject()
+        let mapper = Mapper<D>(context: context)
+
+        guard let result = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
             throw SerializationError.failedToDecodeResponseData(cause: nil)
         }
 
@@ -679,7 +724,10 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to deserialize the response data into a MapDecodable object.
     ///
+    /// - Parameters:
+    ///   - type: The map decodable type to decode
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
         let data = try self.unwrapData()
 
@@ -694,7 +742,10 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to decode the response data into a MapDecodable array.
     ///
-    /// - Returns: The decoded array
+    /// - Parameters:
+    ///   - type: The map decodable array type to decode
+    /// - Returns: The map decodable array
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
         let data = try self.unwrapData()
 
@@ -741,4 +792,4 @@ PiuPiu is owned and maintained by Jacob Sikorski.
 
 ## License
 
-PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PiuPiu/blob/master/LICENSE) for details
+PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
