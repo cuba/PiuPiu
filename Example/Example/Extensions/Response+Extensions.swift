@@ -17,7 +17,11 @@ extension ResponseInterface where T == Data? {
     
     /// Attempt to Decode the response data into an BaseMappable object.
     ///
+    /// - Parameters:
+    ///   - type: The mappable type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: D.Type, context: MapContext? = nil) throws  -> D {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
@@ -31,12 +35,52 @@ extension ResponseInterface where T == Data? {
     
     /// Attempt to decode the response data into a BaseMappable array.
     ///
+    /// - Parameters:
+    ///   - type: The array type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: [D].Type, context: MapContext? = nil) throws  -> [D] {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
         
         guard let result = mapper.mapArray(JSONString: jsonString) else {
+            throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+        
+        return result
+    }
+    
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: D].Type, context: MapContext? = nil) throws  -> [String: D] {
+        let jsonString = try self.decodeString()
+        let mapper = Mapper<D>(context: context)
+        
+        guard let result = mapper.mapDictionary(JSONString: jsonString) else {
+            throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+        
+        return result
+    }
+    
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary of arrays type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: [D]].Type, context: MapContext? = nil) throws  -> [String: [D]] {
+        let jsonObject = try self.decodeJSONObject()
+        let mapper = Mapper<D>(context: context)
+        
+        guard let result = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
             throw SerializationError.failedToDecodeResponseData(cause: nil)
         }
         
@@ -50,7 +94,10 @@ extension ResponseInterface where T == Data? {
     
     /// Attempt to deserialize the response data into a MapDecodable object.
     ///
+    /// - Parameters:
+    ///   - type: The map decodable type to decode
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
         let data = try self.unwrapData()
         
@@ -65,7 +112,10 @@ extension ResponseInterface where T == Data? {
     
     /// Attempt to decode the response data into a MapDecodable array.
     ///
-    /// - Returns: The decoded array
+    /// - Parameters:
+    ///   - type: The map decodable array type to decode
+    /// - Returns: The map decodable array
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
         let data = try self.unwrapData()
         
