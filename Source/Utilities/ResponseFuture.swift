@@ -86,7 +86,6 @@ public class ResponseFuture<T> {
             try successHandler?(object)
             status = .success
             completionHandler?()
-            return
         } catch {
             self.fail(with: error)
         }
