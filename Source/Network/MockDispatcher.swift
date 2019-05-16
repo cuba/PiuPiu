@@ -87,7 +87,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
         return ResponseFuture<Response<Data?>>() { promise in
             let response = try self.response(from: request)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + self.delay) { // Change `2.0` to the desired
+            DispatchQueue.main.asyncAfter(deadline: .now() + self.delay) {
                 promise.succeed(with: response)
             }
         }

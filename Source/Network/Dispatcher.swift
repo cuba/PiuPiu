@@ -89,7 +89,7 @@ public extension Dispatcher {
         return ResponseFuture<Response<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.future(from: request)
-            requestPromise.fulfill(promise)
+            promise.fulfill(with: requestPromise)
         }
     }
 }
