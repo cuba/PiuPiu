@@ -190,6 +190,20 @@ public class ResponseFuture<T> {
         }
     }
     
+    public func sync(on queue: DispatchQueue) -> ResponseFuture<T> {
+        return ResponseFuture<T>() { future in
+            self.success({ result in
+                queue.async {
+                    future.succeed(with: result)
+                }
+            }).error({ error in
+                queue.async {
+                    future.fail(with: error)
+                }
+            }).send()
+        }
+    }
+    
     /// This method triggers the action method defined on this promise.
     ///
     /// - Returns: `self`

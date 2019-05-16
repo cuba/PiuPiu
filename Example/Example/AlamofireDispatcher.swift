@@ -22,7 +22,7 @@ class AlamofireDispatcher: Dispatcher {
         self.sessionManager = SessionManager()
     }
     
-    func future(from request: PiuPiu.Request) -> ResponseFuture<Response<Data?>> {
+    func future(from request: PiuPiu.Request, on queue: DispatchQueue) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             guard let serverProvider = self.serverProvider else {
                 throw RequestError.missingServerProvider
@@ -34,7 +34,11 @@ class AlamofireDispatcher: Dispatcher {
                 // Ensure there is an http response
                 guard let httpResponse = dataResponse.response else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
-                    promise.fail(with: error)
+                    
+                    queue.async {
+                        promise.fail(with: error)
+                    }
+                    
                     return
                 }
                 
@@ -43,7 +47,10 @@ class AlamofireDispatcher: Dispatcher {
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
                 let responseError = statusCode.makeError(cause: error)
                 let response = Response(data: dataResponse.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
-                promise.succeed(with: response)
+                
+                queue.async {
+                    promise.succeed(with: response)
+                }
             })
         }
     }

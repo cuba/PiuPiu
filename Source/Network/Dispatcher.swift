@@ -10,14 +10,16 @@ import Foundation
 
 public typealias ResponsePromise<T, E> = Promise<SuccessResponse<T>, ErrorResponse<E>>
 
-/// The object that will be making the API call.
+/// The object that will be making the API call and returning the Future
 public protocol Dispatcher {
     
-    /// Make a promise to send the network call.
+    /// Make a promise to send a future network call.
     ///
-    /// - Parameter callback: A callback that constructs the Request object.
-    /// - Returns: A promise to make the network call.
-    func future(from request: Request) -> ResponseFuture<Response<Data?>>
+    /// - Parameters:
+    ///   - request: The request to send.
+    ///   - queue: The DispatchQueue on which to return the results on.
+    /// - Returns: A future network call that is made when `start()` or `send()` is called.
+    func future(from request: Request, on queue: DispatchQueue) -> ResponseFuture<Response<Data?>>
 }
 
 public extension Dispatcher {
@@ -81,14 +83,18 @@ public extension Dispatcher {
         }
     }
     
+    func future(from request: Request) -> ResponseFuture<Response<Data?>> {
+        return self.future(from: request, on: .main)
+    }
+    
     /// Make a promise to send the network call.
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
+    func future(from callback: @escaping () throws -> Request, on queue: DispatchQueue = .main) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             let request = try callback()
-            let requestPromise = self.future(from: request)
+            let requestPromise = self.future(from: request, on: queue)
             promise.fulfill(with: requestPromise)
         }
     }
