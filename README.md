@@ -39,6 +39,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
+  * To handle this migration, replace all `import PewPew` to `import PiuPiu`
 * Fix build for Carthage
 * Delete unnecessary files
 
