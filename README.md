@@ -1,11 +1,11 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 8+](https://img.shields.io/badge/iOS-8-lightgrey.svg?style=for-the-badge)
 [![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PewPew)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
-[![Build](https://img.shields.io/travis/cuba/PewPew/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PewPew)
+[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PiuPiu)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
+[![Build](https://img.shields.io/travis/cuba/PiuPiu/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PiuPiu)
 
-PiuPiu (PewPew)
+PiuPiu
 ============
 
 Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
@@ -39,7 +39,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
-  * To handle this migration, replace all `import PewPew` to `import PiuPiu`
+  * To handle this migration, replace all `import PewPew` with `import PiuPiu`
 * Fix build for Carthage
 * Delete unnecessary files
 
@@ -52,7 +52,7 @@ Removed default translations.
 
 You can add back this behaviour by extending `ResponseError`, `RequestError` and `SerializationError` and conforming to `LocalizedError` and (optionally) `CustomNSError`
 
-To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PewPew/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PewPew/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
+To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PiuPiu/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PiuPiu/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
 
 ### 1.0.1 
 Fixed crash when translating caused by renaming the project.
@@ -84,7 +84,7 @@ $ brew install carthage
 To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PewPew" ~> 1.3
+github "cuba/PiuPiu" ~> 1.3
 ```
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
@@ -793,4 +793,4 @@ PiuPiu is owned and maintained by Jacob Sikorski.
 
 ## License
 
-PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
+PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PiuPiu/blob/master/LICENSE) for details
