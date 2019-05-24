@@ -1,6 +1,6 @@
 //
 //  MockDispatcher.swift
-//  PewPew iOS
+//  PiuPiu iOS
 //
 //  Created by Jacob Sikorski on 2019-03-31.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
@@ -87,7 +87,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
         return ResponseFuture<Response<Data?>>() { promise in
             let response = try self.response(from: request)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + self.delay) { // Change `2.0` to the desired
+            DispatchQueue.main.asyncAfter(deadline: .now() + self.delay) {
                 promise.succeed(with: response)
             }
         }

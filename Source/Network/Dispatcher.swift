@@ -1,6 +1,6 @@
 //
 //  Dispatcher.swift
-//  PewPew iOS
+//  PiuPiu iOS
 //
 //  Created by Jacob Sikorski on 2019-03-31.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
@@ -89,7 +89,7 @@ public extension Dispatcher {
         return ResponseFuture<Response<Data?>>() { promise in
             let request = try callback()
             let requestPromise = self.future(from: request)
-            requestPromise.fulfill(promise)
+            promise.fulfill(with: requestPromise)
         }
     }
 }

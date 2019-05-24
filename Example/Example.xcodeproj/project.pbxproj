@@ -11,6 +11,8 @@
 		8CC508161ED35E7D00C19524 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* ViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
+		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
+		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
 		DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787584226A73FD00A626AF /* RequestError+Extensions.swift */; };
 		DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787586226A742D00A626AF /* ResponseError+Extensions.swift */; };
@@ -35,25 +37,44 @@
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
-		DAA9F5EE2263EEA8002CDAAF /* PewPew.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */; };
-		DAA9F5EF2263EEA8002CDAAF /* PewPew.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DAA9F5EC2263EE9E002CDAAF /* PBXContainerItemProxy */ = {
+		DA53DA9E2289DD8400722CD8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
+			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 8CC507E41ED35A8D00C19524;
-			remoteInfo = "PewPew iOS";
+			remoteInfo = "PiuPiu iOS";
 		};
-		DAA9F5F02263EEA8002CDAAF /* PBXContainerItemProxy */ = {
+		DA53DAA02289DD8400722CD8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
+			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA1ED79F226A86760058EE26;
+			remoteInfo = "PiuPiu tvOS";
+		};
+		DA53DAA22289DD8400722CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA1ED7BB226A87160058EE26;
+			remoteInfo = "PiuPiu macOS";
+		};
+		DA53DAA42289DD8400722CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA1ED7C8226A878C0058EE26;
+			remoteInfo = "PiuPiu watchOS";
+		};
+		DA53DAA82289DDA700722CD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 8CC507E31ED35A8D00C19524;
-			remoteInfo = "PewPew iOS";
+			remoteInfo = "PiuPiu iOS";
 		};
 		DAE5EF6A22190A0200D1990B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -71,7 +92,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DAA9F5EF2263EEA8002CDAAF /* PewPew.framework in Embed Frameworks */,
+				DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,6 +106,8 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
+		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
+		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
 		DA787584226A73FD00A626AF /* RequestError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestError+Extensions.swift"; sourceTree = "<group>"; };
 		DA787586226A742D00A626AF /* ResponseError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResponseError+Extensions.swift"; sourceTree = "<group>"; };
@@ -107,7 +130,7 @@
 		DAA9F5682262473A002CDAAF /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
-		DAA9F58822630365002CDAAF /* PewPew.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PewPew.xcodeproj; path = ../PewPew.xcodeproj; sourceTree = "<group>"; };
+		DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PiuPiu.xcodeproj; path = ../PiuPiu.xcodeproj; sourceTree = "<group>"; };
 		DAA9F595226303FC002CDAAF /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockDispatcher+Extensions.swift"; sourceTree = "<group>"; };
@@ -122,7 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAA9F5EE2263EEA8002CDAAF /* PewPew.framework in Frameworks */,
+				DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */,
 				DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */,
 				DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */,
 				DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */,
@@ -142,7 +165,7 @@
 		8CC508071ED35E7D00C19524 = {
 			isa = PBXGroup;
 			children = (
-				DAA9F58822630365002CDAAF /* PewPew.xcodeproj */,
+				DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */,
 				8CC508121ED35E7D00C19524 /* Source */,
 				DAA9F5862262E47C002CDAAF /* Supporting Files */,
 				DAE5EF6622190A0200D1990B /* PewPewTests */,
@@ -172,6 +195,17 @@
 			);
 			name = Source;
 			path = Example;
+			sourceTree = "<group>";
+		};
+		DA53DA982289DD8400722CD8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */,
+				DA53DAA12289DD8400722CD8 /* PiuPiu.framework */,
+				DA53DAA32289DD8400722CD8 /* PiuPiu.framework */,
+				DA53DAA52289DD8400722CD8 /* PiuPiu.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		DA787581226A73AA00A626AF /* Errors */ = {
@@ -210,6 +244,8 @@
 		DAA9F5862262E47C002CDAAF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DA53DAAA2289DE3300722CD8 /* README.md */,
+				DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */,
 				DAA9F595226303FC002CDAAF /* Cartfile */,
 				DAA9F596226303FC002CDAAF /* Cartfile.resolved */,
 				8CC5081A1ED35E7D00C19524 /* Assets.xcassets */,
@@ -218,14 +254,6 @@
 				DA78758A226A756800A626AF /* Localizable.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		DAA9F5E92263EE9E002CDAAF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
@@ -270,7 +298,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				DAA9F5F12263EEA8002CDAAF /* PBXTargetDependency */,
+				DA53DAA92289DDA700722CD8 /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = Example;
@@ -332,8 +360,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DAA9F5E92263EE9E002CDAAF /* Products */;
-					ProjectRef = DAA9F58822630365002CDAAF /* PewPew.xcodeproj */;
+					ProductGroup = DA53DA982289DD8400722CD8 /* Products */;
+					ProjectRef = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -345,11 +373,32 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DAA9F5ED2263EE9E002CDAAF /* PewPew.framework */ = {
+		DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = PewPew.framework;
-			remoteRef = DAA9F5EC2263EE9E002CDAAF /* PBXContainerItemProxy */;
+			path = PiuPiu.framework;
+			remoteRef = DA53DA9E2289DD8400722CD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DA53DAA12289DD8400722CD8 /* PiuPiu.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PiuPiu.framework;
+			remoteRef = DA53DAA02289DD8400722CD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DA53DAA32289DD8400722CD8 /* PiuPiu.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PiuPiu.framework;
+			remoteRef = DA53DAA22289DD8400722CD8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DA53DAA52289DD8400722CD8 /* PiuPiu.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = PiuPiu.framework;
+			remoteRef = DA53DAA42289DD8400722CD8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -434,10 +483,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DAA9F5F12263EEA8002CDAAF /* PBXTargetDependency */ = {
+		DA53DAA92289DDA700722CD8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "PewPew iOS";
-			targetProxy = DAA9F5F02263EEA8002CDAAF /* PBXContainerItemProxy */;
+			name = "PiuPiu iOS";
+			targetProxy = DA53DAA82289DDA700722CD8 /* PBXContainerItemProxy */;
 		};
 		DAE5EF6B22190A0200D1990B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -566,7 +615,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};
@@ -585,7 +634,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPew.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.2;
 			};

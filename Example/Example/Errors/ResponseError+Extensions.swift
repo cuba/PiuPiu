@@ -1,13 +1,13 @@
 //
 //  ResponseError+Extensions.swift
-//  PewPew
+//  PiuPiu
 //
 //  Created by Jacob Sikorski on 2019-04-19.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
 //
 
 import Foundation
-import PewPew
+import PiuPiu
 
 extension ResponseError: BaseNetworkError {
     
@@ -42,7 +42,7 @@ extension ResponseError: BaseNetworkError {
     }
     
     public static var errorDomain: String {
-        return "PewPew.ResponseError"
+        return "PiuPiu.ResponseError"
     }
     
     public var errorCode: Int {

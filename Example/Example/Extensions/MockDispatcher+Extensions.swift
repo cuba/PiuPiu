@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import PewPew
+import PiuPiu
 
 extension MockDispatcher {
     static func makeDispatcher<T: Encodable>(with response: T, status: StatusCode = .ok) throws -> MockDispatcher {

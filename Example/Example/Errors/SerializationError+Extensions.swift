@@ -1,13 +1,13 @@
 //
 //  SerializationError+Extensions.swift
-//  PewPew
+//  PiuPiu
 //
 //  Created by Jacob Sikorski on 2019-04-19.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
 //
 
 import Foundation
-import PewPew
+import PiuPiu
 
 extension SerializationError: BaseNetworkError {
     
@@ -30,7 +30,7 @@ extension SerializationError: BaseNetworkError {
     }
     
     public static var errorDomain: String {
-        return "PewPew.SerializationError"
+        return "PiuPiu.SerializationError"
     }
     
     public var errorCode: Int {

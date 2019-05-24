@@ -5,17 +5,17 @@
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PewPew/blob/master/LICENSE)
 [![Build](https://img.shields.io/travis/cuba/PewPew/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PewPew)
 
-PewPew
+PiuPiu (PewPew)
 ============
 
 Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
-PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
+PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
 
 **Q**: Why should I use this framework?
 **A**: Because, you like clean code.
 
 **Q**: Why the stupid name?
-**A**: Because "pew pew" is the sound of lazers. And lazers are from the future.
+**A**: Because "piu piu" is the sound of lazers. And lazers are from the future.
 
 **Q**: What sort of bear is best?
 **A**: False! A black bear!
@@ -36,6 +36,12 @@ PewPew adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 - [License](#license)
 
 ## Updates
+
+### 1.3.0
+* Rename `PewPew` to `PiuPiu`
+  * To handle this migration, replace all `import PewPew` to `import PiuPiu`
+* Fix build for Carthage
+* Delete unnecessary files
 
 ### 1.2.0
 * Make `ServerProvider` return an optional URL.  This will safely handle invalid URLs instead of forcing the developer to use a !.
@@ -75,20 +81,20 @@ $ brew update
 $ brew install carthage
 ```
 
-To integrate PewPew into your Xcode project using Carthage, specify it in your `Cartfile`:
+To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
 github "cuba/PewPew" ~> 1.1
 ```
 
-Run `carthage update` to build the framework and drag the built `PewPew.framework` into your Xcode project.
+Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
 
 ## Usage
 
-### 1. Import `PewPew` into your file
+### 1. Import `PiuPiu` into your file
 
 ```swift
-import PewPew
+import PiuPiu
 ```
 
 ### 2. Implement a  `ServerProvider`
@@ -359,7 +365,7 @@ return ResponseFuture<[Post]>(action: { future in
 
 ## Encoding
 
-PewPew has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
+PiuPiu has some convenience methods for you to encode objects into JSON and add them to the `BasicRequest` object.
 
 ### Encode JSON `String`
 
@@ -635,9 +641,14 @@ Similar to encoding, you can also add Decoding support for whatever decoder you 
 
 ```swift
 extension ResponseInterface where T == Data? {
+
     /// Attempt to Decode the response data into an BaseMappable object.
     ///
+    /// - Parameters:
+    ///   - type: The mappable type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: D.Type, context: MapContext? = nil) throws  -> D {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
@@ -651,12 +662,52 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to decode the response data into a BaseMappable array.
     ///
+    /// - Parameters:
+    ///   - type: The array type to decode
+    ///   - context: The Base mappable object
     /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
     func decodeMappable<D: BaseMappable>(_ type: [D].Type, context: MapContext? = nil) throws  -> [D] {
         let jsonString = try self.decodeString()
         let mapper = Mapper<D>(context: context)
 
         guard let result = mapper.mapArray(JSONString: jsonString) else {
+            throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+
+        return result
+    }
+
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: D].Type, context: MapContext? = nil) throws  -> [String: D] {
+        let jsonString = try self.decodeString()
+        let mapper = Mapper<D>(context: context)
+
+        guard let result = mapper.mapDictionary(JSONString: jsonString) else {
+        throw SerializationError.failedToDecodeResponseData(cause: nil)
+        }
+
+        return result
+    }
+
+    /// Attempt to decode the response data into a BaseMappable array.
+    ///
+    /// - Parameters:
+    ///   - type: The dictionary of arrays type to decode
+    ///   - context: The Base mappable object
+    /// - Returns: The decoded array
+    /// - Throws: `SerializationError`
+    func decodeMappable<D: BaseMappable>(_ type: [String: [D]].Type, context: MapContext? = nil) throws  -> [String: [D]] {
+        let jsonObject = try self.decodeJSONObject()
+        let mapper = Mapper<D>(context: context)
+
+        guard let result = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
             throw SerializationError.failedToDecodeResponseData(cause: nil)
         }
 
@@ -674,7 +725,10 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to deserialize the response data into a MapDecodable object.
     ///
+    /// - Parameters:
+    ///   - type: The map decodable type to decode
     /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
         let data = try self.unwrapData()
 
@@ -689,7 +743,10 @@ extension ResponseInterface where T == Data? {
 
     /// Attempt to decode the response data into a MapDecodable array.
     ///
-    /// - Returns: The decoded array
+    /// - Parameters:
+    ///   - type: The map decodable array type to decode
+    /// - Returns: The map decodable array
+    /// - Throws: `SerializationError`
     func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
         let data = try self.unwrapData()
 
@@ -728,12 +785,12 @@ dispatcher.future(from: request).send()
 
 ## Dependencies
 
-PewPew includes...nothing. This is a light-weight library.
+PiuPiu includes...nothing. This is a light-weight library.
 
 ## Credits
 
-PewPew is owned and maintained by Jacob Sikorski.
+PiuPiu is owned and maintained by Jacob Sikorski.
 
 ## License
 
-PewPew is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
+PiuPiu is released under the MIT license. [See LICENSE](https://github.com/cuba/PewPew/blob/master/LICENSE) for details
