@@ -84,7 +84,7 @@ $ brew install carthage
 To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PewPew" ~> 1.1
+github "cuba/PewPew" ~> 1.3
 ```
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
