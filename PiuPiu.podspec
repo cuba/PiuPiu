@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |spec|
   spec.name             = "PiuPiu"
-  spec.version          = "1.2.0"
+  spec.version          = "1.3.0"
   spec.summary          = "A swift framework for easily making network calls and serializing them to objects."
   spec.description      = <<-DESC
                         This framework introduces the concept of futures to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
