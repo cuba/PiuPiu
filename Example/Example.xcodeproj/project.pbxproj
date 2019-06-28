@@ -32,7 +32,6 @@
 		DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55D22624465002CDAAF /* MapCodableKit.framework */; };
 		DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55E22624465002CDAAF /* ObjectMapper.framework */; };
 		DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55F22624465002CDAAF /* Alamofire.framework */; };
-		DAA9F5692262473A002CDAAF /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5682262473A002CDAAF /* PromiseTests.swift */; };
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */; };
@@ -127,7 +126,6 @@
 		DAA9F55D22624465002CDAAF /* MapCodableKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapCodableKit.framework; path = Carthage/Build/iOS/MapCodableKit.framework; sourceTree = "<group>"; };
 		DAA9F55E22624465002CDAAF /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		DAA9F55F22624465002CDAAF /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
-		DAA9F5682262473A002CDAAF /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PromiseTests.swift; sourceTree = "<group>"; };
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
 		DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PiuPiu.xcodeproj; path = ../PiuPiu.xcodeproj; sourceTree = "<group>"; };
@@ -272,7 +270,6 @@
 				DA78758E226A763900A626AF /* TranslationTests.swift */,
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
 				DAA9F56A22624A25002CDAAF /* DecodingTests.swift */,
-				DAA9F5682262473A002CDAAF /* PromiseTests.swift */,
 				DAA9F551226241C4002CDAAF /* EncodingTests.swift */,
 				DAA9F546226231A5002CDAAF /* PlaygroundTests.swift */,
 				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
@@ -474,7 +471,6 @@
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
-				DAA9F5692262473A002CDAAF /* PromiseTests.swift in Sources */,
 				DAA9F547226231A5002CDAAF /* PlaygroundTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 			);

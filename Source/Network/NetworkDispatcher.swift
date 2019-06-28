@@ -27,7 +27,9 @@ open class NetworkDispatcher: Dispatcher {
     
     /// Make a promise to send the request.
     ///
-    /// - Parameter request: The request to send.
+    /// - Parameters:
+    ///   - request: The request to send
+    ///   - queue: The queue on which to syncronize the result to
     /// - Returns: The promise that will send the request.
     open func future(from request: Request, on queue: DispatchQueue = .main) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] promise in

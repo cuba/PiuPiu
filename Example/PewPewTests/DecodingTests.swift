@@ -183,14 +183,12 @@ class DecodingTests: XCTestCase {
         
         // Then
         
-        dispatcher.promise(from: request).then({ response in
+        dispatcher.future(from: request).then({ response in
             // When
             return try response.decode(Post.self)
         }).success({ response in
             // Then
             XCTFail("Should not trigger the success")
-        }).failure({ response in
-            XCTFail("Should not trigger the failure")
         }).error({ error in
             errorExpectation.fulfill()
         }).completion({

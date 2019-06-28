@@ -120,47 +120,6 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testFullConvertExample() {
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: {
-            /// Here we can construct our request.
-            /// Any errors will throw here will be handled in the `error` callback.
-            /// So we can deal with them in one place.
-            /// Note (the errors thrown here are likely due to programmer mistakes).
-            /// Nowever you may chose to do some a validation here.
-            var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(post)
-            return request
-        }).future({ response in
-            /// Convert the `Promise` to a `ResponseFuture` This forces us to convert
-            /// failed response callback to an error.
-            
-            /// NOTE: This callback will change the object from a `Promise` to a `ResponseFuture`
-            /// You will no longer have access to callbacks like `thenFailure`, `success` or `failed`.
-            
-            /// We transform the failed response to anything we want
-            /// We can even parse the response body to get a server error object.
-            /// for now we will just return the response error.
-            throw response.error
-        }).then({ response -> Post in
-            return try response.decode(Post.self)
-        }).response({ post in
-            /// We already transformed the success request
-            /// Handles any successful responses.
-            /// In this case the object returned in the `then` method.
-        }).error({ error in
-            /// Handles any errors during the request process,
-            /// including all request creation errors and anything
-            /// thrown in the `then` or `success` callbacks or returned
-            /// in the `future` callback.
-        }).completion({
-            /// The completion callback guaranteed to be called once
-            /// for every time the `start` method is triggered on the callback.
-        }).send()
-    }
-    
     func testFullResponseFutureExample() {
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         let dispatcher = try! MockDispatcher.makeDispatcher(with: post, status: .ok)
@@ -192,58 +151,6 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).completion({
             // The completion callback guaranteed to be called once
             // for every time the `start` method is triggered on the callback.
-        }).send()
-    }
-    
-    func testFullPromiseExample() {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: request).then({ response -> Post in
-            // The `then` callback transforms a successful response
-            return try response.decode(Post.self)
-        }).thenFailure({ response -> ServerErrorDetails in
-            // The `thenFailure` callback transforms a failed response
-            return try response.decode(ServerErrorDetails.self)
-        }).success({ post in
-            // Handles any success responses.
-            // In this case the object returned in the `then` method.
-        }).failure({ serverError in
-            // Handles any graceful errors.
-            // In this case the object returned in the `thenFailure` method.
-        }).error({ error in
-            // Handles any ungraceful errors.
-            // This includes deserialization errors, unwraping failures, and anything else that is thrown
-            // in a `make`, `success`, `error`, `then` or `thenFailure` block in any chained promise.
-        }).completion({
-            // The completion callback guaranteed to be called once
-            // for every time the `send` or `start` method is triggered on the callback.
-        }).send()
-    }
-    
-    func testConvertPromiseToResponseFuture() {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: request).future({ failedResponse in
-            // Sice a `Promise` does not handle `failure` callbacks,
-            // we have to transform this to a response or error object.
-            // This callback will only be trigged if a `failure` callback
-            // would otherwise be triggered.
-            
-            // WARNING: This replaces any `success` callback you made prior to this one.
-            
-            // You can simply throw the response error or throw something a little more custom
-            throw failedResponse.error
-        }).response({ response in
-            // Because we used a Promise initially, this callback will return a `SuccessResponse`.
-        }).error({ error in
-            // Because we used a Promise initially, this callback will handle all errors the promise
-            // handled, plus anything we throw in the `future` callback.
-        }).completion({
-            // Always triggered for every time we trigger `start()`
         }).send()
     }
     

@@ -16,7 +16,6 @@
 		DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
-		DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
 		DA3E506B21B458CB001450EC /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
 		DA3E506D21B458DD001450EC /* BasicRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* BasicRequest.swift */; };
@@ -25,7 +24,6 @@
 		DA74C477224B2DA500B7005D /* MultiPartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C476224B2DA500B7005D /* MultiPartRequest.swift */; };
 		DA74C6BE22517D9600B7005D /* MockDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6BD22517D9600B7005D /* MockDispatcher.swift */; };
 		DA74C6C022517DA500B7005D /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6BF22517DA400B7005D /* Dispatcher.swift */; };
-		DA74C6C222517E5D00B7005D /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C122517E5D00B7005D /* Promise.swift */; };
 		DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
 		DA74C6C722517ECC00B7005D /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C622517ECC00B7005D /* ErrorResponse.swift */; };
 		DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
@@ -52,7 +50,6 @@
 		DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_watchOS.h; sourceTree = "<group>"; };
 		DA1ED7CB226A878C0058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFuture.swift; sourceTree = "<group>"; };
-		DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Promise+Extensions.swift"; sourceTree = "<group>"; };
 		DA3D80A32218AE7E00D49CD0 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
 		DA3E506A21B458CB001450EC /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
 		DA3E506C21B458DD001450EC /* BasicRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicRequest.swift; sourceTree = "<group>"; };
@@ -62,7 +59,6 @@
 		DA74C476224B2DA500B7005D /* MultiPartRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPartRequest.swift; sourceTree = "<group>"; };
 		DA74C6BD22517D9600B7005D /* MockDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDispatcher.swift; sourceTree = "<group>"; };
 		DA74C6BF22517DA400B7005D /* Dispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
-		DA74C6C122517E5D00B7005D /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		DA74C6C422517EB100B7005D /* SuccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResponse.swift; sourceTree = "<group>"; };
 		DA74C6C622517ECC00B7005D /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
 		DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PiuPiu.podspec; sourceTree = "<group>"; };
@@ -108,7 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */,
-				DA74C6C122517E5D00B7005D /* Promise.swift */,
 			);
 			name = Utilties;
 			path = Utilities;
@@ -165,7 +160,6 @@
 		8CC508A61ED3740800C19524 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				DA3D80A12218AE2800D49CD0 /* Promise+Extensions.swift */,
 				DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */,
 				DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */,
 				DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */,
@@ -461,11 +455,9 @@
 				DA3E506D21B458DD001450EC /* BasicRequest.swift in Sources */,
 				DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */,
 				DAE5EF96221EBD5B00D1990B /* Response.swift in Sources */,
-				DA74C6C222517E5D00B7005D /* Promise.swift in Sources */,
 				DA74C6C722517ECC00B7005D /* ErrorResponse.swift in Sources */,
 				DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */,
 				8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */,
-				DA3D80A22218AE2800D49CD0 /* Promise+Extensions.swift in Sources */,
 				DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */,
 				DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */,
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,

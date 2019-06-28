@@ -1,5 +1,5 @@
 //
-//  Promise.swift
+//  ResponseFuture.swift
 //  PiuPiu iOS
 //
 //  Created by Jacob Sikorski on 2019-02-15.
