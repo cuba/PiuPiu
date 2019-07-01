@@ -17,18 +17,10 @@ public protocol Dispatcher {
     ///   - request: The request to send.
     ///   - queue: The DispatchQueue on which to return the results on.
     /// - Returns: A future network call that is made when `start()` or `send()` is called.
-    func future(from request: Request, on queue: DispatchQueue) -> ResponseFuture<Response<Data?>>
+    func future(from request: Request) -> ResponseFuture<Response<Data?>>
 }
 
 public extension Dispatcher {
-    
-    /// Make a promise to send the network call.
-    ///
-    /// - Parameter request: The request to send
-    /// - Returns: A promise to make the network call.
-    func future(from request: Request) -> ResponseFuture<Response<Data?>> {
-        return self.future(from: request, on: .main)
-    }
     
     /// Make a promise to send the network call.
     ///
@@ -36,10 +28,10 @@ public extension Dispatcher {
     ///   - callback: A callback that constructs the Request object.
     ///   - queue: The queue on which to syncronize the result to
     /// - Returns: A promise to make the network call.
-    func future(from callback: @escaping () throws -> Request, on queue: DispatchQueue = .main) -> ResponseFuture<Response<Data?>> {
+    func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in
             let request = try callback()
-            let requestPromise = self.future(from: request, on: queue)
+            let requestPromise = self.future(from: request)
             promise.fulfill(with: requestPromise)
         }
     }

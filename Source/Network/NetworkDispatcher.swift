@@ -31,7 +31,7 @@ open class NetworkDispatcher: Dispatcher {
     ///   - request: The request to send
     ///   - queue: The queue on which to syncronize the result to
     /// - Returns: The promise that will send the request.
-    open func future(from request: Request, on queue: DispatchQueue = .main) -> ResponseFuture<Response<Data?>> {
+    open func future(from request: Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] promise in
             guard let self = self else { return }
             
@@ -47,7 +47,7 @@ open class NetworkDispatcher: Dispatcher {
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     let error = ResponseError.unknown(cause: error)
                     
-                    queue.async {
+                    DispatchQueue.main.async {
                         promise.fail(with: error)
                     }
                     
@@ -59,7 +59,7 @@ open class NetworkDispatcher: Dispatcher {
                 let responseError = statusCode.makeError(cause: error)
                 let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
                 
-                queue.async {
+                DispatchQueue.main.async {
                     promise.succeed(with: response)
                 }
             }
