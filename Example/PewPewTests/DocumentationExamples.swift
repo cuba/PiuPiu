@@ -226,28 +226,6 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 2, handler: nil)
     }
     
-    func testWeakCallbacksWeakReference() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        dispatcher.delay = 2
-        
-        self.weakFuture = dispatcher.future(from: request).completion({
-            // Always triggered
-            expectation.fulfill()
-        }).send()
-        
-        XCTAssertNotNil(self.weakFuture)
-        
-        // This promise may still be nil at this point
-        // if the request is still pending and no errors
-        // are thrown during the request creation process.
-        waitForExpectations(timeout: 5, handler: nil)
-        XCTAssertNil(self.weakFuture)
-    }
-    
     private func show(_ posts: [Post]) {
         print(posts)
     }
