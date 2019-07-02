@@ -14,6 +14,7 @@ public class ResponseFuture<T> {
     public typealias SuccessHandler = (T) throws -> Void
     public typealias ErrorHandler = (Error) -> Void
     public typealias CompletionHandler = () -> Void
+    public typealias ProgressCallback = (Float) -> Void
     
     public enum Status {
         case created
@@ -31,10 +32,12 @@ public class ResponseFuture<T> {
         }
     }
     
-    private let action: ActionCallback
+    private var action: ActionCallback?
     private var successHandler: SuccessHandler?
     private var errorHandler: ErrorHandler?
     private var completionHandler: CompletionHandler?
+    private var progressCallback: ProgressCallback?
+    private let order: Int
     
     /// The status of the promise.
     private(set) public var status: Status
@@ -42,16 +45,17 @@ public class ResponseFuture<T> {
     /// Initialize the promise with an action that is triggered when calling the start() method.
     ///
     /// - Parameter action: The action that is performed. The action returns this promise when triggered.
-    public init(action: @escaping ActionCallback) {
+    public init(order: Int = 1, action: @escaping ActionCallback) {
         self.action = action
         self.status = .created
+        self.order = order
     }
     
     /// Initialize the promise with an result that triggers the success callback as soon as `send` or `start` is called.
     ///
     /// - Parameter result: The result that is returned right away.
-    public convenience init(result: T) {
-        self.init() { future in
+    public convenience init(order: Int = 1, result: T) {
+        self.init(order: order) { future in
             future.succeed(with: result)
         }
     }
@@ -59,11 +63,13 @@ public class ResponseFuture<T> {
     /// Fulfills the given promise with the results of the given promise. Both promises have to be of the same type.
     ///
     /// - Parameter promise: The promise to be fulfilled.
-    public func fulfill(_ promise: ResponseFuture<T>) {
+    public func fulfill(_ future: ResponseFuture<T>) {
         self.success({ result in
-            promise.succeed(with: result)
+            future.succeed(with: result)
+        }).progress({ progress in
+            future.update(progress: progress)
         }).error({ error in
-            promise.fail(with: error)
+            future.fail(with: error)
         }).send()
     }
     
@@ -73,6 +79,8 @@ public class ResponseFuture<T> {
     public func fulfill(with promise: ResponseFuture<T>) {
         promise.success({ result in
             self.succeed(with: result)
+        }).progress({ progress in
+            self.update(progress: progress)
         }).error({ error in
             self.fail(with: error)
         }).send()
@@ -86,6 +94,12 @@ public class ResponseFuture<T> {
             try successHandler?(object)
             status = .success
             completionHandler?()
+            
+            // Clear all callbacks to avoid memory leaks
+            action = nil
+            successHandler = nil
+            errorHandler = nil
+            progressCallback = nil
         } catch {
             self.fail(with: error)
         }
@@ -98,6 +112,25 @@ public class ResponseFuture<T> {
         errorHandler?(error)
         status = .error
         completionHandler?()
+        
+        // Clear all callbacks to avoid memory leaks
+        action = nil
+        successHandler = nil
+        errorHandler = nil
+        progressCallback = nil
+    }
+    
+    public func update(progress: Float) {
+        progressCallback?(progress)
+    }
+    
+    /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    ///
+    /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
+    /// - Returns: This promise for chaining.
+    public func progress(_ callback: @escaping ProgressCallback) -> ResponseFuture<T> {
+        self.progressCallback = callback
+        return self
     }
     
     /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
@@ -136,16 +169,32 @@ public class ResponseFuture<T> {
     }
     
     /// Convert the success callback to another type.
+    /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
     ///
-    /// - Parameter callback: The callback that does the conversion.
-    /// - Returns: The coverted promise
-    public func then<U>(_ callback: @escaping (T) throws -> U) -> ResponseFuture<U> {
-        return ResponseFuture<U>() { promise in
+    /// - Parameters:
+    ///   - queue: The queue to run the callback on. The default is a background thread.
+    ///   - callback: The callback to perform the transformation
+    /// - Returns: The transformed promise
+    public func then<U>(on queue: DispatchQueue = DispatchQueue.global(qos: .background), _ callback: @escaping (T) throws -> U) -> ResponseFuture<U> {
+        return ResponseFuture<U>(order: order + 1) { future in
             self.success({ result in
-                let transformed = try callback(result)
-                promise.succeed(with: transformed)
+                queue.async {
+                    do {
+                        let transformed = try callback(result)
+                        
+                        DispatchQueue.main.async {
+                            future.succeed(with: transformed)
+                        }
+                    } catch {
+                        DispatchQueue.main.async {
+                            future.fail(with: error)
+                        }
+                    }
+                }
+            }).progress({ progress in
+                future.update(progress: progress)
             }).error({ error in
-                promise.fail(with: error)
+                future.fail(with: error)
             }).send()
         }
     }
@@ -155,17 +204,26 @@ public class ResponseFuture<T> {
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
     public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
-        return ResponseFuture<(T, U)>() { future in
+        return ResponseFuture<(T, U)>(order: order + 1) { future in
+            let secondWeight = Float(1)/Float(future.order)
+            let firstWeight = 1 - secondWeight
+            
             self.success({ response in
-                let newPromise = try callback(response)
+                let newFuture = try callback(response)
                 
-                newPromise.success({ newResponse in
+                newFuture.success({ newResponse in
                     future.succeed(with: (response, newResponse))
                 }).error({ error in
                     future.fail(with: error)
+                }).progress({ progress in
+                    let newProgress = firstWeight + (progress * secondWeight)
+                    future.update(progress: newProgress)
                 }).send()
             }).error({ error in
                 future.fail(with: error)
+            }).progress({ progress in
+                let newProgress = progress * firstWeight
+                future.update(progress: newProgress)
             }).send()
         }
     }
@@ -175,55 +233,43 @@ public class ResponseFuture<T> {
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
     public func replace<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<U> {
-        return ResponseFuture<U>() { future in
+        return ResponseFuture<U>(order: order + 1) { future in
+            let secondWeight = Float(1)/Float(future.order)
+            let firstWeight = 1 - secondWeight
+            
             self.success({ response in
                 let newPromise = try callback(response)
                 
                 newPromise.success({ newResponse in
                     future.succeed(with: newResponse)
+                }).progress({ progress in
+                    let newProgress = firstWeight + (progress * secondWeight)
+                    future.update(progress: newProgress)
                 }).error({ error in
                     future.fail(with: error)
                 }).send()
             }).error({ error in
                 future.fail(with: error)
-            }).send()
-        }
-    }
-    
-    public func sync(on queue: DispatchQueue) -> ResponseFuture<T> {
-        return ResponseFuture<T>() { future in
-            self.success({ result in
-                queue.async {
-                    future.succeed(with: result)
-                }
-            }).error({ error in
-                queue.async {
-                    future.fail(with: error)
-                }
+            }).progress({ progress in
+                let newProgress = progress * firstWeight
+                future.update(progress: newProgress)
             }).send()
         }
     }
     
     /// This method triggers the action method defined on this promise.
-    ///
-    /// - Returns: `self`
-    @discardableResult
-    public func start() -> ResponseFuture<T> {
+    public func start() {
         do {
             self.status = .started
-            try action(self)
+            try action?(self)
+            action = nil
         } catch {
             self.fail(with: error)
         }
-        
-        return self
     }
     
     /// This method triggers the action method defined on this promise.
-    ///
-    /// - Returns: `self`
-    @discardableResult
-    public func send() -> ResponseFuture<T> {
-        return start()
+    public func send() {
+        start()
     }
 }

@@ -12,6 +12,8 @@
 		8CC508031ED35AA900C19524 /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508001ED35AA900C19524 /* ServerProvider.swift */; };
 		DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
 		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
+		DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
+		DA137AD522CACD6B00387C34 /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
 		DA1ED7AF226A86770058EE26 /* PiuPiu_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -26,6 +28,11 @@
 		DA74C6C022517DA500B7005D /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6BF22517DA400B7005D /* Dispatcher.swift */; };
 		DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
 		DA74C6C722517ECC00B7005D /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C622517ECC00B7005D /* ErrorResponse.swift */; };
+		DAA9A83122C9820000C126E5 /* URLSession+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */; };
+		DAA9A83522C9A72500C126E5 /* DataDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */; };
+		DAA9A83622C9A72500C126E5 /* DataDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */; };
+		DAA9A83722C9A72500C126E5 /* DataDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */; };
+		DAA9A83822C9A72500C126E5 /* DataDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */; };
 		DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
 		DAE5EF96221EBD5B00D1990B /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
 		DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
@@ -40,6 +47,8 @@
 		8CC508001ED35AA900C19524 /* ServerProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerProvider.swift; sourceTree = "<group>"; };
 		DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
+		DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureSession.swift; sourceTree = "<group>"; };
+		DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTask.swift; sourceTree = "<group>"; };
 		DA1ED79F226A86760058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_tvOS.h; sourceTree = "<group>"; };
 		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,6 +70,8 @@
 		DA74C6BF22517DA400B7005D /* Dispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
 		DA74C6C422517EB100B7005D /* SuccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResponse.swift; sourceTree = "<group>"; };
 		DA74C6C622517ECC00B7005D /* ErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResponse.swift; sourceTree = "<group>"; };
+		DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extensions.swift"; sourceTree = "<group>"; };
+		DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcher.swift; sourceTree = "<group>"; };
 		DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PiuPiu.podspec; sourceTree = "<group>"; };
 		DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAE5EF95221EBD5B00D1990B /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -163,6 +174,7 @@
 				DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */,
 				DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */,
 				DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */,
+				DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -228,6 +240,9 @@
 				DA74C6BF22517DA400B7005D /* Dispatcher.swift */,
 				8CC507FE1ED35AA900C19524 /* NetworkDispatcher.swift */,
 				DA74C6BD22517D9600B7005D /* MockDispatcher.swift */,
+				DAA9A83422C9A72500C126E5 /* DataDispatcher.swift */,
+				DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */,
+				DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -381,16 +396,19 @@
 					DA1ED79E226A86760058EE26 = {
 						CreatedOnToolsVersion = 10.2.1;
 						DevelopmentTeam = 5P99QDD6WR;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					DA1ED7BA226A87160058EE26 = {
 						CreatedOnToolsVersion = 10.2.1;
 						DevelopmentTeam = 5P99QDD6WR;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					DA1ED7C7226A878C0058EE26 = {
 						CreatedOnToolsVersion = 10.2.1;
 						DevelopmentTeam = 5P99QDD6WR;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -452,6 +470,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA9A83122C9820000C126E5 /* URLSession+Extensions.swift in Sources */,
 				DA3E506D21B458DD001450EC /* BasicRequest.swift in Sources */,
 				DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */,
 				DAE5EF96221EBD5B00D1990B /* Response.swift in Sources */,
@@ -463,14 +482,17 @@
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
 				DA74C6BE22517D9600B7005D /* MockDispatcher.swift in Sources */,
 				DA74C477224B2DA500B7005D /* MultiPartRequest.swift in Sources */,
+				DAA9A83522C9A72500C126E5 /* DataDispatcher.swift in Sources */,
 				8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */,
 				DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */,
 				DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */,
 				DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */,
 				DA74C6C022517DA500B7005D /* Dispatcher.swift in Sources */,
+				DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */,
 				DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */,
 				DA3E506B21B458CB001450EC /* Request.swift in Sources */,
+				DA137AD522CACD6B00387C34 /* ResponseFutureTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA9A83622C9A72500C126E5 /* DataDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +508,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA9A83722C9A72500C126E5 /* DataDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA9A83822C9A72500C126E5 /* DataDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,6 +693,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -689,6 +715,7 @@
 				PRODUCT_NAME = PiuPiu;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
@@ -699,6 +726,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -730,6 +758,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -754,6 +783,7 @@
 				PRODUCT_NAME = PiuPiu;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -763,6 +793,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -795,6 +826,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
@@ -816,6 +848,7 @@
 				PRODUCT_NAME = PiuPiu;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -827,6 +860,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;

@@ -83,12 +83,12 @@ open class MockDispatcher: Dispatcher, ServerProvider {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
-    public func future(from request: Request, on queue: DispatchQueue) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { promise in
+    public func future(from request: Request) -> ResponseFuture<Response<Data?>> {
+        return ResponseFuture<Response<Data?>>() { future in
             let response = try self.response(from: request)
             
-            queue.asyncAfter(deadline: .now() + self.delay) {
-                promise.succeed(with: response)
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
+                future.succeed(with: response)
             }
         }
     }

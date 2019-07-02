@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508131ED35E7D00C19524 /* AppDelegate.swift */; };
-		8CC508161ED35E7D00C19524 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* ViewController.swift */; };
+		8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* DataViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
@@ -20,6 +20,10 @@
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
 		DA78758F226A763900A626AF /* TranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758E226A763900A626AF /* TranslationTests.swift */; };
+		DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */; };
+		DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */; };
+		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
+		DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84522CA62E800C126E5 /* BaseViewController.swift */; };
 		DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */; };
 		DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */; };
 		DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */; };
@@ -101,7 +105,7 @@
 /* Begin PBXFileReference section */
 		8CC508101ED35E7D00C19524 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC508131ED35E7D00C19524 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8CC508151ED35E7D00C19524 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		8CC508151ED35E7D00C19524 /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
@@ -114,6 +118,10 @@
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
 		DA78758C226A759C00A626AF /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		DA78758E226A763900A626AF /* TranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationTests.swift; sourceTree = "<group>"; };
+		DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
+		DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		DAA9A84322C9ABA200C126E5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		DAA9A84522CA62E800C126E5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireDispatcher.swift; sourceTree = "<group>"; };
@@ -184,12 +192,13 @@
 		8CC508121ED35E7D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DAA9A84222C9AB5900C126E5 /* View Controllers */,
 				DA787581226A73AA00A626AF /* Errors */,
 				DAA9F5482262365C002CDAAF /* Models */,
 				DAA9F52B22604DDD002CDAAF /* Extensions */,
 				8CC508131ED35E7D00C19524 /* AppDelegate.swift */,
-				8CC508151ED35E7D00C19524 /* ViewController.swift */,
 				DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */,
+				DAA9A84322C9ABA200C126E5 /* Cell.swift */,
 			);
 			name = Source;
 			path = Example;
@@ -216,6 +225,17 @@
 				DA78758C226A759C00A626AF /* String+Extensions.swift */,
 			);
 			path = Errors;
+			sourceTree = "<group>";
+		};
+		DAA9A84222C9AB5900C126E5 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				8CC508151ED35E7D00C19524 /* DataViewController.swift */,
+				DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */,
+				DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */,
+				DAA9A84522CA62E800C126E5 /* BaseViewController.swift */,
+			);
+			path = "View Controllers";
 			sourceTree = "<group>";
 		};
 		DAA9F52B22604DDD002CDAAF /* Extensions */ = {
@@ -444,13 +464,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC508161ED35E7D00C19524 /* ViewController.swift in Sources */,
+				8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */,
 				DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */,
 				DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */,
 				DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */,
+				DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */,
 				DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */,
+				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */,
+				DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */,
 				DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
 				DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */,
@@ -458,6 +481,7 @@
 				DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */,
+				DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */,
 				DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
