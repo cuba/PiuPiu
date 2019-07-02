@@ -60,6 +60,7 @@ open class NetworkDispatcher: Dispatcher {
                 let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
                 
                 DispatchQueue.main.async {
+                    promise.update(progress: 1)
                     promise.succeed(with: response)
                 }
             }
