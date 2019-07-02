@@ -58,8 +58,7 @@ class ViewController: UIViewController {
     
     @objc private func tappedSendButton() {
         currentTextField?.resignFirstResponder()
-        
-        let dispatcher = AlamofireDispatcher(serverProvider: self)
+        let dispatcher = NetworkDispatcher(serverProvider: self)
         
         dispatcher.future(from: {
             return BasicRequest(method: .get, path: self.pathTextField.text ?? "")
