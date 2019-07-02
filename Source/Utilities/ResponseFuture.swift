@@ -31,7 +31,7 @@ public class ResponseFuture<T> {
         }
     }
     
-    private let action: ActionCallback
+    private var action: ActionCallback?
     private var successHandler: SuccessHandler?
     private var errorHandler: ErrorHandler?
     private var completionHandler: CompletionHandler?
@@ -86,6 +86,11 @@ public class ResponseFuture<T> {
             try successHandler?(object)
             status = .success
             completionHandler?()
+            
+            action = nil
+            completionHandler = nil
+            errorHandler = nil
+            errorHandler = nil
         } catch {
             self.fail(with: error)
         }
@@ -98,6 +103,11 @@ public class ResponseFuture<T> {
         errorHandler?(error)
         status = .error
         completionHandler?()
+        
+        action = nil
+        completionHandler = nil
+        errorHandler = nil
+        errorHandler = nil
     }
     
     /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
@@ -197,7 +207,8 @@ public class ResponseFuture<T> {
     public func start() -> ResponseFuture<T> {
         do {
             self.status = .started
-            try action(self)
+            try action?(self)
+            action = nil
         } catch {
             self.fail(with: error)
         }
