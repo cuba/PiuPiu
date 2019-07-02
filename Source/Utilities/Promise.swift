@@ -9,6 +9,7 @@
 import Foundation
 
 /// A Promise is a delayed action that is performed after doing the `start()`.
+@available(*, deprecated, message: "Please use a `ResponseFuture` instead.")
 public class Promise<T, E> {
     public typealias ActionCallback = (Promise<T, E>) throws -> Void
     public typealias SuccessHandler = (T) throws -> Void

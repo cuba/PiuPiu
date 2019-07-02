@@ -26,7 +26,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    @available(*, deprecated, renamed: "makeRequest(from:)")
+    @available(*, deprecated, message: "`Promise` will be removed. Please use `future()` methods which use a `ResponseFuture`.")
     func make(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return makeRequest(from: callback)
     }
@@ -35,7 +35,7 @@ public extension Dispatcher {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
-    @available(*, deprecated, renamed: "promise(from:)")
+    @available(*, deprecated, message: "`Promise` will be removed. Please use `future()` methods which use a `ResponseFuture`.")
     func make(_ request: Request) -> ResponsePromise<Data?, Data?> {
         return self.promise(from: request)
     }
@@ -44,6 +44,7 @@ public extension Dispatcher {
     ///
     /// - Parameter request: The request to send.
     /// - Returns: The promise that will send the request.
+    @available(*, deprecated, message: "`Promise` will be removed. Please use `future()` methods which use a `ResponseFuture`.")
     func promise(from request: Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             self.future(from: request).response({ response in
@@ -64,7 +65,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
-    @available(*, deprecated, renamed: "promise(from:)")
+    @available(*, deprecated, message: "`Promise` will be removed. Please use `future()` methods which use a `ResponseFuture`.")
     func makeRequest(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return promise(from: callback)
     }
@@ -73,6 +74,7 @@ public extension Dispatcher {
     ///
     /// - Parameter callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
+    @available(*, deprecated, message: "`Promise` will be removed. Please use `future()` methods which use a `ResponseFuture`.")
     func promise(from callback: @escaping () throws -> Request) -> ResponsePromise<Data?, Data?> {
         return Promise<SuccessResponse<Data?>, ErrorResponse<Data?>>() { promise in
             let request = try callback()
