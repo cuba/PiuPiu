@@ -27,10 +27,10 @@ public extension Dispatcher {
     ///   - callback: A callback that constructs the Request object.
     /// - Returns: A promise to make the network call.
     func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { promise in
+        return ResponseFuture<Response<Data?>>() { future in
             let request = try callback()
             let requestPromise = self.future(from: request)
-            promise.fulfill(with: requestPromise)
+            future.fulfill(with: requestPromise)
         }
     }
 }

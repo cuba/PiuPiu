@@ -32,7 +32,7 @@ open class NetworkDispatcher: Dispatcher {
     ///   - queue: The queue on which to syncronize the result to
     /// - Returns: The promise that will send the request.
     open func future(from request: Request) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { [weak self] promise in
+        return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
             
             guard let serverProvider = self.serverProvider else {
@@ -48,7 +48,7 @@ open class NetworkDispatcher: Dispatcher {
                     let error = ResponseError.unknown(cause: error)
                     
                     DispatchQueue.main.async {
-                        promise.fail(with: error)
+                        future.fail(with: error)
                     }
                     
                     return
@@ -60,8 +60,8 @@ open class NetworkDispatcher: Dispatcher {
                 let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
                 
                 DispatchQueue.main.async {
-                    promise.update(progress: 1)
-                    promise.succeed(with: response)
+                    future.update(progress: 1)
+                    future.succeed(with: response)
                 }
             }
             

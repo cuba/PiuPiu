@@ -198,7 +198,7 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         })
         
         // Perform other logic, add delay, do whatever you would do that forced you
-        // to store a reference to this promise in the first place
+        // to store a reference to this future in the first place
         
         self.strongFuture?.send()
         waitForExpectations(timeout: 5, handler: nil)

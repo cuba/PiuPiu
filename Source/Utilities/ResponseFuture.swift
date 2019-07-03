@@ -39,19 +39,19 @@ public class ResponseFuture<T> {
     private var progressCallback: ProgressCallback?
     private let order: Int
     
-    /// The status of the promise.
+    /// The status of the future.
     private(set) public var status: Status
     
-    /// Initialize the promise with an action that is triggered when calling the start() method.
+    /// Initialize the future with an action that is triggered when calling the start() method.
     ///
-    /// - Parameter action: The action that is performed. The action returns this promise when triggered.
+    /// - Parameter action: The action that is performed. The action returns this future when triggered.
     public init(order: Int = 1, action: @escaping ActionCallback) {
         self.action = action
         self.status = .created
         self.order = order
     }
     
-    /// Initialize the promise with an result that triggers the success callback as soon as `send` or `start` is called.
+    /// Initialize the future with an result that triggers the success callback as soon as `send` or `start` is called.
     ///
     /// - Parameter result: The result that is returned right away.
     public convenience init(order: Int = 1, result: T) {
@@ -60,9 +60,9 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// Fulfills the given promise with the results of the given promise. Both promises have to be of the same type.
+    /// Fulfills the given future with the results of this future. Both futures have to be of the same type.
     ///
-    /// - Parameter promise: The promise to be fulfilled.
+    /// - Parameter future: The future to be fulfilled.
     public func fulfill(_ future: ResponseFuture<T>) {
         self.success({ result in
             future.succeed(with: result)
@@ -73,22 +73,16 @@ public class ResponseFuture<T> {
         }).send()
     }
     
-    /// Fulfills the given promise with the results of the given promise. Both promises have to be of the same type.
+    /// Fulfills this future with the results of the given future. Both futures have to be of the same type.
     ///
-    /// - Parameter promise: The promise to be fulfilled.
-    public func fulfill(with promise: ResponseFuture<T>) {
-        promise.success({ result in
-            self.succeed(with: result)
-        }).progress({ progress in
-            self.update(progress: progress)
-        }).error({ error in
-            self.fail(with: error)
-        }).send()
+    /// - Parameter future: The future to be fulfilled.
+    public func fulfill(with future: ResponseFuture<T>) {
+        future.fulfill(self)
     }
     
-    /// Fullfill this promise with a successful result.
+    /// Fullfill this future with a successful result.
     ///
-    /// - Parameter object: The succeeded object required by the promise success callback.
+    /// - Parameter object: The succeeded object required by the future success callback.
     public func succeed(with object: T) {
         do {
             try successHandler?(object)
@@ -105,9 +99,9 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// Fullfill the promise with a failed result.
+    /// Fullfill the future with a failed result.
     ///
-    /// - Parameter object: The failed object required by the promise error callback.
+    /// - Parameter object: The failed object required by the future error callback.
     public func fail(with error: Error) {
         errorHandler?(error)
         status = .error
@@ -120,49 +114,52 @@ public class ResponseFuture<T> {
         progressCallback = nil
     }
     
+    /// Update the progress of this future.
+    ///
+    /// - Parameter progress: The progress of this future between 0 and 1 where 0 is 0% and 1 being 100%
     public func update(progress: Float) {
         progressCallback?(progress)
     }
     
-    /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
-    /// - Returns: This promise for chaining.
+    /// - Returns: This future for chaining.
     public func progress(_ callback: @escaping ProgressCallback) -> ResponseFuture<T> {
         self.progressCallback = callback
         return self
     }
     
-    /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
-    /// - Returns: This promise for chaining.
+    /// - Returns: This future for chaining.
     public func success(_ handler: @escaping SuccessHandler) -> ResponseFuture<T> {
         self.successHandler = handler
         return self
     }
     
-    /// Attach a success handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
-    /// - Returns: This promise for chaining.
+    /// - Returns: This future for chaining.
     public func response(_ handler: @escaping SuccessHandler) -> ResponseFuture<T> {
         return success(handler)
     }
     
-    /// Attach a error handler to this promise that handles . Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a error handler to this future that handles . Should be called before the `start()` method in case the future is fulfilled synchronously.
     ///
     /// - Parameter handler: The error handler that will be triggered if anything is thrown inside the success callback.
-    /// - Returns: This promise for chaining.
+    /// - Returns: This future for chaining.
     public func error(_ handler: @escaping ErrorHandler) -> ResponseFuture<T> {
         self.errorHandler = handler
         return self
     }
     
-    /// Attach a completion handler to this promise. Should be called before the `start()` method in case the promise is fulfilled synchronously.
+    /// Attach a completion handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
     ///
     /// - Parameter handler: The completion handler that will be triggered after the `succeed()` or `fail()` methods are triggered.
-    /// - Returns: This promise for chaining.
+    /// - Returns: This future for chaining.
     public func completion(_ handler: @escaping CompletionHandler) -> ResponseFuture<T> {
         self.completionHandler = handler
         return self
@@ -174,7 +171,7 @@ public class ResponseFuture<T> {
     /// - Parameters:
     ///   - queue: The queue to run the callback on. The default is a background thread.
     ///   - callback: The callback to perform the transformation
-    /// - Returns: The transformed promise
+    /// - Returns: The transformed future
     public func then<U>(on queue: DispatchQueue = DispatchQueue.global(qos: .background), _ callback: @escaping (T) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U>(order: order + 1) { future in
             self.success({ result in
@@ -257,7 +254,7 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// This method triggers the action method defined on this promise.
+    /// This method triggers the action method defined on this future.
     public func start() {
         do {
             self.status = .started
@@ -268,7 +265,7 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// This method triggers the action method defined on this promise.
+    /// This method triggers the action method defined on this future.
     public func send() {
         start()
     }
