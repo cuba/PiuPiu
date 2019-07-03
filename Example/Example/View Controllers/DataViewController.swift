@@ -31,7 +31,7 @@ class DataViewController: UIViewController {
     fileprivate var currentTextField: UITextField?
     
     private lazy var dispatcher = {
-        return AlamofireDispatcher(serverProvider: self)
+        return NetworkDispatcher(serverProvider: self)
     }()
     
     override func viewDidLoad() {
