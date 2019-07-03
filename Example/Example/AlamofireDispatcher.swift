@@ -33,17 +33,25 @@ class AlamofireDispatcher: Dispatcher {
             let urlRequest = try serverProvider.urlRequest(from: request)
             
             self.sessionManager.request(urlRequest).response(completionHandler: { dataResponse in
+                // Ensure we don't have an error
+                if let error = dataResponse.error {
+                    DispatchQueue.main.async {
+                        future.fail(with: error)
+                    }
+                    
+                    return
+                }
+                
                 // Ensure there is an http response
                 guard let httpResponse = dataResponse.response else {
-                    let error = ResponseError.unknown(cause: dataResponse.error)
+                    let error = ResponseError.unknown
                     future.fail(with: error)
                     return
                 }
                 
                 // Create the response
-                let error = dataResponse.error
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-                let responseError = statusCode.makeError(cause: error)
+                let responseError = statusCode.makeError()
                 let response = Response(data: dataResponse.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
 
                 future.update(progress: 1)

@@ -22,7 +22,7 @@ open class MockDispatcher: Dispatcher, ServerProvider {
         let headers = self.mockHeaders
         let data = self.mockData
         let url = urlRequest.url!
-        let error = self.mockStatusCode.makeError(cause: nil)
+        let error = self.mockStatusCode.makeError()
         let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
         
         let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: error)

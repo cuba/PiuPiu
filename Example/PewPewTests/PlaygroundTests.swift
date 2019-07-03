@@ -41,7 +41,7 @@ class PlaygroundTests: XCTestCase, ServerProvider {
         return dispatcher.future(from: request).then({ response -> [Country] in
             let printfulResult = try response.decode(PrintfulResult<[Country]>.self)
             
-            if let error = printfulResult.code.makeError(cause: nil) {
+            if let error = printfulResult.code.makeError() {
                 throw error
             } else {
                 return printfulResult.result

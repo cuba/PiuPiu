@@ -133,29 +133,25 @@ public enum StatusCode: Equatable {
         }
     }
     
-    public func makeError(cause: Error?) -> ResponseError? {
+    public func makeError() -> ResponseError? {
         switch self {
-        case .badRequest:           return ResponseError.badRequest(cause: cause)
-        case .unauthorized:         return ResponseError.unauthorized(cause: cause)
-        case .forbidden:            return ResponseError.forbidden(cause: cause)
-        case .notFound:             return ResponseError.notFound(cause: cause)
-        case .conflict:             return ResponseError.conflict(cause: cause)
-        case .unprocessableEntity:  return ResponseError.unprocessableEntity(cause: cause)
-        case .internalServerError:  return ResponseError.internalServerError(cause: cause)
-        case .serviceUnavailable:   return ResponseError.serviceUnavailable(cause: cause)
+        case .badRequest:           return ResponseError.badRequest
+        case .unauthorized:         return ResponseError.unauthorized
+        case .forbidden:            return ResponseError.forbidden
+        case .notFound:             return ResponseError.notFound
+        case .conflict:             return ResponseError.conflict
+        case .unprocessableEntity:  return ResponseError.unprocessableEntity
+        case .internalServerError:  return ResponseError.internalServerError
+        case .serviceUnavailable:   return ResponseError.serviceUnavailable
         default:
-            if !type.isSuccessful {
-                switch type {
-                case .clientError:
-                    return ResponseError.otherClientError(cause: cause)
-                case .serverError:
-                    return ResponseError.otherServerError(cause: cause)
-                default:
-                    return ResponseError.unknown(cause: cause)
-                }
-            } else if let error = cause {
-                return ResponseError.unknown(cause: error)
-            } else {
+            switch type {
+            case .clientError:
+                return ResponseError.otherClientError
+            case .serverError:
+                return ResponseError.otherServerError
+            case .invalid:
+                return ResponseError.unknown
+            default:
                 return nil
             }
         }

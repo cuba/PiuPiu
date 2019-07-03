@@ -43,9 +43,18 @@ open class NetworkDispatcher: Dispatcher {
             let session = URLSession(configuration: self.configuration)
             
             let task = session.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
+                // Check basic error first
+                if let error = error {
+                    DispatchQueue.main.async {
+                        future.fail(with: error)
+                    }
+                    
+                    return
+                }
+                
                 // Ensure there is a http response
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
-                    let error = ResponseError.unknown(cause: error)
+                    let error = ResponseError.unknown
                     
                     DispatchQueue.main.async {
                         future.fail(with: error)
@@ -56,7 +65,7 @@ open class NetworkDispatcher: Dispatcher {
                 
                 // Create the response
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-                let responseError = statusCode.makeError(cause: error)
+                let responseError = statusCode.makeError()
                 let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
                 
                 DispatchQueue.main.async {

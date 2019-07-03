@@ -17,7 +17,7 @@ class TranslationTests: XCTestCase {
     }
     
     func testStringLocalizedResponseError() {
-        let result = ResponseError.unknown(cause: nil).localizedDescription
+        let result = ResponseError.unknown.localizedDescription
         XCTAssertEqual(result, "Got an unexpected response from the server. If this issue persists, please contact technical support.")
     }
 }

@@ -163,10 +163,18 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             queue.sync {
                 dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
             }
+            // Ensure we don't have an error
+            if let error = responseFutureTask.error {
+                DispatchQueue.main.async {
+                    responseFutureTask.future.fail(with: error)
+                }
+                
+                return
+            }
             
             // Ensure there is a http response
             guard let httpResponse = responseFutureTask.response as? HTTPURLResponse else {
-                let error = ResponseError.unknown(cause: error)
+                let error = ResponseError.unknown
                 
                 DispatchQueue.main.async {
                     responseFutureTask.future.fail(with: error)
@@ -177,7 +185,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             // Create the response
             let urlRequest = responseFutureTask.urlRequest
             let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-            let responseError = statusCode.makeError(cause: error)
+            let responseError = statusCode.makeError()
             let response = Response(data: responseFutureTask.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
             
             DispatchQueue.main.async {
