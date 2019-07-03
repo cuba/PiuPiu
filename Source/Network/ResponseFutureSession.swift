@@ -210,7 +210,7 @@ extension ResponseFutureSession: URLSessionDataDelegate {
 
 extension ResponseFutureSession: URLSessionDownloadDelegate {
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        guard let responseFutureTask = self.dataTask(for: downloadTask) else { return }
+        guard let responseFutureTask = self.downloadTask(for: downloadTask) else { return }
         
         do {
             let data = try Data(contentsOf: location)
