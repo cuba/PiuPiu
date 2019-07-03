@@ -15,7 +15,6 @@ public protocol Dispatcher {
     ///
     /// - Parameters:
     ///   - request: The request to send.
-    ///   - queue: The DispatchQueue on which to return the results on.
     /// - Returns: A future network call that is made when `start()` or `send()` is called.
     func future(from request: Request) -> ResponseFuture<Response<Data?>>
 }
@@ -26,7 +25,6 @@ public extension Dispatcher {
     ///
     /// - Parameters:
     ///   - callback: A callback that constructs the Request object.
-    ///   - queue: The queue on which to syncronize the result to
     /// - Returns: A promise to make the network call.
     func future(from callback: @escaping () throws -> Request) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { promise in

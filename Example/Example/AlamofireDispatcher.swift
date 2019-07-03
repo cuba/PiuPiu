@@ -36,11 +36,7 @@ class AlamofireDispatcher: Dispatcher {
                 // Ensure there is an http response
                 guard let httpResponse = dataResponse.response else {
                     let error = ResponseError.unknown(cause: dataResponse.error)
-                    
-                    DispatchQueue.main.async {
-                        future.fail(with: error)
-                    }
-                    
+                    future.fail(with: error)
                     return
                 }
                 
@@ -49,11 +45,9 @@ class AlamofireDispatcher: Dispatcher {
                 let statusCode = StatusCode(rawValue: httpResponse.statusCode)
                 let responseError = statusCode.makeError(cause: error)
                 let response = Response(data: dataResponse.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
-                
-                DispatchQueue.main.async {
-                    future.update(progress: 1)
-                    future.succeed(with: response)
-                }
+
+                future.update(progress: 1)
+                future.succeed(with: response)
             })
         }
     }
