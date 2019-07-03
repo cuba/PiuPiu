@@ -68,6 +68,17 @@ Fixed crash when translating caused by renaming the project.
 - [x] Easily extensible. Can easily work with frameworks such as `Alamofire`, `ObjectMapper` and `MapCodableKit`
 - [x] Clean!
 
+## Why Futures?
+Most of us are used to using callbacks or delegates for our networking calls. And that's fine for simple applications. But as your applicaiton grows, you will quickly realize a few drawbacks to this simple approach.  Here are a few reasons why futures are the way to go:
+
+1. They are extensible: Futures are objects and because they are objects, they are extensible. Traditionally you would add helper methods on delegates and callbacks or convenience methods on callbacks. Helper methods, although useful, feel a little bit dislocated. Helper methods on the other hand tend to be too specific and speghettify your code. Methods on the object itself, make it easier to debug, develop, name and document because they are context sensitive. And this will help write code, understand code and debug issues.  Plus, It's also nice to just press a `.` on your keyboard and see what methods you get instead of remembering the name of that helper class that handles the specific response object your receieved.
+2. Asyncronous Do/Catch: There's an easier way to handle response and request errors. Anything you throw in the future's callbacks will be handled. This is normally tedious in delegates and callbacks as they always have to be wrapped around a do/catch block. Futures have a sort of do/catch mechanism for asyncronous tasks.
+3. Multithreading: Futures offer better multithreading support because they have predefined and useful functions that work on seperate threads. So don't worry about parsing your data in the `then` callback. It won't lock your main thread.
+4. One generic to rule them all: Futures use a generic result object. This means a future can be used for anything.  Network calls or heavy tasks: It doesn't matter.
+5. Better compiler support: Forgot to call your callback? You don't have to worry about it with Futures because they are called for you as soon as you trigger `send()`  or `start()`. And if you forget to call `send()`, your compiler will remind you.
+6. Pass them around: You can pass futures around and handle them where you need to.
+7. Strongly typed: The object you recieve in the end is strongly typed so you don't need to cast or fail.  It will hande this for you.
+
 ## Installation
 
 ### Carthage
@@ -144,7 +155,6 @@ dispatcher.future(from: request).response({ response in
 ```
 
 **NOTE**: Nothing will happen if you don't call `start()`.
-**NOTE**: Strange things might happen if you call  `start()` more than once.  Don't do it.
 
 ### 4. Separating concerns and transforming the future
 
@@ -276,7 +286,9 @@ dispatcher.future(from: request).completion({
 
 #### `then` callback
 
-This callback transforms the `response` type to another type.
+This callback transforms the `response` type to another type. This operation is done on a background queue so heavy operations won't lock your main queue. 
+
+**WARNING**: You should avoid calling self in this callback . Use it solely for transforming the future.
 
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
@@ -462,19 +474,20 @@ dispatcher.future(from: request).response({ response in
 ## Memory Managment
 
 The `ResponseFuture` may have 3 types of strong references: 
-1. The system may have a strong reference to the `ResponseFuture` after `send()` is called. This reference is temporary and will be dealocated once the system returns a response. This will never create a circular reference but as the promise is held on by the system, it will not be released until **AFTER** a response is recieved or an error is triggered.
+1. The system may have a strong reference to the `ResponseFuture` after `send()` is called. This reference is temporary and will be dealocated once the system returns a response. This will never create a circular reference but as the future is held on by the system, it will not be released until **AFTER** a response is recieved or an error is triggered.
 2. Any callback that references `self` has a strong reference to `self` unless `[weak self]` is explicitly specified.
 3. The developer's own strong reference to the `ResponseFuture`.
 
 ### Strong callbacks
 
-When **ONLY**  `1` and `2` applies to your case, no circular reference is created. However the object reference as `self` is held on stongly (temporarily) until the request returns or an error is thrown. You may wish to use `[weak self]` in this case but it is not necessary.
+When **ONLY**  `1` and `2` applies to your case, a temporary circular reference is created until the future is resolved. You may wish to use `[weak self]` in this case but it is not necessary.
 
 ```swift
 dispatcher.future(from: request).then({ response -> [Post] in
-    // [weak self] not needed as `self` is not called but it doesn't hurt
+    // [weak self] not needed as `self` is not called
     return try response.decode([Post].self)
 }).response({ posts in
+    // [weak self] not needed but may be added. There is a temporary reference which will hold on to self while the request is being made.
     self.show(posts)
 }).send()
 ```
