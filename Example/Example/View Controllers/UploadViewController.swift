@@ -1,15 +1,15 @@
 //
-//  DownloadViewController.swift
+//  UploadViewController.swift
 //  Example
 //
-//  Created by Jacob Sikorski on 2019-06-30.
+//  Created by Jacob Sikorski on 2019-07-03.
 //  Copyright © 2019 Jacob Sikorski. All rights reserved.
 //
 
 import UIKit
 import PiuPiu
 
-class DownloadViewController: BaseViewController {
+class UploadViewController: BaseViewController {
     lazy var sendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
@@ -114,7 +114,7 @@ class DownloadViewController: BaseViewController {
     }
 }
 
-extension DownloadViewController: UITextFieldDelegate {
+extension UploadViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let urlString = fileUrlTextField.text, URL(string: urlString) != nil {
             sendButton.isEnabled = true

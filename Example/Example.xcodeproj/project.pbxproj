@@ -11,6 +11,7 @@
 		8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* DataViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
+		DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326522CD7A2F00027DBA /* UploadViewController.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
@@ -109,6 +110,7 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
+		DA28326522CD7A2F00027DBA /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */,
 				DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */,
 				DAA9A84522CA62E800C126E5 /* BaseViewController.swift */,
+				DA28326522CD7A2F00027DBA /* UploadViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -465,6 +468,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */,
+				DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */,
 				DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */,
 				DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */,
 				DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */,
