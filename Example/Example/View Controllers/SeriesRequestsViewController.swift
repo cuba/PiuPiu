@@ -1,5 +1,5 @@
 //
-//  DataViewController.swift
+//  SeriesRequestsViewController.swift
 //  Example
 //
 //  Created by Jacob Sikorski on 2017-05-22.
@@ -9,7 +9,7 @@
 import UIKit
 import PiuPiu
 
-class DataViewController: UIViewController {
+class SeriesRequestsViewController: UIViewController {
     lazy var sendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)

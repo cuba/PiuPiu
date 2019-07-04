@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508131ED35E7D00C19524 /* AppDelegate.swift */; };
-		8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* DataViewController.swift */; };
+		8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
 		DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326522CD7A2F00027DBA /* UploadViewController.swift */; };
@@ -107,7 +107,7 @@
 /* Begin PBXFileReference section */
 		8CC508101ED35E7D00C19524 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC508131ED35E7D00C19524 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		8CC508151ED35E7D00C19524 /* DataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataViewController.swift; sourceTree = "<group>"; };
+		8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRequestsViewController.swift; sourceTree = "<group>"; };
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
@@ -234,11 +234,11 @@
 		DAA9A84222C9AB5900C126E5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				8CC508151ED35E7D00C19524 /* DataViewController.swift */,
+				DAA9A84522CA62E800C126E5 /* BaseViewController.swift */,
 				DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */,
 				DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */,
-				DAA9A84522CA62E800C126E5 /* BaseViewController.swift */,
 				DA28326522CD7A2F00027DBA /* UploadViewController.swift */,
+				8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */,
 				DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */,
 			);
 			path = "View Controllers";
@@ -470,7 +470,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8CC508161ED35E7D00C19524 /* DataViewController.swift in Sources */,
+				8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */,
 				DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */,
 				DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */,
 				DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */,

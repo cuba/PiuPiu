@@ -76,7 +76,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch row {
         case .seriesExample:
-            let viewController = DataViewController()
+            let viewController = SeriesRequestsViewController()
             navigationController?.pushViewController(viewController, animated: true)
         case .parallelExample:
             let viewController = ParallelRequestsViewController()
