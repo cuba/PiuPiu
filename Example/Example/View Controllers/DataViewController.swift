@@ -28,11 +28,12 @@ class DataViewController: UIViewController {
         return progressView
     }()
     
-    fileprivate var currentTextField: UITextField?
+    private let dispatcher = URLRequestDispatcher()
     
-    private lazy var dispatcher = {
-        return NetworkDispatcher(serverProvider: self)
-    }()
+    deinit {
+        print("DEINIT")
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,13 +43,12 @@ class DataViewController: UIViewController {
     }
     
     @objc private func tappedSendButton() {
-        currentTextField?.resignFirstResponder()
         progressView.progress = 0
         
         var future = ResponseFuture<[String]>(result: [])
         
         // Make more requests
-        for id in 1...99 {
+        for id in 1...10 {
             future = future.replace({ values -> ResponseFuture<[String]> in
                 return self.fetchPost(forId: id).then({ value -> [String] in
                     var values = values
@@ -69,8 +69,9 @@ class DataViewController: UIViewController {
     }
     
     private func fetchPost(forId id: Int) -> ResponseFuture<String> {
-        return dispatcher.future(from: {
-            return BasicRequest(method: .get, path: "/posts/\(id)")
+        return dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+            return try URLRequest(url: url, method: .get)
         }).then({ response -> String in
             return try response.decodeString(encoding: .utf8)
         })
@@ -97,11 +98,5 @@ class DataViewController: UIViewController {
         textView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
         textView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20).isActive = true
-    }
-}
-
-extension DataViewController: ServerProvider {
-    var baseURL: URL? {
-        return URL(string: "https://jsonplaceholder.typicode.com")
     }
 }

@@ -44,47 +44,44 @@ class ResponseFutureSession: NSObject {
     /// Create a future to make a data request.
     ///
     /// - Parameters:
-    ///   - callback: A callback that returns the future to send
-    /// - Returns: The promise that will send the request.
-    open func dataFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>> { [weak self] future in
-            guard let self = self else { return }
-            
-            let urlRequest = try callback()
-            let nestedFuture = self.dataFuture(from: urlRequest)
-            future.fulfill(with: nestedFuture)
-        }
-    }
-    
-    /// Create a future to make a data request.
-    ///
-    /// - Parameters:
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
     open func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
-            let task = self.urlSession.dataTask(with: urlRequest)
-            let dataTask = ResponseFutureTask(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
-            
-            self.queue.sync {
-                self.dataTasks.append(dataTask)
-                task.resume()
+            let task = self.urlSession.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
+                // Check basic error first
+                if let error = error {
+                    DispatchQueue.main.async {
+                        future.fail(with: error)
+                    }
+                    
+                    return
+                }
+                
+                // Ensure there is a http response
+                guard let httpResponse = urlResponse as? HTTPURLResponse else {
+                    let error = ResponseError.unknown
+                    
+                    DispatchQueue.main.async {
+                        future.fail(with: error)
+                    }
+                    
+                    return
+                }
+                
+                // Create the response
+                let statusCode = StatusCode(rawValue: httpResponse.statusCode)
+                let responseError = statusCode.makeError()
+                let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
+                
+                DispatchQueue.main.async {
+                    future.update(progress: 1)
+                    future.succeed(with: response)
+                }
             }
-        }
-    }
-    
-    /// Create a future to make a download request.
-    ///
-    /// - Parameters:
-    ///   - callback: A callback that returns the future to send
-    /// - Returns: The promise that will send the request.
-    open func downloadFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Data?> {
-        return ResponseFuture<Data?> { [weak self] future in
-            guard let self = self else { return }
-            let urlRequest = try callback()
-            let nestedFuture = self.downloadFuture(from: urlRequest)
-            future.fulfill(with: nestedFuture)
+            
+            task.resume()
         }
     }
     
@@ -144,7 +141,6 @@ extension ResponseFutureSession: URLSessionDelegate {
 
 extension ResponseFutureSession: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        
         if let responseFutureTask = self.downloadTask(for: task) {
             queue.sync {
                 downloadTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
@@ -196,7 +192,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        //let progress = Double(integerLiteral: totalBytesSent) / Double(integerLiteral: totalBytesExpectedToSend)
+        let progress = Double(integerLiteral: totalBytesSent) / Double(integerLiteral: totalBytesExpectedToSend)
     }
 }
 

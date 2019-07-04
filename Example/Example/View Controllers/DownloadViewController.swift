@@ -42,7 +42,7 @@ class DownloadViewController: BaseViewController {
     }()
     
     private var currentTextField: UITextField?
-    private let dispatcher = DataDispatcher()
+    private let dispatcher = URLRequestDispatcher()
     
     deinit {
         dispatcher.invalidateAndCancel()

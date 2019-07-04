@@ -117,6 +117,50 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
+    func testFutureDealocationWhenThenIsCalled() {
+        let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
+        
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher.future(from: request).then({ response -> Response<Data?> in
+            return response
+        })
+        
+        // Our object is already nil because we have not established a strong reference to it.
+        // The `send` method will do nothing. No callback will be triggered.
+        
+        //weakFuture?.send()
+        XCTAssertNil(weakFuture)
+    }
+    
+    func testFutureDealocationWhenJoinIsCalled() {
+        let request = BasicRequest(method: .get, path: "/posts")
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        dispatcher.delay = 2
+        
+        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.future(from: request).then({ response -> Post in
+            return try response.decode(Post.self)
+        }).replace({ post -> ResponseFuture<EnrichedPost> in
+            return self.enrich(post: post)
+        }).join({ enrichedPost -> ResponseFuture<User> in
+            // Joins a future with another one
+            return self.fetchUser(forId: post.userId)
+        }).success({ response in
+            // Do nothing
+        }).error({ error in
+            // Do nothing
+        }).completion({
+            // Do nothing
+        })
+        
+        // Our object is already nil because we have not established a strong reference to it.
+        // The `send` method will do nothing. No callback will be triggered.
+        //weakFuture?.send()
+        XCTAssertNil(weakFuture)
+    }
+    
     private func makeFuture(from response: Response<Data?>) -> ResponseFuture<[Post]> {
         // Promises can wrap callbacks so they are executed when start()
         // is triggered.

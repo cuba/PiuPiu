@@ -10,9 +10,8 @@ import Foundation
 
 /// The class that will be making the API call.
 open class NetworkDispatcher: Dispatcher {
-    
-    public var configuration: URLSessionConfiguration
     public weak var serverProvider: ServerProvider?
+    public let dispatcher: URLRequestDispatcher
     
     /// Initialize this `Dispatcher` with a `ServerProvider` and a `URLSessionConfiguration`.
     ///
@@ -22,7 +21,7 @@ open class NetworkDispatcher: Dispatcher {
     ///   - delegate: The delegate that will be used for the URLSession.
     public init(serverProvider: ServerProvider, configuration: URLSessionConfiguration = .default) {
         self.serverProvider = serverProvider
-        self.configuration = configuration
+        self.dispatcher = URLRequestDispatcher(configuration: configuration)
     }
     
     /// Make a promise to send the request.
@@ -40,41 +39,8 @@ open class NetworkDispatcher: Dispatcher {
             }
             
             let urlRequest = try serverProvider.urlRequest(from: request)
-            let session = URLSession(configuration: self.configuration)
-            
-            let task = session.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
-                // Check basic error first
-                if let error = error {
-                    DispatchQueue.main.async {
-                        future.fail(with: error)
-                    }
-                    
-                    return
-                }
-                
-                // Ensure there is a http response
-                guard let httpResponse = urlResponse as? HTTPURLResponse else {
-                    let error = ResponseError.unknown
-                    
-                    DispatchQueue.main.async {
-                        future.fail(with: error)
-                    }
-                    
-                    return
-                }
-                
-                // Create the response
-                let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-                let responseError = statusCode.makeError()
-                let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
-                
-                DispatchQueue.main.async {
-                    future.update(progress: 1)
-                    future.succeed(with: response)
-                }
-            }
-            
-            task.resume()
+            let newFuture = self.dispatcher.dataFuture(from: urlRequest)
+            future.fulfill(with: newFuture)
         }
     }
 }

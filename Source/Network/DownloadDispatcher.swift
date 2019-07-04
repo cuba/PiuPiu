@@ -1,5 +1,5 @@
 //
-//  DataDispatcher.swift
+//  DownloadDispatcher.swift
 //  PiuPiu
 //
 //  Created by Jacob Sikorski on 2019-07-03.
@@ -9,27 +9,26 @@
 import Foundation
 
 /// The object that will be making the API call and returning the Future
-public protocol DataDispatcher: class {
-    /// Create a future to make a data request.
+public protocol DownloadDispatcher: class {
+    /// Create a future to make a download request.
     ///
     /// - Parameters:
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
-    func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>>
+    func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<Data?>
 }
 
-public extension DataDispatcher {
-    /// Create a future to make a data request.
+public extension DownloadDispatcher {
+    /// Create a future to make a download request.
     ///
     /// - Parameters:
     ///   - callback: A callback that returns the future to send
     /// - Returns: The promise that will send the request.
-    func dataFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>> { [weak self] future in
+    func downloadFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Data?> {
+        return ResponseFuture<Data?> { [weak self] future in
             guard let self = self else { return }
-            
             let urlRequest = try callback()
-            let nestedFuture = self.dataFuture(from: urlRequest)
+            let nestedFuture = self.downloadFuture(from: urlRequest)
             future.fulfill(with: nestedFuture)
         }
     }
