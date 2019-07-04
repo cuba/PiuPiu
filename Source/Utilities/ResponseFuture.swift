@@ -56,6 +56,7 @@ public class ResponseFuture<T> {
     /// - Parameter result: The result that is returned right away.
     public convenience init(order: Int = 1, result: T) {
         self.init(order: order) { future in
+            future.update(progress: 1)
             future.succeed(with: result)
         }
     }
@@ -250,6 +251,67 @@ public class ResponseFuture<T> {
             }).progress({ progress in
                 let newProgress = progress * firstWeight
                 future.update(progress: newProgress)
+            }).send()
+        }
+    }
+    
+    /// Return a new future with the results of the future retuned in the callback.
+    ///
+    /// - Parameter callback: The future that returns the results we want to return.
+    /// - Returns: The
+    public func join<U>(_ callback: @escaping () throws -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+        return ResponseFuture<(T, U)>(order: order + 1) { future in
+            let newFuture = try callback()
+            let secondWeight = Float(1)/Float(future.order)
+            let firstWeight = 1 - secondWeight
+            
+            var firstRequestFinished = false
+            var secondRequestFinished = false
+            var firstObject: T?
+            var secondObject: U?
+            var firstProgress: Float = 0.0
+            var secondProgress: Float = 0.0
+            var firstError: Error?
+            var secondError: Error?
+            
+            self.success({ response in
+                firstObject = response
+            }).error({ error in
+                firstError = error
+            }).progress({ progress in
+                firstProgress = progress
+                
+                let newProgress = (firstProgress * firstWeight) + (secondProgress * secondWeight)
+                future.update(progress: newProgress)
+            }).completion({
+                firstRequestFinished = true
+                guard secondRequestFinished else { return }
+                
+                if let firstObject = firstObject, let secondObject = secondObject {
+                    future.succeed(with: (firstObject, secondObject))
+                } else if let error = firstError ?? secondError {
+                    future.fail(with: error)
+                }
+            }).send()
+            
+            newFuture.success({ response in
+                secondObject = response
+            }).progress({ progress in
+                secondProgress = progress
+                
+                let newProgress = (firstProgress * firstWeight) + (secondProgress * secondWeight)
+                future.update(progress: newProgress)
+            }).error({ error in
+                secondError = error
+            }).completion({
+                secondRequestFinished = true
+                guard firstRequestFinished else { return }
+                
+                if let firstObject = firstObject, let secondObject = secondObject {
+                    future.succeed(with: (firstObject, secondObject))
+                } else if let error = firstError ?? secondError {
+                    future.fail(with: error)
+                }
             }).send()
         }
     }

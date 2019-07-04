@@ -10,7 +10,8 @@ import UIKit
 
 class MainViewController: UIViewController {
     enum Row {
-        case jsonExample
+        case seriesExample
+        case parallelExample
         case downloadExample
     }
     
@@ -21,7 +22,7 @@ class MainViewController: UIViewController {
         return tableView
     }()
     
-    private var rows: [Row] = [.jsonExample, .downloadExample]
+    private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,9 +56,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let row = rows[indexPath.row]
         
         switch row {
-        case .jsonExample:
+        case .seriesExample:
             let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
-            cell.textLabel?.text = "JSON Example"
+            cell.textLabel?.text = "Series Example"
+            return cell
+        case .parallelExample:
+            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            cell.textLabel?.text = "Parallel Example"
             return cell
         case .downloadExample:
             let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
@@ -70,8 +75,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let row = rows[indexPath.row]
         
         switch row {
-        case .jsonExample:
+        case .seriesExample:
             let viewController = DataViewController()
+            navigationController?.pushViewController(viewController, animated: true)
+        case .parallelExample:
+            let viewController = ParallelRequestsViewController()
             navigationController?.pushViewController(viewController, animated: true)
         case .downloadExample:
             let viewController = DownloadViewController()

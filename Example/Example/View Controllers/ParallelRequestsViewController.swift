@@ -1,15 +1,15 @@
 //
-//  DataViewController.swift
+//  ParallelRequestsViewController.swift
 //  Example
 //
-//  Created by Jacob Sikorski on 2017-05-22.
-//  Copyright © 2017 Jacob Sikorski. All rights reserved.
+//  Created by Jacob Sikorski on 2019-07-04.
+//  Copyright © 2019 Jacob Sikorski. All rights reserved.
 //
 
 import UIKit
 import PiuPiu
 
-class DataViewController: UIViewController {
+class ParallelRequestsViewController: UIViewController {
     lazy var sendButton: UIButton = {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
@@ -46,14 +46,13 @@ class DataViewController: UIViewController {
         
         var future = ResponseFuture<[String]>(result: [])
         
-        // Make more requests
         for id in 1...100 {
-            future = future.replace({ values -> ResponseFuture<[String]> in
-                return self.fetchPost(forId: id).then({ value -> [String] in
-                    var values = values
-                    values.append(value)
-                    return values
-                })
+            future = future.join({ () -> ResponseFuture<String> in
+                return self.fetchUser(forId: id)
+            }).then({ response in
+                var values = response.0
+                values.append(response.1)
+                return values
             })
         }
         
@@ -67,7 +66,7 @@ class DataViewController: UIViewController {
         }).send()
     }
     
-    private func fetchPost(forId id: Int) -> ResponseFuture<String> {
+    private func fetchUser(forId id: Int) -> ResponseFuture<String> {
         return dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return try URLRequest(url: url, method: .get)
