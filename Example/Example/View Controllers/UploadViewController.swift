@@ -139,10 +139,8 @@ class UploadViewController: BaseViewController {
         present(imagePicker, animated: true, completion: nil)
     }
     
-    private func upload(image: UIImage) {
-        guard let data = image.jpegData(compressionQuality: 1) else { return }
-        
-        apiManager.uploadToCloudinary(file: data, type: .jpg, folderName: "test")
+    private func upload(data: Data, type: FileType) {
+        apiManager.uploadToCloudinary(file: data, type: type, folderName: "test")
             .progress({ [weak self] progress in
                 print("PROGRESS: \(progress)")
                 self?.progressView.progress = progress
@@ -162,8 +160,28 @@ class UploadViewController: BaseViewController {
 
 extension UploadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[.originalImage] as? UIImage else { return }
-        upload(image: image)
+        if let mediaUrl = info[.imageURL] as? URL {
+            guard let data = try? Data(contentsOf: mediaUrl) else { return }
+            let pathExtension = mediaUrl.pathExtension
+            
+            switch pathExtension {
+            case "jpg", "jpeg":
+                upload(data: data, type: .jpg)
+            case "png":
+                upload(data: data, type: .png)
+            case "gif":
+                upload(data: data, type: .gif)
+            default:
+                break
+            }
+        } else if let mediaUrl = info[.mediaURL] as? URL {
+            guard let data = try? Data(contentsOf: mediaUrl) else { return }
+            upload(data: data, type: .jpg)
+        } else if let image = info[.originalImage] as? UIImage {
+            guard let data = image.jpegData(compressionQuality: 1) else { return }
+            upload(data: data, type: .jpg)
+        }
+        
         picker.dismiss(animated: true, completion: nil)
     }
     

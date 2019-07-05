@@ -12,11 +12,13 @@ import PiuPiu
 public enum FileType {
     case png
     case jpg
+    case gif
     
     public var mimeType: String {
         switch self {
         case .jpg: return "image/jpg"
         case .png: return "image/png"
+        case .gif: return "image/gif"
         }
     }
     
@@ -24,6 +26,7 @@ public enum FileType {
         switch self {
         case .jpg: return "image.jpg"
         case .png: return "image.png"
+        case .gif: return "image.gif"
         }
     }
 }
