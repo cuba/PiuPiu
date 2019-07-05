@@ -49,39 +49,14 @@ class ResponseFutureSession: NSObject {
     open func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
-            let task = self.urlSession.dataTask(with: urlRequest) { (data: Data?, urlResponse: URLResponse?, error: Error?) in
-                // Check basic error first
-                if let error = error {
-                    DispatchQueue.main.async {
-                        future.fail(with: error)
-                    }
-                    
-                    return
-                }
-                
-                // Ensure there is a http response
-                guard let httpResponse = urlResponse as? HTTPURLResponse else {
-                    let error = ResponseError.unknown
-                    
-                    DispatchQueue.main.async {
-                        future.fail(with: error)
-                    }
-                    
-                    return
-                }
-                
-                // Create the response
-                let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-                let responseError = statusCode.makeError()
-                let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
-                
-                DispatchQueue.main.async {
-                    future.update(progress: 1)
-                    future.succeed(with: response)
-                }
-            }
+            // Create the request and store it internally
+            let task = self.urlSession.dataTask(with: urlRequest)
+            let dataTask = ResponseFutureTask(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
             
-            task.resume()
+            self.queue.sync {
+                self.dataTasks.append(dataTask)
+                task.resume()
+            }
         }
     }
     
@@ -100,6 +75,47 @@ class ResponseFutureSession: NSObject {
             
             self.queue.sync {
                 self.downloadTasks.append(downloadTask)
+                task.resume()
+            }
+        }
+    }
+    
+    /// Create a future to make a upload request.
+    ///
+    /// - Parameters:
+    ///   - request: The request to send with data encoded as multpart
+    /// - Returns: The promise that will send the request.
+    open func uploadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
+        return ResponseFuture<Response<Data?>>() { [weak self] future in
+            guard let self = self else { return }
+            
+            // Create the request and store it internally
+            let task = self.urlSession.dataTask(with: urlRequest)
+            let dataTask = ResponseFutureTask(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            
+            self.queue.sync {
+                self.dataTasks.append(dataTask)
+                task.resume()
+            }
+        }
+    }
+    
+    /// Create a future to make a data request.
+    ///
+    /// - Parameters:
+    ///   - request: The request to send
+    ///   - data: The data to send
+    /// - Returns: The promise that will send the request.
+    func uploadFuture(from urlRequest: URLRequest, data: Data) -> ResponseFuture<Response<Data?>> {
+        return ResponseFuture<Response<Data?>>() { [weak self] future in
+            guard let self = self else { return }
+            
+            // Create the request and store it internally
+            let task = self.urlSession.uploadTask(with: urlRequest, from: data)
+            let dataTask = ResponseFutureTask(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            
+            self.queue.sync {
+                self.dataTasks.append(dataTask)
                 task.resume()
             }
         }
@@ -131,6 +147,14 @@ class ResponseFutureSession: NSObject {
 extension ResponseFutureSession: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         queue.sync {
+            for responseFutureTask in dataTasks {
+                responseFutureTask.future.cancel()
+            }
+            
+            for responseFutureTask in downloadTasks {
+                responseFutureTask.future.cancel()
+            }
+            
             downloadTasks = []
             dataTasks = []
         }
@@ -192,7 +216,15 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        let progress = Double(integerLiteral: totalBytesSent) / Double(integerLiteral: totalBytesExpectedToSend)
+        guard let responseFutureTask = self.dataTask(for: task) else { return }
+
+        // When an error occurs this value is -1
+        guard totalBytesExpectedToSend > 0 else { return }
+        let progress = Float(integerLiteral: totalBytesSent) / Float(integerLiteral: totalBytesExpectedToSend)
+        
+        DispatchQueue.main.async {
+            responseFutureTask.future.update(progress: progress)
+        }
     }
 }
 
@@ -205,8 +237,21 @@ extension ResponseFutureSession: URLSessionDataDelegate {
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        let responseFutureTask = self.dataTask(for: dataTask)
-        responseFutureTask?.response = response
+        guard let responseFutureTask = self.dataTask(for: dataTask) else {
+            completionHandler(.cancel)
+            return
+        }
+        
+        responseFutureTask.response = response
+        completionHandler(.allow)
+    }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome downloadTask: URLSessionDownloadTask) {
+        print("Become Download Task")
+    }
+    
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome streamTask: URLSessionStreamTask) {
+        print("Become Stream Task")
     }
 }
 

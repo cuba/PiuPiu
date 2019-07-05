@@ -37,7 +37,7 @@ class SeriesRequestsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
-        title = "JSON"
+        title = "Series"
         setupLayout()
     }
     
@@ -48,7 +48,11 @@ class SeriesRequestsViewController: UIViewController {
         
         // Make more requests
         for id in 1...100 {
-            future = future.replace({ values -> ResponseFuture<[String]> in
+            future = future.replace({ [weak self] values -> ResponseFuture<[String]>? in
+                guard let self = self else {
+                    return nil
+                }
+                
                 return self.fetchPost(forId: id).then({ value -> [String] in
                     var values = values
                     values.append(value)

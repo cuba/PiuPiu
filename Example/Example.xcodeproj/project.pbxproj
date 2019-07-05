@@ -13,6 +13,9 @@
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
 		DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326522CD7A2F00027DBA /* UploadViewController.swift */; };
 		DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */; };
+		DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */; };
+		DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */; };
+		DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327722CE4D8600027DBA /* CloudinaryError.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
@@ -113,6 +116,9 @@
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
 		DA28326522CD7A2F00027DBA /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallelRequestsViewController.swift; sourceTree = "<group>"; };
+		DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryApiManager.swift; sourceTree = "<group>"; };
+		DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryUploadErrorResponse.swift; sourceTree = "<group>"; };
+		DA28327722CE4D8600027DBA /* CloudinaryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryError.swift; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
@@ -196,6 +202,7 @@
 		8CC508121ED35E7D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DA28327022CE447E00027DBA /* API */,
 				DAA9A84222C9AB5900C126E5 /* View Controllers */,
 				DA787581226A73AA00A626AF /* Errors */,
 				DAA9F5482262365C002CDAAF /* Models */,
@@ -206,6 +213,14 @@
 			);
 			name = Source;
 			path = Example;
+			sourceTree = "<group>";
+		};
+		DA28327022CE447E00027DBA /* API */ = {
+			isa = PBXGroup;
+			children = (
+				DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 		DA53DA982289DD8400722CD8 /* Products */ = {
@@ -227,6 +242,8 @@
 				DA787586226A742D00A626AF /* ResponseError+Extensions.swift */,
 				DA787588226A747E00A626AF /* SerializationError+Extensions.swift */,
 				DA78758C226A759C00A626AF /* String+Extensions.swift */,
+				DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */,
+				DA28327722CE4D8600027DBA /* CloudinaryError.swift */,
 			);
 			path = Errors;
 			sourceTree = "<group>";
@@ -476,8 +493,10 @@
 				DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */,
 				DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */,
 				DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */,
+				DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */,
 				DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */,
 				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
+				DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */,
 				DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */,
@@ -486,6 +505,7 @@
 				DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */,
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
 				DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */,
+				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
 				DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */,

@@ -10,30 +10,17 @@ import UIKit
 import PiuPiu
 
 class UploadViewController: BaseViewController {
-    lazy var sendButton: UIButton = {
+    lazy var selectButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Send", for: .normal)
-        button.addTarget(self, action: #selector(tappedSendButton), for: .touchUpInside)
+        button.setTitle("Select File", for: .normal)
+        button.addTarget(self, action: #selector(tappedSelectButton), for: .touchUpInside)
         button.setTitleColor(UIColor.blue, for: .normal)
         button.tintColor = UIColor.black
         return button
     }()
     
-    lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        return imageView
-    }()
-    
-    lazy var fileUrlTextField: UITextField = {
-        let textField = UITextField()
-        textField.text = "https://davidlevine.files.wordpress.com/2010/01/butterflynova.jpg"
-        textField.keyboardType = .URL
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
-        textField.borderStyle = .roundedRect
-        textField.placeholder = "File URL"
-        return textField
+    lazy var textView: UITextView = {
+        return UITextView()
     }()
     
     lazy var progressView: UIProgressView = {
@@ -41,21 +28,31 @@ class UploadViewController: BaseViewController {
         return progressView
     }()
     
-    private var currentTextField: UITextField?
-    private let dispatcher = URLRequestDispatcher()
+    lazy var imagePicker: UIImagePickerController = {
+        let imagePicker = UIImagePickerController()
+        return imagePicker
+    }()
+    
+    private let apiManager: CloudinaryApiManager
+    
+    init() {
+        let dispatcher = URLRequestDispatcher()
+        apiManager = CloudinaryApiManager(dispatcher: dispatcher)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     deinit {
-        dispatcher.invalidateAndCancel()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
-        title = "Download"
+        title = "Upload"
         setupLayout()
-        
-        // Configure the Text Fields
-        fileUrlTextField.delegate = self
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -63,76 +60,140 @@ class UploadViewController: BaseViewController {
         // dispatcher.invalidateAndCancel()
     }
     
-    @objc private func tappedSendButton() {
-        currentTextField?.resignFirstResponder()
-        progressView.progress = 0
-        
-        guard let urlString = fileUrlTextField.text, let url = URL(string: urlString) else { return }
-        
-        dispatcher.downloadFuture(from: {
-            return try URLRequest(url: url, method: .get)
-        }).progress({ [weak self] progress in
-            self?.progressView.progress = Float(progress)
-        }).success({ [weak self] data in
-            guard let data = data else { return }
-            let image = UIImage(data: data)
-            self?.imageView.image = image
-        }).error({ [weak self] error in
-            self?.showAlert(title: "Whoops!", message: error.localizedDescription)
-        }).completion({
-            print("COMPLETED")
-        }).send()
+    @objc
+    private func tappedSelectButton() {
+        showMediaPicker()
     }
     
     private func setupLayout() {
-        view.addSubview(sendButton)
+        view.addSubview(selectButton)
         view.addSubview(progressView)
-        view.addSubview(imageView)
-        view.addSubview(fileUrlTextField)
+        view.addSubview(textView)
         
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        fileUrlTextField.translatesAutoresizingMaskIntoConstraints = false
+        selectButton.translatesAutoresizingMaskIntoConstraints = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
         progressView.translatesAutoresizingMaskIntoConstraints = false
         
-        fileUrlTextField.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20).isActive = true
-        fileUrlTextField.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
-        fileUrlTextField.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
+        selectButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20).isActive = true
+        selectButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
+        selectButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
         
-        sendButton.topAnchor.constraint(equalTo: fileUrlTextField.bottomAnchor, constant: 15).isActive = true
-        sendButton.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
-        sendButton.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
-        
-        progressView.topAnchor.constraint(equalTo: sendButton.bottomAnchor, constant: 15).isActive = true
+        progressView.topAnchor.constraint(equalTo: selectButton.bottomAnchor, constant: 15).isActive = true
         progressView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
         progressView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
         
-        imageView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 15).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
-        imageView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20).isActive = true
+        textView.topAnchor.constraint(equalTo: progressView.bottomAnchor, constant: 15).isActive = true
+        textView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor).isActive = true
+        textView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor).isActive = true
+        textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20).isActive = true
     }
-}
-
-extension UploadViewController: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if let urlString = fileUrlTextField.text, URL(string: urlString) != nil {
-            sendButton.isEnabled = true
-        } else {
-            sendButton.isEnabled = false
+    
+    private func showMediaPicker() {
+        let availableSourceTypes = UIImagePickerController.filterAvailable(sourceTypes: [.camera, .photoLibrary])
+        
+        guard availableSourceTypes.count > 1 else {
+            guard let sourceType = availableSourceTypes.first else { return }
+            showMediaPicker(for: sourceType)
+            return
+        }
+        
+        let alertController = UIAlertController(title: "Select Source", message: nil, preferredStyle: .actionSheet)
+        
+        for sourceType in availableSourceTypes {
+            alertController.addAction(UIAlertAction(title: sourceType.title, style: .default, handler: { _ in
+                self.showMediaPicker(for: sourceType)
+            }))
+        }
+        
+        alertController.popoverPresentationController?.sourceView = selectButton
+        alertController.popoverPresentationController?.sourceRect = selectButton.frame
+        alertController.popoverPresentationController?.permittedArrowDirections = .any
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    }
+    
+    private func showMediaPicker(for type: UIImagePickerController.SourceType) {
+        switch type {
+        case .camera:
+            showCamera()
+        case .photoLibrary:
+            showPhotoLibrary()
+        case .savedPhotosAlbum:
+            // Not supported
+            break
         }
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        currentTextField = textField
+    private func showPhotoLibrary() {
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.allowsEditing = false
+        
+        present(imagePicker, animated: true, completion: nil)
     }
     
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        return true
+    private func showCamera() {
+        imagePicker.delegate = self
+        imagePicker.sourceType = .camera
+        imagePicker.allowsEditing = false
+        
+        present(imagePicker, animated: true, completion: nil)
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        currentTextField?.resignFirstResponder()
-        return true
+    private func upload(image: UIImage) {
+        guard let data = image.jpegData(compressionQuality: 1) else { return }
+        
+        apiManager.uploadToCloudinary(file: data, type: .jpg, folderName: "test")
+            .progress({ [weak self] progress in
+                print("PROGRESS: \(progress)")
+                self?.progressView.progress = progress
+            })
+            .response({ [weak self] response in
+                let string = try response.decodeString(encoding: .utf8)
+                self?.textView.text = string
+            })
+            .error({ [weak self] error in
+                self?.showAlert(title: "Whoops!", message: error.localizedDescription)
+            })
+            .send()
+    }
+}
+
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+
+extension UploadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[.originalImage] as? UIImage else { return }
+        upload(image: image)
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension UploadViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+
+extension UIImagePickerController.SourceType {
+    var title: String {
+        switch self {
+        case .camera:           return "Camera"
+        case .photoLibrary:     return "Photo Library"
+        case .savedPhotosAlbum: return "Photo Album"
+        }
+    }
+}
+
+extension UIImagePickerController {
+    static func filterAvailable(sourceTypes: [UIImagePickerController.SourceType]) -> [UIImagePickerController.SourceType] {
+        return sourceTypes.filter({ self.isSourceTypeAvailable($0) })
     }
 }

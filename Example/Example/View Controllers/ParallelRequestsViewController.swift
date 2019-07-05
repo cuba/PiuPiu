@@ -37,7 +37,7 @@ class ParallelRequestsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.groupTableViewBackground
-        title = "JSON"
+        title = "Parallel"
         setupLayout()
     }
     
@@ -46,7 +46,7 @@ class ParallelRequestsViewController: UIViewController {
         
         var future = ResponseFuture<[String]>(result: [])
         
-        for id in 1...100 {
+        for id in 1...1000 {
             future = future.join({ () -> ResponseFuture<String> in
                 return self.fetchUser(forId: id)
             }).then({ response in

@@ -30,6 +30,10 @@
 		DA28326222CD745800027DBA /* DownloadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326022CD745800027DBA /* DownloadDispatcher.swift */; };
 		DA28326322CD745800027DBA /* DownloadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326022CD745800027DBA /* DownloadDispatcher.swift */; };
 		DA28326422CD745800027DBA /* DownloadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326022CD745800027DBA /* DownloadDispatcher.swift */; };
+		DA28327A22CE71D100027DBA /* UploadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327922CE71D100027DBA /* UploadDispatcher.swift */; };
+		DA28327B22CE71D100027DBA /* UploadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327922CE71D100027DBA /* UploadDispatcher.swift */; };
+		DA28327C22CE71D100027DBA /* UploadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327922CE71D100027DBA /* UploadDispatcher.swift */; };
+		DA28327D22CE71D100027DBA /* UploadDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327922CE71D100027DBA /* UploadDispatcher.swift */; };
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
 		DA3E506B21B458CB001450EC /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
@@ -70,6 +74,7 @@
 		DA28325622CD719500027DBA /* DataDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcher.swift; sourceTree = "<group>"; };
 		DA28325B22CD720A00027DBA /* Dispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatcher.swift; sourceTree = "<group>"; };
 		DA28326022CD745800027DBA /* DownloadDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDispatcher.swift; sourceTree = "<group>"; };
+		DA28327922CE71D100027DBA /* UploadDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadDispatcher.swift; sourceTree = "<group>"; };
 		DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFuture.swift; sourceTree = "<group>"; };
 		DA3D80A32218AE7E00D49CD0 /* RequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestError.swift; sourceTree = "<group>"; };
 		DA3E506A21B458CB001450EC /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
@@ -255,6 +260,7 @@
 				DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */,
 				DA28325622CD719500027DBA /* DataDispatcher.swift */,
 				DA28326022CD745800027DBA /* DownloadDispatcher.swift */,
+				DA28327922CE71D100027DBA /* UploadDispatcher.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -495,6 +501,7 @@
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
 				DA74C6BE22517D9600B7005D /* MockDispatcher.swift in Sources */,
 				DA74C477224B2DA500B7005D /* MultiPartRequest.swift in Sources */,
+				DA28327A22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				8CC508011ED35AA900C19524 /* NetworkDispatcher.swift in Sources */,
 				DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */,
 				DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */,
@@ -515,6 +522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA28325D22CD720A00027DBA /* Dispatcher.swift in Sources */,
+				DA28327B22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326222CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325822CD719500027DBA /* DataDispatcher.swift in Sources */,
 			);
@@ -525,6 +533,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA28325E22CD720A00027DBA /* Dispatcher.swift in Sources */,
+				DA28327C22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326322CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325922CD719500027DBA /* DataDispatcher.swift in Sources */,
 			);
@@ -535,6 +544,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA28325F22CD720A00027DBA /* Dispatcher.swift in Sources */,
+				DA28327D22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326422CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325A22CD719500027DBA /* DataDispatcher.swift in Sources */,
 			);
@@ -671,7 +681,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
 				PRODUCT_NAME = PiuPiu;
@@ -698,7 +708,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
 				PRODUCT_NAME = PiuPiu;

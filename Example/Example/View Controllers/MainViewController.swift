@@ -13,6 +13,7 @@ class MainViewController: UIViewController {
         case seriesExample
         case parallelExample
         case downloadExample
+        case uploadExample
     }
     
     lazy var tableView: UITableView = {
@@ -22,7 +23,7 @@ class MainViewController: UIViewController {
         return tableView
     }()
     
-    private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample]
+    private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample, .uploadExample]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +69,10 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Download Example"
             return cell
+        case .uploadExample:
+            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            cell.textLabel?.text = "Upload Example"
+            return cell
         }
     }
     
@@ -83,6 +88,9 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             navigationController?.pushViewController(viewController, animated: true)
         case .downloadExample:
             let viewController = DownloadViewController()
+            navigationController?.pushViewController(viewController, animated: true)
+        case .uploadExample:
+            let viewController = UploadViewController()
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
