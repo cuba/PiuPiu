@@ -74,7 +74,7 @@ class SeriesRequestsViewController: UIViewController {
     private func fetchPost(forId id: Int) -> ResponseFuture<String> {
         return dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-            return try URLRequest(url: url, method: .get)
+            return URLRequest(url: url, method: .get)
         }).then({ response -> String in
             return try response.decodeString(encoding: .utf8)
         })

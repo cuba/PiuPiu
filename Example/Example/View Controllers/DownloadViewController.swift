@@ -70,7 +70,7 @@ class DownloadViewController: BaseViewController {
         guard let urlString = fileUrlTextField.text, let url = URL(string: urlString) else { return }
         
         dispatcher.downloadFuture(from: {
-            return try URLRequest(url: url, method: .get)
+            return URLRequest(url: url, method: .get)
         }).progress({ [weak self] progress in
             print("PROGRESS: \(progress)")
             self?.progressView.progress = Float(progress)

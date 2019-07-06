@@ -57,7 +57,7 @@ open class CloudinaryApiManager {
         let url = URL(string: "https://api.cloudinary.com")!.appendingPathComponent(path)
         
         return dispatcher.uploadFuture(from: {
-            var request = try URLRequest(url: url, method: .post)
+            var request = URLRequest(url: url, method: .post)
             request.addValue("\(body.count)", forHTTPHeaderField: "Content-Length")
             request.addValue(contentType, forHTTPHeaderField: "Content-Type")
             request.httpBody = body
