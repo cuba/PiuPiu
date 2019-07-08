@@ -39,7 +39,6 @@
 		DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F55322624298002CDAAF /* MapCodablePost.swift */; };
 		DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55D22624465002CDAAF /* MapCodableKit.framework */; };
 		DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55E22624465002CDAAF /* ObjectMapper.framework */; };
-		DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55F22624465002CDAAF /* Alamofire.framework */; };
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
@@ -140,7 +139,6 @@
 		DAA9F55322624298002CDAAF /* MapCodablePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCodablePost.swift; sourceTree = "<group>"; };
 		DAA9F55D22624465002CDAAF /* MapCodableKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapCodableKit.framework; path = Carthage/Build/iOS/MapCodableKit.framework; sourceTree = "<group>"; };
 		DAA9F55E22624465002CDAAF /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
-		DAA9F55F22624465002CDAAF /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
 		DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PiuPiu.xcodeproj; path = ../PiuPiu.xcodeproj; sourceTree = "<group>"; };
@@ -158,7 +156,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */,
-				DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */,
 				DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */,
 				DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */,
 			);
@@ -294,7 +291,6 @@
 		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DAA9F55F22624465002CDAAF /* Alamofire.framework */,
 				DAA9F55D22624465002CDAAF /* MapCodableKit.framework */,
 				DAA9F55E22624465002CDAAF /* ObjectMapper.framework */,
 			);
@@ -327,7 +323,7 @@
 				8CC5080D1ED35E7D00C19524 /* Frameworks */,
 				8CC5080E1ED35E7D00C19524 /* Resources */,
 				8CC508531ED35F7A00C19524 /* Embed Frameworks */,
-				DADDFF651FEF2676005FEC56 /* ShellScript */,
+				DADDFF651FEF2676005FEC56 /* Carthage */,
 			);
 			buildRules = (
 			);
@@ -458,16 +454,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		DADDFF651FEF2676005FEC56 /* ShellScript */ = {
+		DADDFF651FEF2676005FEC56 /* Carthage */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/MapCodableKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/ObjectMapper.framework",
 			);
+			name = Carthage;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
