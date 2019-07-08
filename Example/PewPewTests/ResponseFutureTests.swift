@@ -14,8 +14,14 @@ class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
     
     private let postDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        let pathParams: [String] = request.url?.path.split(separator: "/").map({ String($0) }) ?? []
+        
+        if let idString = pathParams.last, let id = Int(idString) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
     })
     
     private let postsDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
@@ -165,19 +171,38 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
     
-    func testFutureIsCancelledWhenNilIsReturnedInParallelJoin() {
-        let expectation = self.expectation(description: "Cancellation response triggered")
+    func testFutureWithParallelJoins() {
+        let expectation = self.expectation(description: "Success response triggered")
         
-        postDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).join({ () -> ResponseFuture<Response<Data>>? in
-            return nil
-        }).cancellation({
+        var future = ResponseFuture<[Post]> { future in
+            future.succeed(with: [])
+        }
+        
+        for id in 1...1000 {
+            future = future.join({ posts -> ResponseFuture<Post> in
+                self.postDispatcher.dataFuture(from: {
+                    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+                    return URLRequest(url: url, method: .get)
+                }).then({ response in
+                    return try response.decode(Post.self)
+                })
+            }).then({ posts, addedPost -> [Post] in
+                var posts = posts
+                posts.append(addedPost)
+                return posts
+            })
+        }
+        
+        future.success({ posts in
             expectation.fulfill()
+            XCTAssertEqual(1000, posts.count)
+            
+            for id in 1...1000 {
+                XCTAssertEqual(posts[id - 1].id, id)
+            }
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInReplace() {

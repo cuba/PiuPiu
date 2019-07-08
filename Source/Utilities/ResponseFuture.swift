@@ -89,13 +89,15 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter object: The succeeded object required by the future success callback.
     public func succeed(with object: T) {
-        do {
-            try successHandler?(object)
-            status = .success
-            completionHandler?()
-            finalize()
-        } catch {
-            self.fail(with: error)
+        DispatchQueue.main.async {
+            do {
+                try self.successHandler?(object)
+                self.status = .success
+                self.completionHandler?()
+                self.finalize()
+            } catch {
+                self.fail(with: error)
+            }
         }
     }
     
@@ -103,17 +105,21 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter object: The failed object required by the future error callback.
     public func fail(with error: Error) {
-        errorHandler?(error)
-        status = .error
-        completionHandler?()
-        finalize()
+        DispatchQueue.main.async {
+            self.errorHandler?(error)
+            self.status = .error
+            self.completionHandler?()
+            self.finalize()
+        }
     }
     
     func cancel() {
-        cancellationHandler?()
-        status = .cancelled
-        completionHandler?()
-        finalize()
+        DispatchQueue.main.async {
+            self.cancellationHandler?()
+            self.status = .cancelled
+            self.completionHandler?()
+            self.finalize()
+        }
     }
     
     private func finalize() {
@@ -129,7 +135,9 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter progress: The progress of this future between 0 and 1 where 0 is 0% and 1 being 100%
     public func update(progress: Float) {
-        progressCallback?(progress)
+        DispatchQueue.main.async {
+            self.progressCallback?(progress)
+        }
     }
     
     /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
@@ -199,20 +207,13 @@ public class ResponseFuture<T> {
                 queue.async {
                     do {
                         guard let transformed = try callback(result) else {
-                            DispatchQueue.main.async {
-                                future.cancel()
-                            }
-                            
+                            future.cancel()
                             return
                         }
                         
-                        DispatchQueue.main.async {
-                            future.succeed(with: transformed)
-                        }
+                        future.succeed(with: transformed)
                     } catch {
-                        DispatchQueue.main.async {
-                            future.fail(with: error)
-                        }
+                        future.fail(with: error)
                     }
                 }
             }).progress({ progress in
@@ -237,10 +238,7 @@ public class ResponseFuture<T> {
             
             self.success({ response in
                 guard let newFuture = try callback(response) else {
-                    DispatchQueue.main.async {
-                        future.cancel()
-                    }
-                    
+                    future.cancel()
                     return
                 }
                 
@@ -275,10 +273,7 @@ public class ResponseFuture<T> {
             
             self.success({ response in
                 guard let newPromise = try callback(response) else {
-                    DispatchQueue.main.async {
-                        future.cancel()
-                    }
-                    
+                    future.cancel()
                     return
                 }
                 
@@ -308,16 +303,10 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
-    public func join<U>(_ callback: @escaping () throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
+    public func join<U>(_ callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+        let newFuture = callback()
+        
         return ResponseFuture<(T, U)>(order: order + 1) { future in
-            guard let newFuture = try callback() else {
-                DispatchQueue.main.async {
-                    future.cancel()
-                }
-                
-                return
-            }
-            
             let secondWeight = Float(1)/Float(future.order)
             let firstWeight = 1 - secondWeight
             
@@ -378,12 +367,13 @@ public class ResponseFuture<T> {
     
     /// This method triggers the action method defined on this future.
     public func start() {
+        self.status = .started
+        
         do {
-            self.status = .started
             try action?(self)
             action = nil
         } catch {
-            self.fail(with: error)
+            fail(with: error)
         }
     }
     

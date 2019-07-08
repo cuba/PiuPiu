@@ -171,34 +171,24 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             }
             
             if let error = error ?? responseFutureTask.error {
-                DispatchQueue.main.async {
-                    responseFutureTask.future.fail(with: error)
-                }
+                responseFutureTask.future.fail(with: error)
             } else {
-                DispatchQueue.main.async {
-                    responseFutureTask.future.succeed(with: responseFutureTask.data)
-                }
+                responseFutureTask.future.succeed(with: responseFutureTask.data)
             }
         } else if let responseFutureTask = self.dataTask(for: task) {
             queue.sync {
                 dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
             }
             // Ensure we don't have an error
-            if let error = responseFutureTask.error {
-                DispatchQueue.main.async {
-                    responseFutureTask.future.fail(with: error)
-                }
-                
+            if let error = error ?? responseFutureTask.error {
+                responseFutureTask.future.fail(with: error)
                 return
             }
             
             // Ensure there is a http response
             guard let httpResponse = responseFutureTask.response as? HTTPURLResponse else {
                 let error = ResponseError.unknown
-                
-                DispatchQueue.main.async {
-                    responseFutureTask.future.fail(with: error)
-                }
+                responseFutureTask.future.fail(with: error)
                 return
             }
             
@@ -208,10 +198,8 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             let responseError = statusCode.makeError()
             let response = Response(data: responseFutureTask.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
             
-            DispatchQueue.main.async {
-                responseFutureTask.future.update(progress: 1)
-                responseFutureTask.future.succeed(with: response)
-            }
+            responseFutureTask.future.update(progress: 1)
+            responseFutureTask.future.succeed(with: response)
         }
     }
     
@@ -222,9 +210,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
         guard totalBytesExpectedToSend > 0 else { return }
         let progress = Float(integerLiteral: totalBytesSent) / Float(integerLiteral: totalBytesExpectedToSend)
         
-        DispatchQueue.main.async {
-            responseFutureTask.future.update(progress: progress)
-        }
+        responseFutureTask.future.update(progress: progress)
     }
 }
 
@@ -269,8 +255,6 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
         
         let progress = Float(integerLiteral: totalBytesWritten) / Float(integerLiteral: totalBytesExpectedToWrite)
         
-        DispatchQueue.main.async {
-            responseFutureTask.future.update(progress: progress)
-        }
+        responseFutureTask.future.update(progress: progress)
     }
 }

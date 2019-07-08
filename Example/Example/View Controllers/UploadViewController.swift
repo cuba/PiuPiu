@@ -46,6 +46,7 @@ class UploadViewController: BaseViewController {
     }
     
     deinit {
+        (apiManager.dispatcher as? URLRequestDispatcher)?.invalidateAndCancel()
     }
     
     override func viewDidLoad() {
