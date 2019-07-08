@@ -98,7 +98,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
     func testWrapEncodingInAFuture() {
@@ -160,7 +160,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
     func testWeakCallbacks() {
