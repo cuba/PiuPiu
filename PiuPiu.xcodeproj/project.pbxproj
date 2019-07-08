@@ -36,6 +36,75 @@
 		DA28329E22D37F5F00027DBA /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329C22D37F5F00027DBA /* ServerProvider.swift */; };
 		DA28329F22D37F5F00027DBA /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329C22D37F5F00027DBA /* ServerProvider.swift */; };
 		DA2832A022D37F5F00027DBA /* ServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329C22D37F5F00027DBA /* ServerProvider.swift */; };
+		DA2832A322D3B53C00027DBA /* URLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28325422CD6F7B00027DBA /* URLRequestDispatcher.swift */; };
+		DA2832A422D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28325422CD6F7B00027DBA /* URLRequestDispatcher.swift */; };
+		DA2832A522D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28325422CD6F7B00027DBA /* URLRequestDispatcher.swift */; };
+		DA2832A622D3B53F00027DBA /* RequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* RequestDispatcher.swift */; };
+		DA2832A722D3B54000027DBA /* RequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* RequestDispatcher.swift */; };
+		DA2832A822D3B54000027DBA /* RequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC507FE1ED35AA900C19524 /* RequestDispatcher.swift */; };
+		DA2832A922D3B54200027DBA /* MockURLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328A22D24C3800027DBA /* MockURLRequestDispatcher.swift */; };
+		DA2832AA22D3B54300027DBA /* MockURLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328A22D24C3800027DBA /* MockURLRequestDispatcher.swift */; };
+		DA2832AB22D3B54400027DBA /* MockURLRequestDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328A22D24C3800027DBA /* MockURLRequestDispatcher.swift */; };
+		DA2832AC22D3B54600027DBA /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
+		DA2832AD22D3B54600027DBA /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
+		DA2832AE22D3B54700027DBA /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
+		DA2832AF22D3B54800027DBA /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
+		DA2832B022D3B54900027DBA /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
+		DA2832B122D3B54A00027DBA /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
+		DA2832B222D3B54F00027DBA /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329522D2BF3D00027DBA /* Dispatcher.swift */; };
+		DA2832B322D3B54F00027DBA /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329522D2BF3D00027DBA /* Dispatcher.swift */; };
+		DA2832B422D3B55000027DBA /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329522D2BF3D00027DBA /* Dispatcher.swift */; };
+		DA2832B522D3B55600027DBA /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
+		DA2832B622D3B55700027DBA /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
+		DA2832B722D3B55800027DBA /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
+		DA2832B822D3B55A00027DBA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
+		DA2832B922D3B55A00027DBA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
+		DA2832BA22D3B55B00027DBA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
+		DA2832BB22D3B55F00027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
+		DA2832BC22D3B55F00027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
+		DA2832BD22D3B56000027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
+		DA2832BE22D3B56300027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
+		DA2832BF22D3B56300027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
+		DA2832C022D3B56400027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
+		DA2832C122D3B56600027DBA /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C622517ECC00B7005D /* ErrorResponse.swift */; };
+		DA2832C222D3B56600027DBA /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C622517ECC00B7005D /* ErrorResponse.swift */; };
+		DA2832C322D3B56700027DBA /* ErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C622517ECC00B7005D /* ErrorResponse.swift */; };
+		DA2832C422D3B56900027DBA /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
+		DA2832C522D3B56A00027DBA /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
+		DA2832C622D3B56A00027DBA /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
+		DA2832C722D3B56D00027DBA /* BasicRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* BasicRequest.swift */; };
+		DA2832C822D3B56D00027DBA /* BasicRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* BasicRequest.swift */; };
+		DA2832C922D3B56E00027DBA /* BasicRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506C21B458DD001450EC /* BasicRequest.swift */; };
+		DA2832CA22D3B57000027DBA /* MultiPartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C476224B2DA500B7005D /* MultiPartRequest.swift */; };
+		DA2832CB22D3B57000027DBA /* MultiPartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C476224B2DA500B7005D /* MultiPartRequest.swift */; };
+		DA2832CC22D3B57100027DBA /* MultiPartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C476224B2DA500B7005D /* MultiPartRequest.swift */; };
+		DA2832CD22D3B57500027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
+		DA2832CE22D3B57500027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
+		DA2832CF22D3B57600027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
+		DA2832D022D3B57800027DBA /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */; };
+		DA2832D122D3B57800027DBA /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */; };
+		DA2832D222D3B57900027DBA /* SerializationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */; };
+		DA2832D322D3B57B00027DBA /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
+		DA2832D422D3B57B00027DBA /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
+		DA2832D522D3B57C00027DBA /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
+		DA2832D622D3B57F00027DBA /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
+		DA2832D722D3B57F00027DBA /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
+		DA2832D822D3B58000027DBA /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
+		DA2832D922D3B58200027DBA /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
+		DA2832DA22D3B58200027DBA /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
+		DA2832DB22D3B58300027DBA /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
+		DA2832DC22D3B58500027DBA /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
+		DA2832DD22D3B58600027DBA /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
+		DA2832DE22D3B58700027DBA /* DateFormatter+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */; };
+		DA2832DF22D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
+		DA2832E022D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
+		DA2832E122D3B58A00027DBA /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
+		DA2832E222D3B58C00027DBA /* URLSession+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */; };
+		DA2832E322D3B58D00027DBA /* URLSession+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */; };
+		DA2832E422D3B58D00027DBA /* URLSession+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83022C9820000C126E5 /* URLSession+Extensions.swift */; };
+		DA2832E522D3B58F00027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328622D0F74800027DBA /* URLRequest+Extensions.swift */; };
+		DA2832E622D3B59000027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328622D0F74800027DBA /* URLRequest+Extensions.swift */; };
+		DA2832E722D3B59100027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328622D0F74800027DBA /* URLRequest+Extensions.swift */; };
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
 		DA3D80A42218AE7E00D49CD0 /* RequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D80A32218AE7E00D49CD0 /* RequestError.swift */; };
 		DA3E506B21B458CB001450EC /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506A21B458CB001450EC /* Request.swift */; };
@@ -525,10 +594,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA2832C122D3B56600027DBA /* ErrorResponse.swift in Sources */,
+				DA2832C422D3B56900027DBA /* Request.swift in Sources */,
+				DA2832CA22D3B57000027DBA /* MultiPartRequest.swift in Sources */,
+				DA2832E522D3B58F00027DBA /* URLRequest+Extensions.swift in Sources */,
+				DA2832A322D3B53C00027DBA /* URLRequestDispatcher.swift in Sources */,
+				DA2832B522D3B55600027DBA /* StatusCode.swift in Sources */,
 				DA28327B22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
+				DA2832E222D3B58C00027DBA /* URLSession+Extensions.swift in Sources */,
 				DA28326222CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325822CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA2832B222D3B54F00027DBA /* Dispatcher.swift in Sources */,
+				DA2832DF22D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
+				DA2832BB22D3B55F00027DBA /* Response.swift in Sources */,
+				DA2832D922D3B58200027DBA /* Response+Extensions.swift in Sources */,
+				DA2832AF22D3B54800027DBA /* ResponseFutureTask.swift in Sources */,
+				DA2832BE22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA2832AC22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
+				DA2832DC22D3B58500027DBA /* DateFormatter+Extensions.swift in Sources */,
+				DA2832D622D3B57F00027DBA /* ResponseFuture.swift in Sources */,
+				DA2832B822D3B55A00027DBA /* HTTPMethod.swift in Sources */,
+				DA2832D322D3B57B00027DBA /* RequestError.swift in Sources */,
+				DA2832A622D3B53F00027DBA /* RequestDispatcher.swift in Sources */,
+				DA2832D022D3B57800027DBA /* SerializationError.swift in Sources */,
+				DA2832CD22D3B57500027DBA /* ResponseError.swift in Sources */,
+				DA2832C722D3B56D00027DBA /* BasicRequest.swift in Sources */,
 				DA28329E22D37F5F00027DBA /* ServerProvider.swift in Sources */,
+				DA2832A922D3B54200027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,10 +628,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA2832C222D3B56600027DBA /* ErrorResponse.swift in Sources */,
+				DA2832C522D3B56A00027DBA /* Request.swift in Sources */,
+				DA2832CB22D3B57000027DBA /* MultiPartRequest.swift in Sources */,
+				DA2832E622D3B59000027DBA /* URLRequest+Extensions.swift in Sources */,
+				DA2832A422D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */,
+				DA2832B622D3B55700027DBA /* StatusCode.swift in Sources */,
 				DA28327C22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
+				DA2832E322D3B58D00027DBA /* URLSession+Extensions.swift in Sources */,
 				DA28326322CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325922CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA2832B322D3B54F00027DBA /* Dispatcher.swift in Sources */,
+				DA2832E022D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
+				DA2832BC22D3B55F00027DBA /* Response.swift in Sources */,
+				DA2832DA22D3B58200027DBA /* Response+Extensions.swift in Sources */,
+				DA2832B022D3B54900027DBA /* ResponseFutureTask.swift in Sources */,
+				DA2832BF22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA2832AD22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
+				DA2832DD22D3B58600027DBA /* DateFormatter+Extensions.swift in Sources */,
+				DA2832D722D3B57F00027DBA /* ResponseFuture.swift in Sources */,
+				DA2832B922D3B55A00027DBA /* HTTPMethod.swift in Sources */,
+				DA2832D422D3B57B00027DBA /* RequestError.swift in Sources */,
+				DA2832A722D3B54000027DBA /* RequestDispatcher.swift in Sources */,
+				DA2832D122D3B57800027DBA /* SerializationError.swift in Sources */,
+				DA2832CE22D3B57500027DBA /* ResponseError.swift in Sources */,
+				DA2832C822D3B56D00027DBA /* BasicRequest.swift in Sources */,
 				DA28329F22D37F5F00027DBA /* ServerProvider.swift in Sources */,
+				DA2832AA22D3B54300027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,10 +662,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA2832C322D3B56700027DBA /* ErrorResponse.swift in Sources */,
+				DA2832C622D3B56A00027DBA /* Request.swift in Sources */,
+				DA2832CC22D3B57100027DBA /* MultiPartRequest.swift in Sources */,
+				DA2832E722D3B59100027DBA /* URLRequest+Extensions.swift in Sources */,
+				DA2832A522D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */,
+				DA2832B722D3B55800027DBA /* StatusCode.swift in Sources */,
 				DA28327D22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
+				DA2832E422D3B58D00027DBA /* URLSession+Extensions.swift in Sources */,
 				DA28326422CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325A22CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA2832B422D3B55000027DBA /* Dispatcher.swift in Sources */,
+				DA2832E122D3B58A00027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
+				DA2832BD22D3B56000027DBA /* Response.swift in Sources */,
+				DA2832DB22D3B58300027DBA /* Response+Extensions.swift in Sources */,
+				DA2832B122D3B54A00027DBA /* ResponseFutureTask.swift in Sources */,
+				DA2832C022D3B56400027DBA /* SuccessResponse.swift in Sources */,
+				DA2832AE22D3B54700027DBA /* ResponseFutureSession.swift in Sources */,
+				DA2832DE22D3B58700027DBA /* DateFormatter+Extensions.swift in Sources */,
+				DA2832D822D3B58000027DBA /* ResponseFuture.swift in Sources */,
+				DA2832BA22D3B55B00027DBA /* HTTPMethod.swift in Sources */,
+				DA2832D522D3B57C00027DBA /* RequestError.swift in Sources */,
+				DA2832A822D3B54000027DBA /* RequestDispatcher.swift in Sources */,
+				DA2832D222D3B57900027DBA /* SerializationError.swift in Sources */,
+				DA2832CF22D3B57600027DBA /* ResponseError.swift in Sources */,
+				DA2832C922D3B56E00027DBA /* BasicRequest.swift in Sources */,
 				DA2832A022D37F5F00027DBA /* ServerProvider.swift in Sources */,
+				DA2832AB22D3B54400027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -810,7 +948,7 @@
 				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
@@ -845,7 +983,7 @@
 				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu;
 				PRODUCT_NAME = PiuPiu;

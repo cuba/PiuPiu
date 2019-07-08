@@ -245,14 +245,6 @@ extension ResponseFutureSession: URLSessionDataDelegate {
         responseFutureTask.response = response
         completionHandler(.allow)
     }
-    
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome downloadTask: URLSessionDownloadTask) {
-        print("Become Download Task")
-    }
-    
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome streamTask: URLSessionStreamTask) {
-        print("Become Stream Task")
-    }
 }
 
 // MARK: - Download Task
