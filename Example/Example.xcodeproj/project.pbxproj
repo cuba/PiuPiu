@@ -17,7 +17,7 @@
 		DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */; };
 		DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327722CE4D8600027DBA /* CloudinaryError.swift */; };
 		DA28328D22D255D300027DBA /* DataDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328C22D255D300027DBA /* DataDispatcherTests.swift */; };
-		DA28329422D25DF500027DBA /* MockServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329322D25DF500027DBA /* MockServerProvider.swift */; };
+		DA2832EE22D3BEB000027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
@@ -32,9 +32,7 @@
 		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
 		DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84522CA62E800C126E5 /* BaseViewController.swift */; };
 		DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */; };
-		DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */; };
 		DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */; };
-		DAA9F547226231A5002CDAAF /* PlaygroundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F546226231A5002CDAAF /* PlaygroundTests.swift */; };
 		DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54922623666002CDAAF /* MappablePost.swift */; };
 		DAA9F54C2262369B002CDAAF /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54B2262369B002CDAAF /* Post.swift */; };
 		DAA9F54E226236DD002CDAAF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54D226236DD002CDAAF /* User.swift */; };
@@ -121,7 +119,7 @@
 		DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryUploadErrorResponse.swift; sourceTree = "<group>"; };
 		DA28327722CE4D8600027DBA /* CloudinaryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryError.swift; sourceTree = "<group>"; };
 		DA28328C22D255D300027DBA /* DataDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcherTests.swift; sourceTree = "<group>"; };
-		DA28329322D25DF500027DBA /* MockServerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerProvider.swift; sourceTree = "<group>"; };
+		DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extensions.swift"; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
@@ -136,9 +134,7 @@
 		DAA9A84322C9ABA200C126E5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		DAA9A84522CA62E800C126E5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
-		DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F53822605589002CDAAF /* AlamofireDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireDispatcher.swift; sourceTree = "<group>"; };
-		DAA9F546226231A5002CDAAF /* PlaygroundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundTests.swift; sourceTree = "<group>"; };
 		DAA9F54922623666002CDAAF /* MappablePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MappablePost.swift; sourceTree = "<group>"; };
 		DAA9F54B2262369B002CDAAF /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		DAA9F54D226236DD002CDAAF /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -266,8 +262,8 @@
 		DAA9F52B22604DDD002CDAAF /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */,
 				DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */,
-				DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -316,11 +312,9 @@
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
 				DAA9F56A22624A25002CDAAF /* DecodingTests.swift */,
 				DAA9F551226241C4002CDAAF /* EncodingTests.swift */,
-				DAA9F546226231A5002CDAAF /* PlaygroundTests.swift */,
 				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
 				DAE5EF6922190A0200D1990B /* Info.plist */,
 				DAA9F5E42263D513002CDAAF /* TestHelper.swift */,
-				DA28329322D25DF500027DBA /* MockServerProvider.swift */,
 			);
 			path = PewPewTests;
 			sourceTree = "<group>";
@@ -499,6 +493,7 @@
 				DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */,
 				DAA9F53922605589002CDAAF /* AlamofireDispatcher.swift in Sources */,
 				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
+				DA2832EE22D3BEB000027DBA /* URLRequest+Extensions.swift in Sources */,
 				DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */,
@@ -506,7 +501,6 @@
 				DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
-				DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */,
 				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
@@ -525,9 +519,7 @@
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
-				DA28329422D25DF500027DBA /* MockServerProvider.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
-				DAA9F547226231A5002CDAAF /* PlaygroundTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

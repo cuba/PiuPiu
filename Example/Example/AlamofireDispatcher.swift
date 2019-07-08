@@ -11,15 +11,13 @@ import PiuPiu
 import Alamofire
 
 class AlamofireDispatcher: DataDispatcher {
-    weak var serverProvider: ServerProvider?
     var sessionManager: SessionManager
     
-    /// Initialize this `Dispatcher` with a `ServerProvider`.
+    /// Initialize this `Dispatcher` with a `URLRequestProvider`.
     ///
-    /// - Parameter serverProvider: The server provider that will give the dispatcher the `baseURL`.
-    init(serverProvider: ServerProvider) {
-        self.serverProvider = serverProvider
-        self.sessionManager = SessionManager()
+    /// - Parameter urlRequestProvider: The server provider that will give the dispatcher the `baseURL`.
+    init(sessionManager: SessionManager = SessionManager()) {
+        self.sessionManager = sessionManager
     }
     
     func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {

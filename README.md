@@ -44,7 +44,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Delete unnecessary files
 
 ### 1.2.0
-* Make `ServerProvider` return an optional URL.  This will safely handle invalid URLs instead of forcing the developer to use a !.
+* Make `URLRequestProvider` return an optional URL.  This will safely handle invalid URLs instead of forcing the developer to use a !.
 * Add JSON array serialization method to BasicRequest
 
 ### 1.1.0
@@ -108,12 +108,12 @@ Run `carthage update` to build the framework and drag the built `PiuPiu.framewor
 import PiuPiu
 ```
 
-### 2. Implement a  `ServerProvider`
+### 2. Implement a  `URLRequestProvider`
 
-The server provider gives the server url.  The reason a simple URL is not used is so that you can dynamically change the url.  Say for example you have an environment picker.  You would have to recreate the dispatcher every time you change the environment.  The simplest way to create a ServerProvider is to just implement the protocol on your ViewController.
+The server provider gives the server url.  The reason a simple URL is not used is so that you can dynamically change the url.  Say for example you have an environment picker.  You would have to recreate the dispatcher every time you change the environment.  The simplest way to create a URLRequestProvider is to just implement the protocol on your ViewController.
 
 ```swift
-extension ViewController: ServerProvider {
+extension ViewController: URLRequestProvider {
     var baseURL: URL? {
         return URL(string: "https://example.com")!
     }
@@ -124,10 +124,10 @@ But you may chose to use a seperate object to implement the server provider or c
 
 ### 3. Making a request.
 
-Now that we have our `ServerProvider` established, we can start making api calls. 
+Now that we have our `URLRequestProvider` established, we can start making api calls. 
 
 ```swift
-let dispatcher = RequestDispatcher(serverProvider: self)
+let dispatcher = RequestDispatcher(urlRequestProvider: self)
 let request = BasicRequest(method: .get, path: "/posts")
 
 dispatcher.future(from: request).response({ response in
@@ -167,7 +167,7 @@ Lets create a method similar to this:
 
 ```swift
 private func getPosts() -> ResponseFuture<[Post]> {
-    let dispatcher = RequestDispatcher(serverProvider: self)
+    let dispatcher = RequestDispatcher(urlRequestProvider: self)
     let request = BasicRequest(method: .get, path: "/posts")
 
     // We create a future and tell it to transform the response using the

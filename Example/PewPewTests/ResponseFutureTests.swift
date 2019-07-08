@@ -27,8 +27,6 @@ class ResponseFutureTests: XCTestCase {
         let user = User(id: 1, name: "Jim Halpert")
         return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
     })
-    
-    private let serverProvider = MockServerProvider()
 
     func testFutureResponse() {
         // When

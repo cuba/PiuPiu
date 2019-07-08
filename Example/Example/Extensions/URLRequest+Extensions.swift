@@ -1,5 +1,5 @@
 //
-//  Request+Extensions.swift
+//  URLRequest+Extensions.swift
 //  Example
 //
 //  Created by Jacob Sikorski on 2019-04-12.
@@ -13,7 +13,7 @@ import MapCodableKit
 
 // MARK: - BaseMappable
 
-extension BasicRequest {
+extension URLRequest {
     /// Add JSON body to the request from a `BaseMappable` object.
     ///
     /// - Parameters:
@@ -49,7 +49,7 @@ extension BasicRequest {
 
 // MARK: - MapEncodable
 
-extension BasicRequest {
+extension URLRequest {
     
     /// Add body to the request from a `MapEncodable` object.
     ///

@@ -11,34 +11,27 @@ import XCTest
 @testable import PiuPiu
 
 class DataDispatcherTests: XCTestCase {
-
-    struct ServerErrorDetails: Codable {
-    }
-    
-    var postsURL: URL {
-        return URL(string: "https://jsonplaceholder.typicode.com/posts")!
-    }
-    
-    private let postDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { (request: URLRequest) in
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-    })
-    
-    private let postsDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        
+        if (request as URLRequest).url?.path.contains("/posts/") ?? false {
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else {
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        }
     })
     
     private var strongFuture: ResponseFuture<[Post]>?
     
     func testSimpleRequest() {
-        let request = URLRequest(url: postsURL, method: .get)
-        
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        postDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).response({ response in
             // Handles any responses including negative responses such as 4xx and 5xx
             
             // The error object is available if we get an
@@ -76,11 +69,12 @@ class DataDispatcherTests: XCTestCase {
         completionExpectation.expectedFulfillmentCount = 1
         errorExpectation.isInverted = true
         
-        let request = URLRequest(url: postsURL, method: .get)
-        
         // We create a future and tell it to transform the response using the
         // `then` callback.
-        postsDispatcher.dataFuture(from: request).then({ response -> [Post] in
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> [Post] in
             if let error = response.error {
                 // The error is available when a non-2xx response comes in
                 // Such as a 4xx or 5xx
@@ -108,19 +102,23 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWrapEncodingInAFuture() {
-        // Then
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        var request = URLRequest(url: postsURL, method: .get)
-        XCTAssertNoThrow(try request.setJSONBody(post))
-        
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
+        // Given
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        
         // When
-        postDispatcher.dataFuture(from: request).error({ error in
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            var request = URLRequest(url: url, method: .post)
+            try request.setJSONBody(post)
+            return request
+        }).error({ error in
             // Any error thrown while creating the request will trigger this callback.
         }).completion({
+            // Then
             completionExpectation.fulfill()
         }).send()
         
@@ -128,15 +126,15 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testFullResponseFutureExample() {
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        var request = URLRequest(url: postsURL, method: .get)
-        XCTAssertNoThrow(try request.setJSONBody(post))
-        
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        postDispatcher.dataFuture(from: request).then({ response -> Post in
+        // When
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
             // Handles any responses and transforms them to another type
             // This includes negative responses such as 400s and 500s
             
@@ -166,13 +164,14 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWeakCallbacks() {
-        let request = URLRequest(url: postsURL, method: .get)
-        
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        postsDispatcher.dataFuture(from: request).then({ response -> [Post] in
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
             return try response.decode([Post].self)
         }).response({ [weak self] post in
@@ -188,13 +187,14 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWeakCallbacksStrongReference() {
-        let request = URLRequest(url: postsURL, method: .get)
-        
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        self.strongFuture = postsDispatcher.dataFuture(from: request).then({ response -> [Post] in
+        self.strongFuture = dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> [Post] in
             // [weak self] not needed as `self` is not called
             return try response.decode([Post].self)
         }).response({ [weak self] post in
@@ -214,23 +214,17 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {
-        let request = URLRequest(url: postsURL, method: .get)
-        
-        // Expectations
-        let completionExpectation = self.expectation(description: "Success response should not be triggered")
-        completionExpectation.isInverted = true
-        
-        weak var weakFuture: ResponseFuture<Response<Data?>>? = postsDispatcher.dataFuture(from: request).completion({
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).completion({
             // [weak self] needed as `self` is not called
-            completionExpectation.fulfill()
         })
         
         // Our object is already nil because we have not established a strong reference to it.
         // The `send` method will do nothing. No callback will be triggered.
         
         XCTAssertNil(weakFuture)
-        weakFuture?.send()
-        waitForExpectations(timeout: 2, handler: nil)
     }
 
     private func show(_ posts: [Post]) {
