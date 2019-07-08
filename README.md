@@ -120,14 +120,14 @@ extension ViewController: ServerProvider {
 }
 ```
 
-But you may chose to use a seperate object to implement the server provider or create a singleton object so you can share it througout your application. Because the reference to the server provider on the `NetworkDispatcher` is weak, you don't have to worry about any circular references.
+But you may chose to use a seperate object to implement the server provider or create a singleton object so you can share it througout your application. Because the reference to the server provider on the `RequestDispatcher` is weak, you don't have to worry about any circular references.
 
 ### 3. Making a request.
 
 Now that we have our `ServerProvider` established, we can start making api calls. 
 
 ```swift
-let dispatcher = NetworkDispatcher(serverProvider: self)
+let dispatcher = RequestDispatcher(serverProvider: self)
 let request = BasicRequest(method: .get, path: "/posts")
 
 dispatcher.future(from: request).response({ response in
@@ -167,7 +167,7 @@ Lets create a method similar to this:
 
 ```swift
 private func getPosts() -> ResponseFuture<[Post]> {
-    let dispatcher = NetworkDispatcher(serverProvider: self)
+    let dispatcher = RequestDispatcher(serverProvider: self)
     let request = BasicRequest(method: .get, path: "/posts")
 
     // We create a future and tell it to transform the response using the
@@ -776,11 +776,11 @@ extension ResponseInterface where T == Data? {
 
 ## Mock Dispatcher
 
-Testing network calls is always a pain.  That's why we included the `MockDispatcher`.  It allows you to simulate network responses without actually making network calls.
+Testing network calls is always a pain.  That's why we included the `MockURLRequestDispatcher`.  It allows you to simulate network responses without actually making network calls.
 
 ```swift
 let url = URL(string: "https://jsonplaceholder.typicode.com")!
-let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
+let dispatcher = MockURLRequestDispatcher(baseUrl: url, mockStatusCode: .ok)
 let request = BasicRequest(method: .get, path: "/posts")
 try dispatcher.setMockData(codable)
 

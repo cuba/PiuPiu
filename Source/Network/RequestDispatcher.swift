@@ -1,5 +1,5 @@
 //
-//  NetworkDispatcher.swift
+//  RequestDispatcher.swift
 //  SwiftTrader
 //
 //  Created by Jacob Sikorski on 2017-05-17.
@@ -9,19 +9,27 @@
 import Foundation
 
 /// The class that will be making the API call.
-open class NetworkDispatcher: Dispatcher {
+open class RequestDispatcher: Dispatcher {
     public weak var serverProvider: ServerProvider?
-    public let dispatcher: URLRequestDispatcher
+    public let dataDispatcher: DataDispatcher
     
     /// Initialize this `Dispatcher` with a `ServerProvider` and a `URLSessionConfiguration`.
     ///
     /// - Parameters:
     ///   - serverProvider: The server provider that will give the dispatcher the `baseURL`.
     ///   - configuration: The configuration that will be used to create the `URLSession`.
-    ///   - delegate: The delegate that will be used for the URLSession.
-    public init(serverProvider: ServerProvider, configuration: URLSessionConfiguration = .default) {
+    public convenience init(serverProvider: ServerProvider, configuration: URLSessionConfiguration = .default) {
+        self.init(serverProvider: serverProvider, dataDispatcher: URLRequestDispatcher(configuration: configuration))
+    }
+    
+    /// Initialize this `Dispatcher` with a `ServerProvider` and a `DataDispatcher`.
+    ///
+    /// - Parameters:
+    ///   - serverProvider: The server provider that will give the dispatcher the `baseURL`.
+    ///   - dispatcher: The dispatcher that will be used to make the url request.
+    public init(serverProvider: ServerProvider, dataDispatcher: DataDispatcher) {
         self.serverProvider = serverProvider
-        self.dispatcher = URLRequestDispatcher(configuration: configuration)
+        self.dataDispatcher = dataDispatcher
     }
     
     /// Make a promise to send the request.
@@ -39,7 +47,7 @@ open class NetworkDispatcher: Dispatcher {
             }
             
             let urlRequest = try serverProvider.urlRequest(from: request)
-            let newFuture = self.dispatcher.dataFuture(from: urlRequest)
+            let newFuture = self.dataDispatcher.dataFuture(from: urlRequest)
             future.fulfill(with: newFuture)
         }
     }

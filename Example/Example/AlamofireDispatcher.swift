@@ -10,7 +10,7 @@ import Foundation
 import PiuPiu
 import Alamofire
 
-class AlamofireDispatcher: Dispatcher {
+class AlamofireDispatcher: DataDispatcher {
     weak var serverProvider: ServerProvider?
     var sessionManager: SessionManager
     
@@ -22,15 +22,9 @@ class AlamofireDispatcher: Dispatcher {
         self.sessionManager = SessionManager()
     }
     
-    func future(from request: PiuPiu.Request) -> ResponseFuture<Response<Data?>> {
+    func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
-            
-            guard let serverProvider = self.serverProvider else {
-                throw RequestError.missingServerProvider
-            }
-            
-            let urlRequest = try serverProvider.urlRequest(from: request)
             
             self.sessionManager.request(urlRequest).response(completionHandler: { dataResponse in
                 // Ensure we don't have an error
@@ -54,8 +48,10 @@ class AlamofireDispatcher: Dispatcher {
                 let responseError = statusCode.makeError()
                 let response = Response(data: dataResponse.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
 
-                future.update(progress: 1)
-                future.succeed(with: response)
+                DispatchQueue.main.async {
+                    future.update(progress: 1)
+                    future.succeed(with: response)
+                }
             })
         }
     }

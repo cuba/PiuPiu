@@ -16,6 +16,8 @@
 		DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */; };
 		DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */; };
 		DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327722CE4D8600027DBA /* CloudinaryError.swift */; };
+		DA28328D22D255D300027DBA /* DataDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328C22D255D300027DBA /* DataDispatcherTests.swift */; };
+		DA28329422D25DF500027DBA /* MockServerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28329322D25DF500027DBA /* MockServerProvider.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
@@ -43,7 +45,6 @@
 		DAA9F56222624465002CDAAF /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55F22624465002CDAAF /* Alamofire.framework */; };
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
-		DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
 		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
@@ -119,6 +120,8 @@
 		DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryApiManager.swift; sourceTree = "<group>"; };
 		DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryUploadErrorResponse.swift; sourceTree = "<group>"; };
 		DA28327722CE4D8600027DBA /* CloudinaryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryError.swift; sourceTree = "<group>"; };
+		DA28328C22D255D300027DBA /* DataDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcherTests.swift; sourceTree = "<group>"; };
+		DA28329322D25DF500027DBA /* MockServerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerProvider.swift; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
@@ -149,7 +152,6 @@
 		DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PiuPiu.xcodeproj; path = ../PiuPiu.xcodeproj; sourceTree = "<group>"; };
 		DAA9F595226303FC002CDAAF /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
-		DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockDispatcher+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F5E42263D513002CDAAF /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		DAE5EF6522190A0100D1990B /* PewPewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PewPewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -266,7 +268,6 @@
 			children = (
 				DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */,
 				DAA9F52E22604E04002CDAAF /* Request+Extensions.swift */,
-				DAA9F5E22263D42F002CDAAF /* MockDispatcher+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -310,6 +311,7 @@
 		DAE5EF6622190A0200D1990B /* PewPewTests */ = {
 			isa = PBXGroup;
 			children = (
+				DA28328C22D255D300027DBA /* DataDispatcherTests.swift */,
 				DA78758E226A763900A626AF /* TranslationTests.swift */,
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
 				DAA9F56A22624A25002CDAAF /* DecodingTests.swift */,
@@ -318,6 +320,7 @@
 				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
 				DAE5EF6922190A0200D1990B /* Info.plist */,
 				DAA9F5E42263D513002CDAAF /* TestHelper.swift */,
+				DA28329322D25DF500027DBA /* MockServerProvider.swift */,
 			);
 			path = PewPewTests;
 			sourceTree = "<group>";
@@ -502,7 +505,6 @@
 				DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */,
 				DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
-				DAA9F5E32263D42F002CDAAF /* MockDispatcher+Extensions.swift in Sources */,
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
 				DAA9F52F22604E04002CDAAF /* Request+Extensions.swift in Sources */,
 				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
@@ -518,10 +520,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA28328D22D255D300027DBA /* DataDispatcherTests.swift in Sources */,
 				DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */,
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
+				DA28329422D25DF500027DBA /* MockServerProvider.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAA9F547226231A5002CDAAF /* PlaygroundTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,

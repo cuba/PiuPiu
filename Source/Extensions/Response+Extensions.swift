@@ -124,3 +124,47 @@ public extension ResponseInterface where Self.T == Data? {
         }
     }
 }
+
+public extension Response where T == Data? {
+    /// Encode the object as a fake JSON response
+    ///
+    /// - Parameter encodable: The object to encode into JSON
+    /// - Throws: Throws if the object cannot be encoded
+    static func makeMockJSONResponse<T: Encodable>(with urlRequest: URLRequest, encodable: T, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+        let data = try JSONEncoder().encode(encodable)
+        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+    }
+    
+    /// Encode the object as a JSON response
+    ///
+    /// - Parameters:
+    ///   - jsonObject: The object to encode into JSON
+    ///   - options: The encoding options
+    /// - Throws: Throws if the object cannot be encoded.
+    static func makeMockResponse(with urlRequest: URLRequest, jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = [], statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+        let data = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
+        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+    }
+    
+    /// Encode the object as a fake JSON response
+    ///
+    /// - Parameters:
+    ///   - jsonString: The string to encode
+    ///   - encoding: The string encoding that will be used
+    static func makeMockResponse(with urlRequest: URLRequest, jsonString: String, encoding: String.Encoding = .utf8, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+        let data = jsonString.data(using: encoding)
+        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+    }
+    
+    static func makeMockResponse(with urlRequest: URLRequest, data: Data? = nil, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+        guard let url = urlRequest.url else {
+            throw RequestError.missingURL
+        }
+        
+        let error = statusCode.makeError()
+        let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
+        let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: error)
+        
+        return response
+    }
+}

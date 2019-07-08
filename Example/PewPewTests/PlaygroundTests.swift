@@ -35,7 +35,7 @@ class PlaygroundTests: XCTestCase, ServerProvider {
 
     func getCountries() -> ResponseFuture<[Country]> {
         let endpoint = "/posts"
-        let dispatcher = NetworkDispatcher(serverProvider: self)
+        let dispatcher = RequestDispatcher(serverProvider: self)
         let request = BasicRequest(method: .get, path: endpoint)
         
         return dispatcher.future(from: request).then({ response -> [Country] in
