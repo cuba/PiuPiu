@@ -37,6 +37,17 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.4.0
+* Remove Request, Dispatcher, NetworkDispatcher and ServerProvider. Should use DataDispatcher, UploadDispatcher, and DownloadDispatcher which use a basic URLRequest.
+  * You re-implement NetworkDispatcher and (Dispatcher) yourself and just delegate the methods to the provided URLRequestDispatcher.
+* Added `cancellation` callback which may be manually called or is triggered when a nil is return in `join` (series only), `then` or `replace` callbacks.
+* Added a parallel `join` callback that does not return a response object.
+* Slightly better multi-threading support
+  * by default, `then` is triggered on a background thread
+  * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always syncronized on the main thread.
+
+* Add status updates
+
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
   * To handle this migration, replace all `import PewPew` with `import PiuPiu`
@@ -48,11 +59,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Add JSON array serialization method to BasicRequest
 
 ### 1.1.0
-Removed default translations.  
-
-You can add back this behaviour by extending `ResponseError`, `RequestError` and `SerializationError` and conforming to `LocalizedError` and (optionally) `CustomNSError`
-
-To have the previous behaviour exactly as it was before (in `NetworkKit`), you can add the files found [here](https://github.com/cuba/PiuPiu/tree/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Errors) and the localizations [here](https://github.com/cuba/PiuPiu/blob/11016136d299315fa16d9dc71757839981a5baff/Example/Example/Localizable.strings) to your project.
+Removed default translations.
 
 ### 1.0.1 
 Fixed crash when translating caused by renaming the project.
@@ -65,14 +72,13 @@ Fixed crash when translating caused by renaming the project.
 - [x] Easy integration
 - [x] Handles common http errors
 - [x] Strongly typed and safely unwrapped responses
-- [x] Easily extensible. Can easily work with frameworks such as `Alamofire`, `ObjectMapper` and `MapCodableKit`
 - [x] Clean!
 
 ## Why Futures?
 Most of us are used to using callbacks or delegates for our networking calls. And that's fine for simple applications. But as your applicaiton grows, you will quickly realize a few drawbacks to this simple approach.  Here are a few reasons why futures are the way to go:
 
-1. They are extensible: Futures are objects and because they are objects, they are extensible. Traditionally you would add helper methods on delegates and callbacks or convenience methods on callbacks. Helper methods, although useful, feel a little bit dislocated. Helper methods on the other hand tend to be too specific and speghettify your code. Methods on the object itself, make it easier to debug, develop, name and document because they are context sensitive. And this will help write code, understand code and debug issues.  Plus, It's also nice to just press a `.` on your keyboard and see what methods you get instead of remembering the name of that helper class that handles the specific response object your receieved.
-2. Asyncronous Do/Catch: There's an easier way to handle response and request errors. Anything you throw in the future's callbacks will be handled. This is normally tedious in delegates and callbacks as they always have to be wrapped around a do/catch block. Futures have a sort of do/catch mechanism for asyncronous tasks.
+1. They are extensible: Because they are objects, they are extensible. Traditionally you would add helper methods on delegates and callbacks or convenience methods on callbacks. Helper methods, although useful, feel a little bit dislocated. Helper methods on the other hand tend to be too specific and speghettify your code. Methods on the object itself, make it easier to debug, develop, name and document because they are context sensitive. And this will help write code, understand code and debug issues.  Plus, It's also nice to just press a `.` on your keyboard and see what methods you get instead of remembering the name of that helper class that handles the specific response object your receieved.
+2. Asyncronous Do/Catch: Anything you throw in the future's callbacks will be handled. This is normally tedious in delegates and callbacks as they always have to be wrapped around a do/catch block. Futures have a sort of do/catch mechanism for asyncronous tasks.
 3. Multithreading: Futures offer better multithreading support because they have predefined and useful functions that work on seperate threads. So don't worry about parsing your data in the `then` callback. It won't lock your main thread.
 4. One generic to rule them all: Futures use a generic result object. This means a future can be used for anything.  Network calls or heavy tasks: It doesn't matter.
 5. Better compiler support: Forgot to call your callback? You don't have to worry about it with Futures because they are called for you as soon as you trigger `send()`  or `start()`. And if you forget to call `send()`, your compiler will remind you.
@@ -108,34 +114,37 @@ Run `carthage update` to build the framework and drag the built `PiuPiu.framewor
 import PiuPiu
 ```
 
-### 2. Implement a  `URLRequestProvider`
+### 2. Instantiate a  Dispatcher
 
-The server provider gives the server url.  The reason a simple URL is not used is so that you can dynamically change the url.  Say for example you have an environment picker.  You would have to recreate the dispatcher every time you change the environment.  The simplest way to create a URLRequestProvider is to just implement the protocol on your ViewController.
+All requests are made through a dispatcher.  There are 3 protocols for dispatchers:
+* `DataDispatcher`: Performs standard http requests and returns a `ResponseFuture` that contains a `Response<Data?>` object. Can 
+* `DownloadDispatcher`: For downloading data.  It returns a `ResponseFuture` that contains a `Data` object.
+* `UploadDispatcher`: For uploading data. Can usually be replaced with a `DataDispatcher`, but offers a few upload specific niceties like better progress updates. 
+
+For convenience a `URLRequestDispatcher` is provided implementing all 3 protocols.
 
 ```swift
-extension ViewController: URLRequestProvider {
-    var baseURL: URL? {
-        return URL(string: "https://example.com")!
-    }
+class ViewController: UIViewController {
+    private let dispatcher = URLRequestDispatcher()
+    
+    // ... 
 }
 ```
 
-But you may chose to use a seperate object to implement the server provider or create a singleton object so you can share it througout your application. Because the reference to the server provider on the `RequestDispatcher` is weak, you don't have to worry about any circular references.
+You should have a strong reference to this object as it is held on weakly by your callbacks.
 
 ### 3. Making a request.
 
-Now that we have our `URLRequestProvider` established, we can start making api calls. 
-
 ```swift
-let dispatcher = RequestDispatcher(urlRequestProvider: self)
-let request = BasicRequest(method: .get, path: "/posts")
+let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+let request = URLRequest(url: url, method: .get)
 
-dispatcher.future(from: request).response({ response in
-    // Handles all responses including negative responses such as 4xx and 5xx
+postDispatcher.dataFuture(from: request).response({ response in
+    // Handles any responses including negative responses such as 4xx and 5xx
 
     // The error object is available if we get an
     // undesirable status code such as a 4xx or 5xx
-    if error = response.error {
+    if let error = response.error {
         // Throwing an error in any callback will trigger the `error` callback.
         // This allows us to pool all failures in one place.
         throw error
@@ -144,19 +153,20 @@ dispatcher.future(from: request).response({ response in
     let post = try response.decode(Post.self)
     // Do something with our deserialized object
     // ...
+    print(post)
 }).error({ error in
     // Handles any errors during the request process,
-    // including anything thrown in any of the callback (except this one).
+    // including all request creation errors and anything
+    // thrown in the `then` or `success` callbacks.
 }).completion({
     // The completion callback is guaranteed to be called once
-    // for every time the `start()` or `send()` method is triggered on the future.
-    // 
-}).start()
+    // for every time the `start` method is triggered on the future.
+}).send()
 ```
 
 **NOTE**: Nothing will happen if you don't call `start()`.
 
-### 4. Separating concerns and transforming the future
+### 4. (Optional) Separating concerns and transforming the future
 
 *Pun not indended (honestly)*
 
@@ -166,26 +176,24 @@ One of the great thing about using futures is that we can return them!
 Lets create a method similar to this:
 
 ```swift
-private func getPosts() -> ResponseFuture<[Post]> {
-    let dispatcher = RequestDispatcher(urlRequestProvider: self)
-    let request = BasicRequest(method: .get, path: "/posts")
-
+private func getPost(id: Int) -> ResponseFuture<Post> {
     // We create a future and tell it to transform the response using the
-    // `then` callback.
-    return dispatcher.future(from: request).then({ response -> [Post] in
-        // This callback transforms our response to another type
-        // We can still handle errors the same way as we did before.
-        
+    // `then` callback. After this we can return this future so the callbacks will
+    // be triggered using the transformed object. We may re-use this method in different
+    return dispatcher.dataFuture(from: {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+        return URLRequest(url: url, method: .get)
+    }).then({ response -> Post in
         if let error = response.error {
             // The error is available when a non-2xx response comes in
             // Such as a 4xx or 5xx
             // You may also parse a custom error object here.
             throw error
+        } else {
+            // Return the decoded object. If an error is thrown while decoding,
+            // It will be caught in the `error` callback.
+            return try response.decode(Post.self)
         }
-        
-        // Return the decoded object. If an error is thrown while decoding,
-        // It will be caught in the `error` callback.
-        return try response.decode([Post].self)
     })
 }
 ```
@@ -195,7 +203,7 @@ private func getPosts() -> ResponseFuture<[Post]> {
 Then we can simply call it like this:
 
 ```swift
-getPosts().response({ posts in
+getPost(id: 1).response({ post in
     // Handle the success which will give your posts.
     responseExpectation.fulfill()
 }).error({ error in
@@ -212,7 +220,10 @@ getPosts().response({ posts in
 You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around. But besides the simple examples above, there is so much more you can do to make your code amazingly clean!
 
 ```swift
-dispatcher.future(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+    return URLRequest(url: url, method: .get)
+}).then({ response -> Post in
     // Handles any responses and transforms them to another type
     // This includes negative responses such as 4xx and 5xx
 
@@ -245,7 +256,7 @@ dispatcher.future(from: request).then({ response -> Post in
 
 ### Callbacks
 
-#### `response` callback
+#### `response` or `success` callback
 
 The `response` callback is triggered when the request is recieved and no errors are thrown in any chained callbacks (such as `then` or `join`).
 At the end of the callback sequences, this gives you exactly what your transforms "promised" to return.
@@ -308,14 +319,16 @@ This callback transforms the future to another type using another callback.  Thi
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
     return try response.decode(Post.self)
-}).replace({ post -> ResponseFuture<EnrichedPost> in
+}).replace({ [weak self] post -> ResponseFuture<EnrichedPost> in
     // Perform some operation operation that itself requires a future
     // such as something heavy like markdown parsing.
-    return self.enrich(post: post)
+    return self?.enrich(post: post)
 }).response({ enrichedPost in
     // The final response callback has the enriched post.
 })
 ```
+
+**NOTE**: You can return nil to stop the request process.  Useful when you want a weak self. 
 
 #### `join` callback
 
@@ -324,13 +337,15 @@ This callback transforms the future to another type containing its original resu
 ```swift
 dispatcher.future(from: request).then({ response -> Post in
     return try response.decode(Post.self)
-}).join({ post -> ResponseFuture<User> in
+}).join({ [weak self] post -> ResponseFuture<User> in
     // Joins a future with another one returning both results
-    return self.fetchUser(forId: post.userId)
+    return self?.fetchUser(forId: post.userId)
 }).response({ post, user in
     // The final response callback includes both results.
 })
 ```
+
+**NOTE**: You can return nil to stop the request process.  Useful when you want a weak self.
 
 #### `send` or `start`
 
@@ -357,23 +372,16 @@ return ResponseFuture<[Post]>(action: { future in
         do {
             // Do an expensive operation here ....
             let posts = try response.decode([Post].self)
-
-            DispatchQueue.main.async {
-                // We should syncronyze the result back to the main thread.
-                future.succeed(with: posts)
-            }
+            future.succeed(with: posts)
         } catch {
-            // We can handle any errors as well.
-            DispatchQueue.main.async {
-                // We should syncronize the error to the main thread.
-                future.fail(with: error)
-            }
+            // We should syncronize the error to the main thread.
+            future.fail(with: error)
         }
     }
 })
 ```
 
-**NOTE** You should **ALWAYS** syncronize the results on the main thread before succeeding or failing your future.
+**NOTE** The future will syncronize the `succeed`, `fail` or `cancel` methods on the main thread.
 
 ## Encoding
 
@@ -382,7 +390,6 @@ PiuPiu has some convenience methods for you to encode objects into JSON and add 
 ### Encode JSON `String`
 
 ```
-var request = BasicRequest(method: .post, path: "/users")
 request.setJSONBody(string: jsonString, encoding: .utf8)
 ```
 
@@ -394,22 +401,13 @@ let jsonObject: [String: Any?] = [
     "name": "Kevin Malone"
 ]
 
-var request = BasicRequest(method: .post, path: "/users")
 try request.setJSONBody(jsonObject: jsonObject)
 ```
 
 ### Encode `Encodable`
 
 ```
-var request = BasicRequest(method: .post, path: "/posts")
 try request.setJSONBody(encodable: myCodable)
-```
-
-### Custom Encoding (By setting the `Data` object)
-
-```swift
-var request = BasicRequest(method: .post, path: "/users")
-request.httpBody = myData
 ```
 
 ### Wrap Encoding In a ResponseFuture
@@ -420,8 +418,9 @@ It might be beneficial to wrap the Request creation in a ResponseFuture. This wi
 
 ```swift
 dispatcher.future(from: {
-    var request = BasicRequest(method: .post, path: "/posts")
-    try request.setJSONBody(myCodable)
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+    var request = URLRequest(url: url, method: .post)
+    try request.setJSONBody(post)
     return request
 }).error({ error in
     // Any error thrown while creating the request will trigger this callback.
@@ -511,290 +510,16 @@ You will have crashes if you force unwrap anything in your callbacks (i.e. usign
 
 Always unwrap your objects before using them. This includes any `IBOutlet`s that the system generates. Use a guard, Use an assert. Use anything but a `!`.
 
-
-### Strong reference to a `ResponseFuture`
-
-You may be holding a reference to your `ResponseFuture`. This is fine as long as you make the callbacks weak in order to avoid circular references. 
-
-```swift
-self.postResponseFuture = dispatcher.future(from: request).then({ response in
-    // [weak self] not needed as `self` is not called
-    let posts = try response.decode([Post].self)
-    return SuccessResponse<[Post]>(data: posts, response: response)
-}).response({ [weak self] response in
-    // [weak self] needed as `self` is called
-    self?.show(response.data)
-}).completion({ [weak self] in
-    // [weak self] needed as `self` is called
-    self?.postResponseFuture = nil
-})
-
-// Perform other logic, add delay, do whatever you would do that forced you
-// to store a reference to this ResponseFuture in the first place
-
-self.postResponseFuture?.send()
-```
-
-**WARNING** If you hold strongly to your future but don't make `self` weak using `[weak self]` you are guaranteed to have a cirucular reference. The following is a bad example that should not be followed:
-
-**!! DO NOT DO THIS !!**
-
-```swift
-self.strongResponseFuture = dispatcher.future(from: request).response({ response in
-    // Both the `ResponseFuture` and `self` are held on by each other.
-    // `self` will never be dealocated and neither will the future!
-    self.show(response.data)
-}).send()
-```
-
-if `self` has a strong reference to your `ResponseFuture` and the `ResponseFuture` has a strong reference to `self` through any callback, you have created a circular reference. Neither will be dealocated.
-
-### Weak reference to a `ResponseFuture`
-
-You may chose to have a weak reference to your ResponseFuture. This is fine, as long as you do it after calling `send()` as your object will be dealocated before you get a chance to do this.
-
-```swift
-self.weakResponseFuture = dispatcher.future(from: request).completion({
-    // Always triggered
-}).send()
-
-// This ResponseFuture may or may not be nil at this point.
-// This depends on if the system is holding on to the
-// ResponseFuture as it is awaiting a response.
-// but the callbacks will always be triggered. 
-```
-
-**NOTE** The following is an example of where we our request will never happen because we lose the referrence to the ResponseFuture before `send()` is triggered:
-
-**DO NOT DO THIS**:
-
-```swift
-self.weakResponseFuture = dispatcher.future(from: request).completion({
-    // [weak self]
-    expectation.fulfill()
-})
-
-// WHOOPS!!!!
-// Our object is already nil because we have not established a strong reference to it.
-// The `send()` method will do nothing and no callback will be triggered.
-
-self.weakResponseFuture?.send()
-```
-
-## Custom Encoding
-
-You can extend BasicRequest to add encoding for any type of object.  
-
-### ObjectMapper
-
-`ObjectMapper` is not included in the framework. This is in order to make the framework much lighter for those that don't want to use it.  But if you want, you can easily add encoding support for `ObjectMapper`.  Here is an example how you can add `BaseMappable` (`Mappable` and `ImmutableMappable`) encoding support for objects and arrays:
-
-```swift
-extension BasicRequest {
-    /// Add JSON body to the request from a `BaseMappable` object.
-    ///
-    /// - Parameters:
-    ///   - mappable: The `BaseMappable` object to serialize into JSON.
-    ///   - context: The context of the mapping object
-    ///   - shouldIncludeNilValues: Wether or not we should serialize nil values into the json object
-    mutating func setJSONBody<T: BaseMappable>(mappable: T, context: MapContext? = nil, shouldIncludeNilValues: Bool = false) {
-        let mapper = Mapper<T>(context: context, shouldIncludeNilValues: shouldIncludeNilValues)
-
-        guard let jsonString = mapper.toJSONString(mappable) else {
-            return
-        }
-
-        self.setJSONBody(string: jsonString)
-    }
-
-    /// Add JSON body to the request from a `BaseMappable` array.
-    ///
-    /// - Parameters:
-    ///   - mappable: The `BaseMappable` array to serialize into JSON.
-    ///   - context: The context of the mapping object
-    ///   - shouldIncludeNilValues: Wether or not we should serialize nil values into the json object
-    mutating func setJSONBody<T: BaseMappable>(mappable: [T], context: MapContext? = nil, shouldIncludeNilValues: Bool = false) {
-        let mapper = Mapper<T>(context: context, shouldIncludeNilValues: shouldIncludeNilValues)
-
-        guard let jsonString = mapper.toJSONString(mappable) else {
-            return
-        }
-
-        self.setJSONBody(string: jsonString)
-    }
-}
-```
-
-### MapCodableKit
-
-[MapCodableKit](https://github.com/cuba/MapCodableKit) is a lightweight json parsing framework.
-
-Similarly `MapCodableKit` support is no longer available on this framework.  But like `ObjectMapper` You can easily add back support for  `MapEncodable`. 
-
-```swift
-extension BasicRequest {
-    /// Add body to the request from a `MapEncodable` object.
-    ///
-    /// - Parameters:
-    ///   - mapEncodable: The `MapEncodable` object to serialize into JSON.
-    ///   - options: Writing options for serializing the `MapEncodable` object.
-    /// - Throws: Any serialization errors thrown by `MapCodableKit`.
-    mutating public func setJSONBody<T: MapEncodable>(mapEncodable: T, options: JSONSerialization.WritingOptions = []) throws {
-        ensureJSONContentType()
-        self.httpBody = try mapEncodable.jsonData(options: options)
-    }
-}
-```
-
-## Custom Decoding
-
-Similar to encoding, you can also add Decoding support for whatever decoder you are using, including `ObjectMapper` by extending the `ResponseInterface`
-
-### ObjectMapper
-
-```swift
-extension ResponseInterface where T == Data? {
-
-    /// Attempt to Decode the response data into an BaseMappable object.
-    ///
-    /// - Parameters:
-    ///   - type: The mappable type to decode
-    ///   - context: The Base mappable object
-    /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
-    func decodeMappable<D: BaseMappable>(_ type: D.Type, context: MapContext? = nil) throws  -> D {
-        let jsonString = try self.decodeString()
-        let mapper = Mapper<D>(context: context)
-
-        guard let result = mapper.map(JSONString: jsonString) else {
-            throw SerializationError.failedToDecodeResponseData(cause: nil)
-        }
-
-        return result
-    }
-
-    /// Attempt to decode the response data into a BaseMappable array.
-    ///
-    /// - Parameters:
-    ///   - type: The array type to decode
-    ///   - context: The Base mappable object
-    /// - Returns: The decoded array
-    /// - Throws: `SerializationError`
-    func decodeMappable<D: BaseMappable>(_ type: [D].Type, context: MapContext? = nil) throws  -> [D] {
-        let jsonString = try self.decodeString()
-        let mapper = Mapper<D>(context: context)
-
-        guard let result = mapper.mapArray(JSONString: jsonString) else {
-            throw SerializationError.failedToDecodeResponseData(cause: nil)
-        }
-
-        return result
-    }
-
-    /// Attempt to decode the response data into a BaseMappable array.
-    ///
-    /// - Parameters:
-    ///   - type: The dictionary type to decode
-    ///   - context: The Base mappable object
-    /// - Returns: The decoded array
-    /// - Throws: `SerializationError`
-    func decodeMappable<D: BaseMappable>(_ type: [String: D].Type, context: MapContext? = nil) throws  -> [String: D] {
-        let jsonString = try self.decodeString()
-        let mapper = Mapper<D>(context: context)
-
-        guard let result = mapper.mapDictionary(JSONString: jsonString) else {
-        throw SerializationError.failedToDecodeResponseData(cause: nil)
-        }
-
-        return result
-    }
-
-    /// Attempt to decode the response data into a BaseMappable array.
-    ///
-    /// - Parameters:
-    ///   - type: The dictionary of arrays type to decode
-    ///   - context: The Base mappable object
-    /// - Returns: The decoded array
-    /// - Throws: `SerializationError`
-    func decodeMappable<D: BaseMappable>(_ type: [String: [D]].Type, context: MapContext? = nil) throws  -> [String: [D]] {
-        let jsonObject = try self.decodeJSONObject()
-        let mapper = Mapper<D>(context: context)
-
-        guard let result = mapper.mapDictionaryOfArrays(JSONObject: jsonObject) else {
-            throw SerializationError.failedToDecodeResponseData(cause: nil)
-        }
-
-        return result
-    }
-}
-```
-
-### MapCodableKit
-
-[MapCodableKit](https://github.com/cuba/MapCodableKit) is a lightweight json parsing framework.
-
-```swift
-extension ResponseInterface where T == Data? {
-
-    /// Attempt to deserialize the response data into a MapDecodable object.
-    ///
-    /// - Parameters:
-    ///   - type: The map decodable type to decode
-    /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
-    func decodeMapDecodable<D: MapDecodable>(_ type: D.Type) throws -> D {
-        let data = try self.unwrapData()
-
-        do {
-            // Attempt to deserialize the object.
-            return try D(jsonData: data)
-        } catch {
-            // Wrap this error so that we're controlling the error type and return a safe message to the user.
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
-    }
-
-    /// Attempt to decode the response data into a MapDecodable array.
-    ///
-    /// - Parameters:
-    ///   - type: The map decodable array type to decode
-    /// - Returns: The map decodable array
-    /// - Throws: `SerializationError`
-    func decodeMapDecodable<D: MapDecodable>(_ type: [D].Type) throws  -> [D] {
-        let data = try self.unwrapData()
-
-        do {
-            // Attempt to deserialize the object.
-            return try D.parseArray(jsonData: data)
-        } catch {
-            // Wrap this error so that we're controlling the error type and return a safe message to the user.
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
-    }
-}
-```
-
 ## Mock Dispatcher
 
 Testing network calls is always a pain.  That's why we included the `MockURLRequestDispatcher`.  It allows you to simulate network responses without actually making network calls.
 
-```swift
-let url = URL(string: "https://jsonplaceholder.typicode.com")!
-let dispatcher = MockURLRequestDispatcher(baseUrl: url, mockStatusCode: .ok)
-let request = BasicRequest(method: .get, path: "/posts")
-try dispatcher.setMockData(codable)
-
-/// The url specified is not actually called.
-dispatcher.future(from: request).send()
-```
-
 ## Future Features
 
-- [ ] Parallel calls
-- [x] Sequential calls: 
-- [ ] More futuresque request creation
-- [ ] A more generic dispatcher. The response object is way too specific.
-- [ ] Better multi-threading support
+- [x] Parallel calls
+- [x] Sequential calls
+- [x] A more generic dispatcher. The response object is way too specific.
+- [x] Better multi-threading support
 
 ## Dependencies
 

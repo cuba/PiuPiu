@@ -13,21 +13,16 @@ import XCTest
 class DocumentationExamples: XCTestCase {
     private var strongFuture: ResponseFuture<Post>?
     
-    private let postDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-    })
-    
-    private let postsDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
     })
     
     func testSimpleRequest() {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        postDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             // Handles any responses including negative responses such as 4xx and 5xx
             
             // The error object is available if we get an
@@ -52,7 +47,7 @@ class DocumentationExamples: XCTestCase {
         }).send()
     }
 
-    func testGetPostsExample() {
+    func testGetPostExample() {
         // Expectations
         let responseExpectation = self.expectation(description: "Response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
@@ -63,10 +58,7 @@ class DocumentationExamples: XCTestCase {
         errorExpectation.isInverted = true
         
         // This is how we handle a request future
-        postDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-            return URLRequest(url: url, method: .get)
-        }).response({ response in
+        getPost(id: 1).response({ response in
             // Handle the success which will give your posts.
             responseExpectation.fulfill()
         }).error({ error in
@@ -82,14 +74,14 @@ class DocumentationExamples: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
     
-    private func getPosts() -> ResponseFuture<[Post]> {
+    private func getPost(id: Int) -> ResponseFuture<Post> {
         // We create a future and tell it to transform the response using the
         // `then` callback. After this we can return this future so the callbacks will
         // be triggered using the transformed object. We may re-use this method in different
-        return postsDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        return dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> [Post] in
+        }).then({ response -> Post in
             if let error = response.error {
                 // The error is available when a non-2xx response comes in
                 // Such as a 4xx or 5xx
@@ -98,7 +90,7 @@ class DocumentationExamples: XCTestCase {
             } else {
                 // Return the decoded object. If an error is thrown while decoding,
                 // It will be caught in the `error` callback.
-                return try response.decode([Post].self)
+                return try response.decode(Post.self)
             }
         })
     }
@@ -111,8 +103,8 @@ class DocumentationExamples: XCTestCase {
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // When
-        postsDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             var request = URLRequest(url: url, method: .post)
             try request.setJSONBody(post)
             return request
@@ -126,7 +118,7 @@ class DocumentationExamples: XCTestCase {
     }
     
     func testFullResponseFutureExample() {
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
@@ -159,7 +151,7 @@ class DocumentationExamples: XCTestCase {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
@@ -181,7 +173,7 @@ class DocumentationExamples: XCTestCase {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        self.strongFuture = postsDispatcher.dataFuture(from: {
+        self.strongFuture = dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
@@ -208,7 +200,7 @@ class DocumentationExamples: XCTestCase {
         let expectation = self.expectation(description: "Success response should not be triggered")
         expectation.isInverted = true
         
-        weak var weakFuture: ResponseFuture<Response<Data?>>? = postDispatcher.dataFuture(from: {
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).completion({
