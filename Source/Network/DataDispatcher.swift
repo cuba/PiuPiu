@@ -24,11 +24,14 @@ public extension DataDispatcher {
     /// - Parameters:
     ///   - callback: A callback that returns the future to send
     /// - Returns: The promise that will send the request.
-    func dataFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Response<Data?>> {
+    func dataFuture(from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>> { [weak self] future in
             guard let self = self else { return }
+            guard let urlRequest = try callback() else {
+                future.cancel()
+                return
+            }
             
-            let urlRequest = try callback()
             let nestedFuture = self.dataFuture(from: urlRequest)
             future.fulfill(with: nestedFuture)
         }

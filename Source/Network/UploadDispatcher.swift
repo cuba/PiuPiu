@@ -33,10 +33,14 @@ public extension UploadDispatcher {
     /// - Parameters:
     ///   - callback: A callback that returns the future to send
     /// - Returns: The promise that will send the request.
-    func uploadFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Response<Data?>> {
+    func uploadFuture(from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>> { [weak self] future in
             guard let self = self else { return }
-            let urlRequest = try callback()
+            guard let urlRequest = try callback() else {
+                future.cancel()
+                return
+            }
+            
             let nestedFuture = self.uploadFuture(from: urlRequest)
             future.fulfill(with: nestedFuture)
         }

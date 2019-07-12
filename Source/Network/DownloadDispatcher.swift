@@ -22,12 +22,16 @@ public extension DownloadDispatcher {
     /// Create a future to make a download request.
     ///
     /// - Parameters:
-    ///   - callback: A callback that returns the future to send
+    ///   - callback: A callback that returns the future to send. Returning nil will cancel the request.
     /// - Returns: The promise that will send the request.
-    func downloadFuture(from callback: @escaping () throws -> URLRequest) -> ResponseFuture<Data?> {
+    func downloadFuture(from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Data?> {
         return ResponseFuture<Data?> { [weak self] future in
             guard let self = self else { return }
-            let urlRequest = try callback()
+            guard let urlRequest = try callback() else {
+                future.cancel()
+                return
+            }
+            
             let nestedFuture = self.downloadFuture(from: urlRequest)
             future.fulfill(with: nestedFuture)
         }

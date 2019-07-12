@@ -250,6 +250,8 @@ public class ResponseFuture<T> {
                 }).progress({ progress in
                     let newProgress = firstWeight + (progress * secondWeight)
                     future.update(progress: newProgress)
+                }).cancellation({
+                    future.cancel()
                 }).send()
             }).error({ error in
                 future.fail(with: error)
