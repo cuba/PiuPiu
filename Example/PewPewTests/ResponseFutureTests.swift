@@ -13,20 +13,28 @@ import XCTest
 class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
     
-    private let postDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        let pathParams: [String] = request.url?.path.split(separator: "/").map({ String($0) }) ?? []
-        
-        if let idString = pathParams.last, let id = Int(idString) {
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
         } else {
             throw ResponseError.notFound
         }
     })
     
-    private let postsDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+    private let instantDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
     })
     
     private let userDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
@@ -42,7 +50,7 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
         
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
@@ -103,7 +111,7 @@ class ResponseFutureTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // When
-        postsDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
         }).response({ posts in
@@ -115,7 +123,7 @@ class ResponseFutureTests: XCTestCase {
     }
     
     func testFutureDealocationWhenCallbacksAreCalled() {
-        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = postDispatcher.dataFuture(from: {
+        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
@@ -144,7 +152,7 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInThen() {
         let expectation = self.expectation(description: "Cancellation response triggered")
         
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post? in
@@ -159,7 +167,7 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
         let expectation = self.expectation(description: "Cancellation response triggered")
         
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).join({ response -> ResponseFuture<Response<Data>>? in
@@ -180,7 +188,7 @@ class ResponseFutureTests: XCTestCase {
         
         for id in 1...1000 {
             future = future.join({ posts -> ResponseFuture<Post> in
-                self.postDispatcher.dataFuture(from: {
+                self.instantDispatcher.dataFuture(from: {
                     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
                     return URLRequest(url: url, method: .get)
                 }).then({ response in
@@ -208,7 +216,7 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInReplace() {
         let expectation = self.expectation(description: "Cancellation response triggered")
         
-        postDispatcher.dataFuture(from: {
+        dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).replace({ response -> ResponseFuture<Response<Data>>? in

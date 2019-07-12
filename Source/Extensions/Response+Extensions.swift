@@ -126,42 +126,65 @@ public extension ResponseInterface where Self.T == Data? {
 }
 
 public extension Response where T == Data? {
-    /// Encode the object as a fake JSON response
+    /// Create a mock response object.
     ///
-    /// - Parameter encodable: The object to encode into JSON
-    /// - Throws: Throws if the object cannot be encoded
+    /// - Parameters:
+    ///   - urlRequest: The urlRequest to use on the response
+    ///   - encodable: The object to encode into JSON
+    ///   - statusCode: The statusCode to use on the response
+    ///   - headers: The headers to use on the response
+    /// - Returns: A response object with a Data? data type
+    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
     static func makeMockJSONResponse<T: Encodable>(with urlRequest: URLRequest, encodable: T, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         let data = try JSONEncoder().encode(encodable)
         return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
-    /// Encode the object as a JSON response
+    /// Create a mock response object.
     ///
     /// - Parameters:
-    ///   - jsonObject: The object to encode into JSON
-    ///   - options: The encoding options
-    /// - Throws: Throws if the object cannot be encoded.
+    ///   - urlRequest: The urlRequest to use on the response
+    ///   - jsonObject: The json object to encode
+    ///   - options: The options that will be used for serialization
+    ///   - statusCode: The statusCode to use on the response
+    ///   - headers: The headers to use on the response
+    /// - Returns: A response object with a Data? data type
+    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
     static func makeMockResponse(with urlRequest: URLRequest, jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = [], statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         let data = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
         return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
-    /// Encode the object as a fake JSON response
+    /// Create a mock response object.
     ///
     /// - Parameters:
+    ///   - urlRequest: The urlRequest to use on the response
     ///   - jsonString: The string to encode
     ///   - encoding: The string encoding that will be used
+    ///   - statusCode: The statusCode to use on the response
+    ///   - headers: The headers to use on the response
+    /// - Returns: A response object with a Data? data type
+    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
     static func makeMockResponse(with urlRequest: URLRequest, jsonString: String, encoding: String.Encoding = .utf8, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         let data = jsonString.data(using: encoding)
         return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
+    /// Create a mock response object.
+    ///
+    /// - Parameters:
+    ///   - urlRequest: The urlRequest to use on the response
+    ///   - data: The data to use on the response
+    ///   - statusCode: The statusCode to use on the response
+    ///   - headers: The headers to use on the response
+    /// - Returns: A response object with a Data? data type
+    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
     static func makeMockResponse(with urlRequest: URLRequest, data: Data? = nil, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         guard let url = urlRequest.url else {
             throw RequestError.missingURL
         }
         
-        let error = statusCode.makeError()
+        let error = statusCode.error
         let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
         let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: error)
         

@@ -21,6 +21,7 @@ public enum HTTPMethod: String {
     case trace   = "TRACE"
     case connect = "CONNECT"
     
+    /// Returns a boolean if this method requires a body which is the case for `post`, `put` and `patch` requests.
     var requiresBody: Bool {
         switch self {
         case .options:  return false

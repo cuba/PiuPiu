@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// A list of typical errors
 public enum ResponseError: Error {
     case badRequest
     case unauthorized

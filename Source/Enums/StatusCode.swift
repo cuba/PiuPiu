@@ -46,39 +46,70 @@ public enum StatusCode: Equatable {
         .internalServerError, .notImplemented, .badGateway, .serviceUnavailable, .gatewayTimeout, .httpVersionNotSupported
     ]
     
-    /// 2xx
+    // MARK: - 2xx
+    
+    /// 200
     case ok
+    /// 201
     case created
+    /// 202
     case accepted
+    /// 204
     case noContent
+    /// 205
     case resetContent
+    /// 206
     case partialContent
+    /// 207
     case multiStatus
+    /// 208
     case alreadyReported
+    /// 226
     case imUsed
     
-    /// 4xx
-    case badRequest
-    case unauthorized
-    case paymentRequired
-    case forbidden
-    case notFound
-    case methodNotAllowed
-    case notAcceptable
-    case unprocessableEntity
-    case conflict
-    case gone
-    case lengthRequired
-    case unsupportedMediaType
+    // MARK: - 4xx
     
-    /// 5xx
+    /// 400
+    case badRequest
+    /// 401
+    case unauthorized
+    /// 402
+    case paymentRequired
+    /// 403
+    case forbidden
+    /// 404
+    case notFound
+    /// 405
+    case methodNotAllowed
+    /// 406
+    case notAcceptable
+    /// 409
+    case conflict
+    /// 410
+    case gone
+    /// 411
+    case lengthRequired
+    /// 415
+    case unsupportedMediaType
+    /// 422
+    case unprocessableEntity
+    
+    // MARK: - 5xx
+    
+    /// 500
     case internalServerError
+    /// 501
     case notImplemented
+    /// 502
     case badGateway
+    /// 503
     case serviceUnavailable
+    /// 504
     case gatewayTimeout
+    /// 505
     case httpVersionNotSupported
     
+    /// Any status code that does not fit in the predifined ones
     case other(Int)
     
     public var rawValue: Int {
@@ -99,11 +130,11 @@ public enum StatusCode: Equatable {
         case .notFound                  : return 404
         case .methodNotAllowed          : return 405
         case .notAcceptable             : return 406
-        case .unprocessableEntity       : return 422
         case .conflict                  : return 409
         case .gone                      : return 410
         case .lengthRequired            : return 411
         case .unsupportedMediaType      : return 415
+        case .unprocessableEntity       : return 422
         case .internalServerError       : return 500
         case .notImplemented            : return 501
         case .badGateway                : return 502
@@ -114,6 +145,7 @@ public enum StatusCode: Equatable {
         }
     }
     
+    /// The type this status code falls under, such as 2xx (success), 4xx (client error) or 5xx (server error)
     public var type: StatusCodeType {
         switch rawValue {
         case 100..<200: return .informational
@@ -133,7 +165,8 @@ public enum StatusCode: Equatable {
         }
     }
     
-    public func makeError() -> ResponseError? {
+    /// Returns any errors associated with this status code. This will always return a value unless the status code is either 1xx (informational), 2xx (success) or 3xx (rediect).
+    var error: ResponseError? {
         switch self {
         case .badRequest:           return ResponseError.badRequest
         case .unauthorized:         return ResponseError.unauthorized
@@ -170,14 +203,22 @@ extension StatusCode: Decodable {
     }
 }
 
+/// The type of status code which refers to its number grouping such as 2xx (success) or 4xx (client error)
 public enum StatusCodeType: Equatable {
+    /// 1xx
     case informational
+    /// 2xx
     case success
+    /// 3xx
     case redirect
+    /// 4xx
     case clientError
+    /// 5xx
     case serverError
+    /// Other
     case invalid
     
+    /// Returns true if the response is typically considered as valid. This includes 1xx (informational), 2xx (success) and 3xx (redirect) response codes.
     public var isSuccessful: Bool {
         switch self {
         case .informational : return true

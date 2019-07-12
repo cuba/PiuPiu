@@ -11,13 +11,15 @@ import XCTest
 @testable import PiuPiu
 
 class DataDispatcherTests: XCTestCase {
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { (request: URLRequest) in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        if (request as URLRequest).url?.path.contains("/posts/") ?? false {
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else {
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
         }
     })
     

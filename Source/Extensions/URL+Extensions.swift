@@ -16,7 +16,7 @@ public extension URL {
     ///
     /// - Parameter pattern: The pattern to match which must be exactly the same.
     /// - Returns: The matched path values. Any incosistency will return nil. The size of the array will always be the number of wildcards passed.
-    func pathValues(from pattern: [PathComponent]) -> [PathValue]? {
+    func pathValues(matching pattern: [PathComponent]) -> [PathValue]? {
         let pathStringComponents = path.components(separatedBy: "/").filter({ !$0.isEmpty })
         
         // Check the counts are the same
@@ -42,12 +42,22 @@ public extension URL {
         return values
     }
     
+    /// Returns true if the path mathes the given pattern.
+    ///
+    /// - Parameter pattern: The pattern to match
+    /// - Returns: true if the path mathes the given pattern.
     func pathMatches(pattern: [PathComponent]) -> Bool {
-        return pathValues(from: pattern) != nil
+        return pathValues(matching: pattern) != nil
     }
     
+    /// Returns an integer value from the extracted path values (`PathValue`) at the given index.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the extracted value. Needs to be within the bounds of the pattern or the application will crash.
+    ///   - pattern: The pattern used to extract the values
+    /// - Returns: An integer value if found in the exact position of the extracted pattern.
     func integerValue(atIndex index: Int, matching pattern: [PathComponent]) -> Int? {
-        if let pathValues = pathValues(from: pattern) {
+        if let pathValues = pathValues(matching: pattern) {
             switch pathValues[index] {
             case .integer(let value):
                 return value
@@ -59,8 +69,14 @@ public extension URL {
         }
     }
     
+    /// Returns an string value from the extracted path values (`PathValue`) at the given index.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the extracted value. Needs to be within the bounds of the pattern or the application will crash.
+    ///   - pattern: The pattern used to extract the values
+    /// - Returns: An integer value if found in the exact position of the extracted pattern.
     func stringValue(atIndex index: Int, matching pattern: [PathComponent]) -> String? {
-        if let pathValues = pathValues(from: pattern) {
+        if let pathValues = pathValues(matching: pattern) {
             switch pathValues[index] {
             case .string(let value):
                 return value

@@ -46,6 +46,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
   * by default, `then` is triggered on a background thread.
   * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always syncronized on the main thread.
 * Add progress updates.
+* Add better request mocking tools
 
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
@@ -512,6 +513,24 @@ Always unwrap your objects before using them. This includes any `IBOutlet`s that
 ## Mock Dispatcher
 
 Testing network calls is always a pain.  That's why we included the `MockURLRequestDispatcher`.  It allows you to simulate network responses without actually making network calls.
+
+Here is an example of its usage:
+
+```swift
+private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+    if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+        let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+    } else if request.pathMatches(pattern: [.constant("posts")]) {
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+    } else {
+        throw ResponseError.notFound
+    }
+})
+```
+
+**NOTE**: You should have a strong reference to your dispatcher and a weak reference to `self` in the callback
 
 ## Future Features
 

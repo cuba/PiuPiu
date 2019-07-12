@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// The type of wildcard value
 public enum WildcardType {
     case integer
     case string

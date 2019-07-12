@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Components of a path used for matching a path.
 public enum PathComponent: Equatable, CustomStringConvertible {
     case constant(_ value: String)
     case wildcard(type: WildcardType)
@@ -26,6 +27,7 @@ public enum PathComponent: Equatable, CustomStringConvertible {
         }
     }
     
+    /// A string representation of this component
     public var displayValue: String {
         return String(describing: self)
     }
@@ -43,6 +45,7 @@ public enum PathComponent: Equatable, CustomStringConvertible {
 }
 
 public extension Sequence where Iterator.Element == PathComponent {
+    /// A string representation of these components seperated by "/"
     var displayValue: String {
         return self.map({ $0.displayValue }).joined(separator: "/")
     }

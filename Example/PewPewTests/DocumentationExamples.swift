@@ -17,7 +17,7 @@ class DocumentationExamples: XCTestCase {
         if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts"), .wildcard(type: .integer)]) {
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
         } else {

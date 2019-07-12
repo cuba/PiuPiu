@@ -113,6 +113,7 @@ public class ResponseFuture<T> {
         }
     }
     
+    /// Cancel this future. The cancellation and completion callbacks will be triggered on this future and no further callbacks will be triggered.
     func cancel() {
         DispatchQueue.main.async {
             self.cancellationHandler?()
@@ -122,8 +123,8 @@ public class ResponseFuture<T> {
         }
     }
     
+    /// Clears all callbacks to avoid memory leaks
     private func finalize() {
-        // Clear all callbacks to avoid memory leaks
         action = nil
         successHandler = nil
         errorHandler = nil

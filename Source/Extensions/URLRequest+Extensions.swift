@@ -112,18 +112,34 @@ public extension URLRequest {
     ///
     /// - Parameter pattern: The pattern to match which must be exactly the same.
     /// - Returns: The matched path values. Any incosistency will return nil. The size of the array will always be the number of wildcards passed.
-    func pathValues(from pattern: [PathComponent]) -> [PathValue]? {
-        return url?.pathValues(from: pattern)
+    func pathValues(matching pattern: [PathComponent]) -> [PathValue]? {
+        return url?.pathValues(matching: pattern)
     }
     
+    /// Returns an string value from the extracted path values (`PathValue`) at the given index.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the extracted value. Needs to be within the bounds of the pattern or the application will crash.
+    ///   - pattern: The pattern used to extract the values
+    /// - Returns: An integer value if found in the exact position of the extracted pattern.
     func integerValue(atIndex index: Int, matching pattern: [PathComponent]) -> Int? {
         return url?.integerValue(atIndex: index, matching: pattern)
     }
     
+    /// Returns an string value from the extracted path values (`PathValue`) at the given index.
+    ///
+    /// - Parameters:
+    ///   - index: The index of the extracted value. Needs to be within the bounds of the pattern or the application will crash.
+    ///   - pattern: The pattern used to extract the values
+    /// - Returns: An integer value if found in the exact position of the extracted pattern.
     func stringValue(atIndex index: Int, matching pattern: [PathComponent]) -> String? {
         return url?.stringValue(atIndex: index, matching: pattern)
     }
     
+    /// Returns true if the path mathes the given pattern.
+    ///
+    /// - Parameter pattern: The pattern to match
+    /// - Returns: true if the path mathes the given pattern.
     func pathMatches(pattern: [PathComponent]) -> Bool {
         return url?.pathMatches(pattern: pattern) ?? false
     }

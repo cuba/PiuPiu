@@ -32,6 +32,12 @@ public struct ErrorResponse<T>: ResponseInterface {
         self.error = error
     }
     
+    /// Create an error response object from another response object of any other type.
+    ///
+    /// - Parameters:
+    ///   - data: The data object to return.
+    ///   - response: The response to extract `httpResponse`, `urlRequest` and `statusCode` from.
+    ///   - error: The error to associate this error response with.
     public init<U: ResponseInterface>(data: T, response: U, error: ResponseError) {
         self.data = data
         self.error = error
@@ -40,6 +46,12 @@ public struct ErrorResponse<T>: ResponseInterface {
         self.statusCode = response.statusCode
     }
     
+    /// Create an error response object from another response object of any other type.
+    ///
+    /// - Parameters:
+    ///   - data: The data object to return.
+    ///   - response: The response to extract `httpResponse`, `urlRequest`, `statusCode` and `error` from.
+    ///   - error: The error to associate this error response with.
     public init<U>(data: T, response: ErrorResponse<U>) {
         self.data = data
         self.error = response.error

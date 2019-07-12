@@ -11,14 +11,16 @@ import XCTest
 @testable import Example
 
 class DecodingTests: XCTestCase {
-    private let postDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-    })
-    
-    private let postsDispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
     })
     
     func testUnwrappingData() {
@@ -29,7 +31,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        postsDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let data = try response.unwrapData()
             
             // do something with data.
@@ -51,7 +53,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        postsDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let string = try response.decodeString(encoding: .utf8)
             
             // do something with string.
@@ -73,7 +75,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        postDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let posts = try response.decode(Post.self)
             
             // do something with string.
@@ -95,7 +97,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        postDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let post = try response.decodeMapDecodable(MapCodablePost.self)
             
             // do something with string.
@@ -117,7 +119,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        postsDispatcher.dataFuture(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let posts = try response.decodeMapDecodable([MapCodablePost].self)
             
             // do something with string.
@@ -142,7 +144,7 @@ class DecodingTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        postsDispatcher.dataFuture(from: request).then({ response in
+        dispatcher.dataFuture(from: request).then({ response in
             // When
             return try response.decode(Post.self)
         }).success({ response in
