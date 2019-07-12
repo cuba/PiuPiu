@@ -39,14 +39,13 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.4.0
 * Remove Request, Dispatcher, NetworkDispatcher and ServerProvider. Should use DataDispatcher, UploadDispatcher, and DownloadDispatcher which use a basic URLRequest.
-  * You re-implement NetworkDispatcher and (Dispatcher) yourself and just delegate the methods to the provided URLRequestDispatcher.
-* Added `cancellation` callback which may be manually called or is triggered when a nil is return in `join` (series only), `then` or `replace` callbacks.
-* Added a parallel `join` callback that does not return a response object.
-* Slightly better multi-threading support
-  * by default, `then` is triggered on a background thread
+  * If you need to re-implement NetworkDispatcher and (Dispatcher) yourself and just delegate the methods to the provided URLRequestDispatcher.
+* Added `cancellation` callback which may be manually called or is triggered when a nil is returned in `join` (series only), `then` or `replace` callbacks.
+* Added a parallel `join` callback that does not pass a response object.
+* Slightly better multi-threading support.
+  * by default, `then` is triggered on a background thread.
   * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always syncronized on the main thread.
-
-* Add status updates
+* Add progress updates.
 
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
@@ -101,7 +100,7 @@ $ brew install carthage
 To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PiuPiu" ~> 1.3
+github "cuba/PiuPiu" ~> 1.4
 ```
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
@@ -117,11 +116,11 @@ import PiuPiu
 ### 2. Instantiate a  Dispatcher
 
 All requests are made through a dispatcher.  There are 3 protocols for dispatchers:
-* `DataDispatcher`: Performs standard http requests and returns a `ResponseFuture` that contains a `Response<Data?>` object. Can 
-* `DownloadDispatcher`: For downloading data.  It returns a `ResponseFuture` that contains a `Data` object.
+* `DataDispatcher`: Performs standard http requests and returns a `ResponseFuture` that contains a `Response<Data?>` object. Can also be used for uploading data.
+* `DownloadDispatcher`: For downloading data.  It returns a `ResponseFuture` that contains only a `Data` object.
 * `UploadDispatcher`: For uploading data. Can usually be replaced with a `DataDispatcher`, but offers a few upload specific niceties like better progress updates. 
 
-For convenience a `URLRequestDispatcher` is provided implementing all 3 protocols.
+For convenience, a `URLRequestDispatcher` is provided implementing all 3 protocols.
 
 ```swift
 class ViewController: UIViewController {
@@ -139,7 +138,7 @@ You should have a strong reference to this object as it is held on weakly by you
 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
 let request = URLRequest(url: url, method: .get)
 
-postDispatcher.dataFuture(from: request).response({ response in
+dispatcher.dataFuture(from: request).response({ response in
     // Handles any responses including negative responses such as 4xx and 5xx
 
     // The error object is available if we get an
@@ -262,7 +261,7 @@ The `response` callback is triggered when the request is recieved and no errors 
 At the end of the callback sequences, this gives you exactly what your transforms "promised" to return.
 
 ```swift
-dispatcher.future(from: request).response({ response in
+dispatcher.dataFuture(from: request).response({ response in
     // Triggered when a response is recieved and all callbacks succeed.
 })
 ```
@@ -274,7 +273,7 @@ dispatcher.future(from: request).response({ response in
 Think of this as a `catch` on a `do` block. From the moment you trigger `send()`, the error callback is triggered whenever something is thrown during the callback sequence. This includes errors thrown in any other callback.
 
 ```swift
-dispatcher.future(from: request).error({ error in
+dispatcher.dataFuture(from: request).error({ error in
     // Any errors thrown in any other callback will be triggered here.
     // Think of this as the `catch` on a `do` block.
 })
@@ -287,7 +286,7 @@ dispatcher.future(from: request).error({ error in
 The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()` is triggered.
 
 ```swift
-dispatcher.future(from: request).completion({
+dispatcher.dataFuture(from: request).completion({
     // The completion callback guaranteed to be called once
     // for every time the `send` or `start` method is triggered on the callback.
 })
@@ -302,7 +301,7 @@ This callback transforms the `response` type to another type. This operation is 
 **WARNING**: You should avoid calling self in this callback . Use it solely for transforming the future.
 
 ```swift
-dispatcher.future(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: request).then({ response -> Post in
     // The `then` callback transforms a successful response to another object
     // You can return any object here and this will be reflected on the `success` callback.
     return try response.decode(Post.self)
@@ -317,7 +316,7 @@ dispatcher.future(from: request).then({ response -> Post in
 This callback transforms the future to another type using another callback.  This allows us to make asyncronous calls inside our callbacks.
 
 ```swift
-dispatcher.future(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: request).then({ response -> Post in
     return try response.decode(Post.self)
 }).replace({ [weak self] post -> ResponseFuture<EnrichedPost> in
     // Perform some operation operation that itself requires a future
@@ -335,7 +334,7 @@ dispatcher.future(from: request).then({ response -> Post in
 This callback transforms the future to another type containing its original results plus the results of the returned callback. This allows us to make asyncronous calls in series.
 
 ```swift
-dispatcher.future(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: request).then({ response -> Post in
     return try response.decode(Post.self)
 }).join({ [weak self] post -> ResponseFuture<User> in
     // Joins a future with another one returning both results
@@ -417,7 +416,7 @@ It might be beneficial to wrap the Request creation in a ResponseFuture. This wi
 2. Combine any errors thrown while creating the request in the error callback.
 
 ```swift
-dispatcher.future(from: {
+dispatcher.dataFuture(from: {
     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
     var request = URLRequest(url: url, method: .post)
     try request.setJSONBody(post)
@@ -434,7 +433,7 @@ dispatcher.future(from: {
 This will unwrap the data object for you or throw a ResponseError if it not there. This is convenent so that you don't have to deal with those pesky optionals. 
 
 ```swift
-dispatcher.future(from: request).response({ response in
+dispatcher.dataFuture(from: request).response({ response in
     let data = try response.unwrapData()
 
     // do something with data.
@@ -447,7 +446,7 @@ dispatcher.future(from: request).response({ response in
 ### Decode `String`
 
 ```swift
-dispatcher.future(from: request).response({ response in
+dispatcher.dataFuture(from: request).response({ response in
     let string = try response.decodeString(encoding: .utf8)
 
     // do something with string.
@@ -460,7 +459,7 @@ dispatcher.future(from: request).response({ response in
 ### Decode `Decodable`
 
 ```swift
-dispatcher.future(from: request).response({ response in
+dispatcher.dataFuture(from: request).response({ response in
     let posts = try response.decode([Post].self)
 
     // do something with the decodable object.
@@ -482,7 +481,7 @@ The `ResponseFuture` may have 3 types of strong references:
 When **ONLY**  `1` and `2` applies to your case, a temporary circular reference is created until the future is resolved. You may wish to use `[weak self]` in this case but it is not necessary.
 
 ```swift
-dispatcher.future(from: request).then({ response -> [Post] in
+dispatcher.dataFuture(from: request).then({ response -> [Post] in
     // [weak self] not needed as `self` is not called
     return try response.decode([Post].self)
 }).response({ posts in
@@ -496,7 +495,7 @@ dispatcher.future(from: request).then({ response -> [Post] in
 **!! DO NOT DO THIS. !!** Never do this. Not even if you're a programming genius. It's just asking for problems.
 
 ```swift
-dispatcher.future(from: request).success({ response in
+dispatcher.dataFuture(from: request).success({ response in
     // We are foce unwrapping a text field! DO NOT DO THIS!
     let textField = self.textField!
 

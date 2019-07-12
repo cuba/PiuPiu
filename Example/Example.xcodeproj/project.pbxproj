@@ -18,6 +18,8 @@
 		DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327722CE4D8600027DBA /* CloudinaryError.swift */; };
 		DA28328D22D255D300027DBA /* DataDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328C22D255D300027DBA /* DataDispatcherTests.swift */; };
 		DA2832EE22D3BEB000027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */; };
+		DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */; };
+		DA28330422D867F800027DBA /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28330322D867F800027DBA /* Endpoint.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
@@ -118,6 +120,8 @@
 		DA28327722CE4D8600027DBA /* CloudinaryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryError.swift; sourceTree = "<group>"; };
 		DA28328C22D255D300027DBA /* DataDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcherTests.swift; sourceTree = "<group>"; };
 		DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extensions.swift"; sourceTree = "<group>"; };
+		DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensionTests.swift; sourceTree = "<group>"; };
+		DA28330322D867F800027DBA /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
@@ -211,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */,
+				DA28330322D867F800027DBA /* Endpoint.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -300,6 +305,7 @@
 		DAE5EF6622190A0200D1990B /* PewPewTests */ = {
 			isa = PBXGroup;
 			children = (
+				DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */,
 				DA28328C22D255D300027DBA /* DataDispatcherTests.swift */,
 				DA78758E226A763900A626AF /* TranslationTests.swift */,
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
@@ -494,6 +500,7 @@
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
 				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
+				DA28330422D867F800027DBA /* Endpoint.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
 				DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */,
@@ -511,6 +518,7 @@
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
+				DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 			);

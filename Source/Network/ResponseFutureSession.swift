@@ -33,10 +33,13 @@ class ResponseFutureSession: NSObject {
         #endif
     }
     
+    
+    /// Calls urlSession.invalidateAndCancel()
     func invalidateAndCancel() {
         urlSession.invalidateAndCancel()
     }
     
+    /// Calls urlSession.finishTasksAndInvalidate()
     func finishTasksAndInvalidate() {
         urlSession.finishTasksAndInvalidate()
     }

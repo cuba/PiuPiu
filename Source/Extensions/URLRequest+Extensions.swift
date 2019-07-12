@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - Encoding
+
 public extension URLRequest {
     init(url: URL, method: HTTPMethod) {
         self.init(url: url)
@@ -100,5 +102,29 @@ public extension URLRequest {
         if self.value(forHTTPHeaderField: "Content-Type") == nil {
             self.addValue("application/json", forHTTPHeaderField: "Content-Type")
         }
+    }
+}
+
+// MARK: - Testing Extensions
+
+public extension URLRequest {
+    /// Returns values extracted from the path. The path must match exactly.
+    ///
+    /// - Parameter pattern: The pattern to match which must be exactly the same.
+    /// - Returns: The matched path values. Any incosistency will return nil. The size of the array will always be the number of wildcards passed.
+    func pathValues(from pattern: [PathComponent]) -> [PathValue]? {
+        return url?.pathValues(from: pattern)
+    }
+    
+    func integerValue(atIndex index: Int, matching pattern: [PathComponent]) -> Int? {
+        return url?.integerValue(atIndex: index, matching: pattern)
+    }
+    
+    func stringValue(atIndex index: Int, matching pattern: [PathComponent]) -> String? {
+        return url?.stringValue(atIndex: index, matching: pattern)
+    }
+    
+    func pathMatches(pattern: [PathComponent]) -> Bool {
+        return url?.pathMatches(pattern: pattern) ?? false
     }
 }

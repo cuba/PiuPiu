@@ -14,8 +14,15 @@ class DocumentationExamples: XCTestCase {
     private var strongFuture: ResponseFuture<Post>?
     
     private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
     })
     
     func testSimpleRequest() {
