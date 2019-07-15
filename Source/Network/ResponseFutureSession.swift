@@ -198,8 +198,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             // Create the response
             let urlRequest = responseFutureTask.urlRequest
             let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-            let responseError = statusCode.error
-            let response = Response(data: responseFutureTask.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode, error: responseError)
+            let response = Response(data: responseFutureTask.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode)
             
             responseFutureTask.future.update(progress: 1)
             responseFutureTask.future.succeed(with: response)

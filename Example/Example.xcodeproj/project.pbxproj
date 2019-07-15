@@ -24,7 +24,6 @@
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
-		DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787584226A73FD00A626AF /* RequestError+Extensions.swift */; };
 		DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787586226A742D00A626AF /* ResponseError+Extensions.swift */; };
 		DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787588226A747E00A626AF /* SerializationError+Extensions.swift */; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
@@ -127,7 +126,6 @@
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
-		DA787584226A73FD00A626AF /* RequestError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RequestError+Extensions.swift"; sourceTree = "<group>"; };
 		DA787586226A742D00A626AF /* ResponseError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResponseError+Extensions.swift"; sourceTree = "<group>"; };
 		DA787588226A747E00A626AF /* SerializationError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SerializationError+Extensions.swift"; sourceTree = "<group>"; };
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
@@ -237,7 +235,6 @@
 			isa = PBXGroup;
 			children = (
 				DA787582226A73BD00A626AF /* BaseNetworkError.swift */,
-				DA787584226A73FD00A626AF /* RequestError+Extensions.swift */,
 				DA787586226A742D00A626AF /* ResponseError+Extensions.swift */,
 				DA787588226A747E00A626AF /* SerializationError+Extensions.swift */,
 				DA78758C226A759C00A626AF /* String+Extensions.swift */,
@@ -506,7 +503,6 @@
 				DA28330422D867F800027DBA /* Endpoint.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
-				DA787585226A73FD00A626AF /* RequestError+Extensions.swift in Sources */,
 				DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */,
 				DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */,
 			);

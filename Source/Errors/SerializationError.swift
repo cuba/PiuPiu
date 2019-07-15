@@ -15,7 +15,7 @@ public enum SerializationError: Error {
     public var errorKey: String {
         switch self {
         case .failedToDecodeResponseData: return "InvalidObject"
-        case .unexpectedEmptyResponse: return "EmptyResponse"
+        case .unexpectedEmptyResponse   : return "EmptyResponse"
         }
     }
 }
