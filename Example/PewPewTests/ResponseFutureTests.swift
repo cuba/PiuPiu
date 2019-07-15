@@ -119,7 +119,7 @@ class ResponseFutureTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
     func testFutureDealocationWhenCallbacksAreCalled() {
@@ -161,7 +161,7 @@ class ResponseFutureTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
@@ -176,7 +176,7 @@ class ResponseFutureTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
     func testFutureWithParallelJoins() {
@@ -225,6 +225,6 @@ class ResponseFutureTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
     }
 }
