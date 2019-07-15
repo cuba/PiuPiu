@@ -20,9 +20,9 @@ public extension URLRequest {
     ///
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    ///   - encoder: The encoder to use for encoding the encodable object. Default is a the system encoder.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    mutating func setJSONBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
-        let encoder = JSONEncoder()
+    mutating func setJSONBody<T: Encodable>(encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
         self.httpBody = try encoder.encode(encodable)
         ensureJSONContentType()
     }
@@ -94,8 +94,8 @@ public extension URLRequest {
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    mutating func setJSONBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
-        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
+    mutating func setJSONBody<T: Encodable>(_ encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
+        try setJSONBody(encodable: encodable, encoder: encoder)
     }
     
     mutating func ensureJSONContentType() {
