@@ -13,13 +13,19 @@ import XCTest
 class DocumentationExamples: XCTestCase {
     private var strongFuture: ResponseFuture<Post>?
     
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+    private let dispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
         if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
+            let user = User(id: id, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
         } else if request.pathMatches(pattern: [.constant("posts")]) {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("users")]) {
+            let user = User(id: 123, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
             throw ResponseError.notFound
         }
@@ -223,7 +229,117 @@ class DocumentationExamples: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
     
+    func testSeriesJoin() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response in
+            // Transform this response so that we can reference it in the join callback.
+            return try response.decode(Post.self)
+        }).join({ [weak self] post -> ResponseFuture<User>? in
+            guard let self = self else {
+                // We used [weak self] because our dispatcher is referenced on self.
+                // Returning nil will cancel execution of this promise
+                // and triger the `cancellation` and `completion` callbacks.
+                // Do this check to prevent memory leaks.
+                return nil
+            }
+            
+            // Joins a future with another one returning both results.
+            // The post is passed so it can be used in the second request.
+            // In this case, we take the user ID of the post to construct our URL.
+            let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
+            let request = URLRequest(url: url, method: .get)
+            
+            return self.dispatcher.dataFuture(from: request).then({ response -> User in
+                return try response.decode(User.self)
+            })
+        }).success({ post, user in
+            // The final response callback includes both results.
+            expectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    func testParallelJoin() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response in
+            return try response.decode([Post].self)
+        }).join({ () -> ResponseFuture<[User]> in
+            // Joins a future with another one returning both results.
+            // Since this callback is non-escaping, you don't have to use [weak self]
+            let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+            let request = URLRequest(url: url, method: .get)
+            
+            return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
+                return try response.decode([User].self)
+            })
+        }).success({ posts, users in
+            // The final response callback includes both results.
+            expectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    func testCustomFuture() {
+        // Expectations
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        let image = UIImage()
+        
+        resize(image: image).success({ resizedImage in
+            // Handle success
+        }).error({ error in
+            // Handle error
+        }).completion({
+            // Handle completion
+            completionExpectation.fulfill()
+        }).start()
+        
+        waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    private func resize(image: UIImage) -> ResponseFuture<UIImage> {
+        return ResponseFuture<UIImage>(action: { future in
+            // This is an example of how a future is executed and fulfilled.
+            DispatchQueue.global(qos: .background).async {
+                // lets make an expensive operation on a background thread.
+                // The success and progress and error callbacks will be synced on the main thread
+                // So no need to sync back to the main thread.
+                
+                do {
+                    // Do an expensive operation here ....
+                    let resizedImage = try image.resize(ratio: 16/9)
+                    
+                    // If possible, we can send smaller progress updates
+                    // Otherwise it's a good idea to send 1 to indicate this task is all finished.
+                    // Not sending this won't cause any harm but your progress callback will not be triggered as a result of this future.
+                    future.update(progress: 1)
+                    future.succeed(with: resizedImage)
+                } catch {
+                    future.fail(with: error)
+                }
+            }
+        })
+    }
+    
+    
+    
     private func show(_ post: Post) {
         print(post)
+    }
+}
+
+extension UIImage {
+    func resize(ratio: CGFloat) throws -> UIImage {
+        return self
     }
 }

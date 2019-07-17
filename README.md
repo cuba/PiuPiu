@@ -28,8 +28,6 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 - [Encoding](#encoding)
 - [Decoding](#decoding)
 - [Memory Managment](#memory-managment)
-- [Custom Encoding](#custom-encoding)
-- [Custom Decoding](#custom-decoding)
 - [Mock Dispatcher](#mock-dispatcher)
 - [Dependencies](#dependencies)
 - [Credits](#credits)
@@ -38,15 +36,23 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 ## Updates
 
 ### 1.4.0
-* Remove Request, Dispatcher, NetworkDispatcher and ServerProvider. Should use DataDispatcher, UploadDispatcher, and DownloadDispatcher which use a basic URLRequest.
-  * If you need to re-implement NetworkDispatcher and (Dispatcher) yourself and just delegate the methods to the provided URLRequestDispatcher.
-* Added `cancellation` callback which may be manually called or is triggered when a nil is returned in `join` (series only), `then` or `replace` callbacks.
-* Added a parallel `join` callback that does not pass a response object.
+* Change `Request` protocol to return a `URLRequest`
+* Replace  `Dispatcher` and `NetworkDispatcher` with `NetworkSerializer`. 
+* Callbacks will only be triggered once.  Once a callback is triggered, its reference is released (nullified).
+  * This is to prevent memory leaks.
+* Added `DataDispatcher`, `UploadDispatcher`, and `DownloadDispatcher` protocols which use a basic `URLRequest`.
+  * Added `URLRequestDispatcher` class which implements all 3 protocols.
+  * Added weak callbacks on dispatchers including the `MockURLRequestDispatcher`. You must now have a reference to your dispatcher.
+  * Requests are cancelled when the dispatcher is de-allocated.
+* Added `cancellation` callback to `ResponseFuture`. 
+  * This may be manually triggered using `cancel` or is or is manually triggered when a nil is returned in any `join` (series only), `then` or `replace` or `action` (`init`) callback.
+  * This callback does not cancel the actual requests but simply stops any further execution of the `ResponseFuture` after its final `cancellation` and `completion` callback.
+* Added a parallel `join` callback that does not pass a response object. This calback is non-escaping.
 * Slightly better multi-threading support.
   * by default, `then` is triggered on a background thread.
   * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always syncronized on the main thread.
-* Add progress updates.
-* Add better request mocking tools
+* Add progress updates via the `progress` callback.
+* Add better request mocking tools via the `MockURLRequestDispatcher`.
 
 ### 1.3.0
 * Rename `PewPew` to `PiuPiu`
@@ -68,22 +74,11 @@ Fixed crash when translating caused by renaming the project.
 
 - [x] A wrapper around network requests
 - [x] Uses `Futures` (ie. `Promises`) to allow scalablity and dryness
-- [x] Convenience methods for deserializing Decodable and JSON 
+- [x] Convenience methods for deserializing Decodable and JSON
 - [x] Easy integration
 - [x] Handles common http errors
 - [x] Strongly typed and safely unwrapped responses
 - [x] Clean!
-
-## Why Futures?
-Most of us are used to using callbacks or delegates for our networking calls. And that's fine for simple applications. But as your applicaiton grows, you will quickly realize a few drawbacks to this simple approach.  Here are a few reasons why futures are the way to go:
-
-1. They are extensible: Because they are objects, they are extensible. Traditionally you would add helper methods on delegates and callbacks or convenience methods on callbacks. Helper methods, although useful, feel a little bit dislocated. Helper methods on the other hand tend to be too specific and speghettify your code. Methods on the object itself, make it easier to debug, develop, name and document because they are context sensitive. And this will help write code, understand code and debug issues.  Plus, It's also nice to just press a `.` on your keyboard and see what methods you get instead of remembering the name of that helper class that handles the specific response object your receieved.
-2. Asyncronous Do/Catch: Anything you throw in the future's callbacks will be handled. This is normally tedious in delegates and callbacks as they always have to be wrapped around a do/catch block. Futures have a sort of do/catch mechanism for asyncronous tasks.
-3. Multithreading: Futures offer better multithreading support because they have predefined and useful functions that work on seperate threads. So don't worry about parsing your data in the `then` callback. It won't lock your main thread.
-4. One generic to rule them all: Futures use a generic result object. This means a future can be used for anything.  Network calls or heavy tasks: It doesn't matter.
-5. Better compiler support: Forgot to call your callback? You don't have to worry about it with Futures because they are called for you as soon as you trigger `send()`  or `start()`. And if you forget to call `send()`, your compiler will remind you.
-6. Pass them around: You can pass futures around and handle them where you need to.
-7. Strongly typed: The object you recieve in the end is strongly typed so you don't need to cast or fail.  It will hande this for you.
 
 ## Installation
 
@@ -332,20 +327,72 @@ dispatcher.dataFuture(from: request).then({ response -> Post in
 
 #### `join` callback
 
-This callback transforms the future to another type containing its original results plus the results of the returned callback. This allows us to make asyncronous calls in series.
+This callback transforms the future to another type containing its original results plus the results of the returned callback.
+This callback comes with 2 flavors: parallel and series.
+
+##### Series `join`
+
+The series join waits for the first respons and passes it to the callback so you can make requests that depend on that response.
 
 ```swift
-dispatcher.dataFuture(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+    return URLRequest(url: url, method: .get)
+}).then({ response in
+    // Transform this response so that we can reference it in the join callback.
     return try response.decode(Post.self)
-}).join({ [weak self] post -> ResponseFuture<User> in
-    // Joins a future with another one returning both results
-    return self?.fetchUser(forId: post.userId)
-}).response({ post, user in
+}).join({ [weak self] post -> ResponseFuture<User>? in
+    guard let self = self else {
+        // We used [weak self] because our dispatcher is referenced on self.
+        // Returning nil will cancel execution of this promise
+        // and triger the `cancellation` and `completion` callbacks.
+        // Do this check to prevent memory leaks.
+        return nil
+    }
+
+    // Joins a future with another one returning both results.
+    // The post is passed so it can be used in the second request.
+    // In this case, we take the user ID of the post to construct our URL.
+    let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
+    let request = URLRequest(url: url, method: .get)
+
+    return self.dispatcher.dataFuture(from: request).then({ response -> User in
+        return try response.decode(User.self)
+    })
+}).success({ post, user in
     // The final response callback includes both results.
-})
+    expectation.fulfill()
+}).send()
 ```
 
 **NOTE**: You can return nil to stop the request process.  Useful when you want a weak self.
+
+##### Parallel `join` callback
+
+This callback does not wait for the original request to complete, and executes right away. It is useful to series calls.
+
+```swift
+dispatcher.dataFuture(from: {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+    return URLRequest(url: url, method: .get)
+}).then({ response in
+    return try response.decode([Post].self)
+}).join({ () -> ResponseFuture<[User]> in
+    // Joins a future with another one returning both results.
+    // Since this callback is non-escaping, you don't have to use [weak self]
+    let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+    let request = URLRequest(url: url, method: .get)
+
+    return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
+        return try response.decode([User].self)
+    })
+}).success({ posts, users in
+    // The final response callback includes both results.
+    expectation.fulfill()
+}).send()
+```
+
+**NOTE**: This callback will execute right away (it is non-escaping). `[weak self]` is therefore not necessary.
 
 #### `send` or `start`
 
@@ -353,35 +400,38 @@ This will start the `ResponseFuture`. In other words, the `action` callback will
 
 **NOTE**: If this method is not called, nothing will happen (no request will be made).
 **NOTE**: This method should **ONLY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then` etc...)
-**NOTE**:  This method should **ONLY** be called **ONCE**.
 
-### Creating your own ResponseFuture
+### Creating your own `ResponseFuture`
 
-You can create your own ResponseFuture for a variety of reasons. If you do, you will have all the benefits you have seen so far.
+You can create your own ResponseFuture for a variety of reasons. This can be used on another future's `join` or `replace` callback for some nice chaining.
 
-Here is an example of a response future that does decoding in another thread.
+Here is an example of a response future that does an expesive operation in another thread.
 
 ```
-return ResponseFuture<[Post]>(action: { future in
-    // This is an example of how a future is executed and
-    // fulfilled.
-    DispatchQueue.global(qos: .userInitiated).async {
+return ResponseFuture<UIImage>(action: { future in
+    // This is an example of how a future is executed and fulfilled.
+    DispatchQueue.global(qos: .background).async {
         // lets make an expensive operation on a background thread.
-        // The below is just an example of how you can parse on a seperate thread.
+        // The success and progress and error callbacks will be synced on the main thread
+        // So no need to sync back to the main thread.
 
         do {
             // Do an expensive operation here ....
-            let posts = try response.decode([Post].self)
-            future.succeed(with: posts)
+            let resizedImage = try image.resize(ratio: 16/9)
+
+            // If possible, we can send smaller progress updates
+            // Otherwise it's a good idea to send 1 to indicate this task is all finished.
+            // Not sending this won't cause any harm but your progress callback will not be triggered as a result of this future.
+            future.update(progress: 1)
+            future.succeed(with: resizedImage)
         } catch {
-            // We should syncronize the error to the main thread.
             future.fail(with: error)
         }
     }
 })
 ```
 
-**NOTE** The future will syncronize the `succeed`, `fail` or `cancel` methods on the main thread.
+**NOTE** You can also use the `then` callback of an existing future which is performed on a background thread.
 
 ## Encoding
 
@@ -536,8 +586,9 @@ private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { reques
 
 - [x] Parallel calls
 - [x] Sequential calls
-- [x] A more generic dispatcher. The response object is way too specific.
+- [x] A more generic dispatcher. The response object is way too specific
 - [x] Better multi-threading support
+- [x] Request cancellation
 
 ## Dependencies
 

@@ -20,11 +20,15 @@ open class URLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadDispa
     }
     
     deinit {
-        session.finishTasksAndInvalidate()
+        finishTasksAndInvalidate()
         
         #if DEBUG
         print("DEINIT - URLRequestDispatcher")
         #endif
+    }
+    
+    open func finishTasksAndInvalidate() {
+        session.finishTasksAndInvalidate()
     }
     
     open func invalidateAndCancel() {
