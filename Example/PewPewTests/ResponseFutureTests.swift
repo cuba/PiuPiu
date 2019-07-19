@@ -13,7 +13,7 @@ import XCTest
 class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
     
-    private let dispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
         if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
@@ -405,7 +405,7 @@ class ResponseFutureTests: XCTestCase {
         
         XCTAssertNotNil(weakFuture)
         
-        waitForExpectations(timeout: 5) { error in
+        waitForExpectations(timeout: 10) { error in
             XCTAssertNil(error)
             XCTAssertNil(weakFuture)
         }
