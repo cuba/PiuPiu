@@ -42,7 +42,7 @@ class DecodingTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingString() {
@@ -64,7 +64,7 @@ class DecodingTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingDecodable() {
@@ -86,7 +86,7 @@ class DecodingTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingMapDecodable() {
@@ -108,7 +108,7 @@ class DecodingTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testDecodingMapDecodableArray() {
@@ -131,7 +131,7 @@ class DecodingTests: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testUnsuccessfulCodableDeserialization() {
@@ -156,6 +156,6 @@ class DecodingTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }

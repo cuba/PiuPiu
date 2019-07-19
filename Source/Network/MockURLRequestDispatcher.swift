@@ -39,9 +39,8 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                DispatchQueue.main.async {
-                    future.succeed(with: response)
-                }
+                future.update(progress: 1)
+                future.succeed(with: response)
             }
         }
     }
@@ -60,9 +59,8 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                DispatchQueue.main.async {
-                    future.succeed(with: response.data)
-                }
+                future.update(progress: 1)
+                future.succeed(with: response.data)
             }
         }
     }
@@ -81,9 +79,8 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                DispatchQueue.main.async {
-                    future.succeed(with: response)
-                }
+                future.update(progress: 1)
+                future.succeed(with: response)
             }
         }
     }
@@ -103,9 +100,8 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                DispatchQueue.main.async {
-                    future.succeed(with: response)
-                }
+                future.update(progress: 1)
+                future.succeed(with: response)
             }
         }
     }

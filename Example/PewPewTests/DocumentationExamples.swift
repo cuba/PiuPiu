@@ -84,7 +84,7 @@ class DocumentationExamples: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     private func getPost(id: Int) -> ResponseFuture<Post> {
@@ -127,7 +127,7 @@ class DocumentationExamples: XCTestCase {
             expectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFullResponseFutureExample() {
@@ -179,7 +179,7 @@ class DocumentationExamples: XCTestCase {
         }).send()
         
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacksStrongReference() {
@@ -205,7 +205,7 @@ class DocumentationExamples: XCTestCase {
         // to store a reference to this future in the first place
         
         self.strongFuture?.send()
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {
@@ -226,7 +226,7 @@ class DocumentationExamples: XCTestCase {
         
         XCTAssertNil(weakFuture)
         weakFuture?.send()
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testSeriesJoin() {

@@ -13,13 +13,19 @@ import XCTest
 class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
     
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+    private let dispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
         if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
+            let user = User(id: id, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
         } else if request.pathMatches(pattern: [.constant("posts")]) {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("users")]) {
+            let user = User(id: 123, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
             throw ResponseError.notFound
         }
@@ -29,17 +35,18 @@ class ResponseFutureTests: XCTestCase {
         if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
             let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
+            let user = User(id: id, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
         } else if request.pathMatches(pattern: [.constant("posts")]) {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("users")]) {
+            let user = User(id: 123, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
             throw ResponseError.notFound
         }
-    })
-    
-    private let userDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        let user = User(id: 1, name: "Jim Halpert")
-        return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
     })
 
     func testFutureResponse() {
@@ -47,6 +54,10 @@ class ResponseFutureTests: XCTestCase {
         var calledCompletion = false
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        errorExpectation.isInverted = true
+        progressExpectation.expectedFulfillmentCount = 1
         
         // Then
         
@@ -83,12 +94,83 @@ class ResponseFutureTests: XCTestCase {
             successExpectation.fulfill()
         }).error({ error in
             XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
+        }).progress({ progress in
+            if progress == 1 {
+                progressExpectation.fulfill()
+            }
         }).completion({
             calledCompletion = true
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testNonFailingFutureResponse() {
+        // When
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        progressExpectation.expectedFulfillmentCount = 1
+        errorExpectation.isInverted = true
+        
+        // Then
+        
+        instantDispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/unknown/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
+            return try response.decode(Post.self)
+        }).nonFailing().success({ response in
+            XCTAssertNil(response.success)
+            XCTAssertNotNil(response.failure)
+            successExpectation.fulfill()
+        }).error({ error in
+            errorExpectation.fulfill()
+        }).progress({ progress in
+            if progress == 1 {
+                progressExpectation.fulfill()
+            }
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testProgressCallback() {
+        // Expectations
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        errorExpectation.isInverted = true
+        progressExpectation.expectedFulfillmentCount = 1
+        
+        // Then
+
+        instantDispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
+            return try response.decode(Post.self)
+        }).nonFailing().success({ response in
+            XCTAssertNotNil(response.success)
+            XCTAssertNil(response.failure)
+            successExpectation.fulfill()
+        }).error({ error in
+            errorExpectation.fulfill()
+        }).progress({ progress in
+            if progress == 1 {
+                progressExpectation.fulfill()
+            }
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     private func enrich(post: Post) -> ResponseFuture<EnrichedPost> {
@@ -98,7 +180,7 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<User> {
-        return userDispatcher.dataFuture(from: {
+        return instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> User in
@@ -108,21 +190,50 @@ class ResponseFutureTests: XCTestCase {
     
     func testFuture() {
         // Expectations
-        let expectation = self.expectation(description: "Success response triggered")
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        errorExpectation.isInverted = true
+        progressExpectation.expectedFulfillmentCount = 1
         
         // When
-        dispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
         }).response({ posts in
             // Then
-            expectation.fulfill()
+            successExpectation.fulfill()
+        }).progress({ progress in
+            if progress == 1 {
+                progressExpectation.fulfill()
+            }
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFutureDealocationWhenCallbacksAreCalled() {
+        // Expectations
+        
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let cancellationExpectation = self.expectation(description: "Cancellation triggered")
+        errorExpectation.isInverted = true
+        successExpectation.isInverted = true
+        progressExpectation.isInverted = true
+        completionExpectation.isInverted = true
+        cancellationExpectation.isInverted = true
+        
+        // When
+        
         weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
@@ -134,59 +245,126 @@ class ResponseFutureTests: XCTestCase {
             // Joins a future with another one
             return self.fetchUser(forId: enrichedPost.post.userId)
         }).success({ response in
-            // Do nothing
+            successExpectation.fulfill()
         }).error({ error in
-            // Do nothing
+            errorExpectation.fulfill()
         }).completion({
-            // Do nothing
+            completionExpectation.fulfill()
         }).cancellation {
-            // Do nothing
+            cancellationExpectation.fulfill()
         }
+        
+        // Then
         
         // Our object is already nil because we have not established a strong reference to it.
         // The `send` method will do nothing. No callback will be triggered.
         //weakFuture?.send()
         XCTAssertNil(weakFuture)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInThen() {
-        let expectation = self.expectation(description: "Cancellation response triggered")
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        errorExpectation.isInverted = true
+        successExpectation.isInverted = true
         
-        dispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post? in
             return nil
+        }).success({ response in
+            successExpectation.fulfill()
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
         }).cancellation({
-            expectation.fulfill()
+            cancellationExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
-        let expectation = self.expectation(description: "Cancellation response triggered")
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        errorExpectation.isInverted = true
+        successExpectation.isInverted = true
         
-        dispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).join({ response -> ResponseFuture<Response<Data>>? in
             return nil
+        }).success({ response in
+            successExpectation.fulfill()
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
         }).cancellation({
-            expectation.fulfill()
+            cancellationExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testFutureIsCancelledWhenNilIsReturnedInReplace() {
+        let successExpectation = self.expectation(description: "Success triggered")
+        let cancellationExpectation = self.expectation(description: "Cancellation triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        errorExpectation.isInverted = true
+        successExpectation.isInverted = true
+        
+        instantDispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).replace({ response -> ResponseFuture<Response<Data>>? in
+            return nil
+        }).success({ response in
+            successExpectation.fulfill()
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
+        }).cancellation({
+            cancellationExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFutureWithParallelJoins() {
-        let expectation = self.expectation(description: "Success response triggered")
+        // Expectations
+        let successExpectation = self.expectation(description: "Success response triggered")
+        let progressExpectation = self.expectation(description: "Progress triggered")
+        let errorExpectation = self.expectation(description: "Error triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        let cancellationExpectation = self.expectation(description: "Cancellation triggered")
+        errorExpectation.isInverted = true
+        cancellationExpectation.isInverted = true
+        progressExpectation.expectedFulfillmentCount = 1
+        
+        // Given
         
         var future = ResponseFuture<[Post]> { future in
             future.succeed(with: [])
         }
         
-        for id in 1...1000 {
+        let count = 1000
+        weak var weakFuture: ResponseFuture<[Post]>? = future
+        
+        for id in 1...count {
             future = future.join({ posts -> ResponseFuture<Post> in
                 self.instantDispatcher.dataFuture(from: {
                     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
@@ -201,30 +379,35 @@ class ResponseFutureTests: XCTestCase {
             })
         }
         
-        future.success({ posts in
-            expectation.fulfill()
-            XCTAssertEqual(1000, posts.count)
+        // When
+        
+        future.progress({ progress in
+            if progress == 1 {
+                progressExpectation.fulfill()
+            }
+        }).success({ posts in
+            successExpectation.fulfill()
+            XCTAssertEqual(count, posts.count)
             
-            for id in 1...1000 {
+            for id in 1...count {
                 XCTAssertEqual(posts[id - 1].id, id)
             }
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testFutureIsCancelledWhenNilIsReturnedInReplace() {
-        let expectation = self.expectation(description: "Cancellation response triggered")
-        
-        dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).replace({ response -> ResponseFuture<Response<Data>>? in
-            return nil
+        }).error({ error in
+            XCTFail("Should not trigger the failure")
+            errorExpectation.fulfill()
+        }).completion({
+            completionExpectation.fulfill()
         }).cancellation({
-            expectation.fulfill()
+            cancellationExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        // Then
+        
+        XCTAssertNotNil(weakFuture)
+        
+        waitForExpectations(timeout: 5) { error in
+            XCTAssertNil(error)
+            XCTAssertNil(weakFuture)
+        }
     }
 }

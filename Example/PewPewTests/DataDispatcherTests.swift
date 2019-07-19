@@ -58,7 +58,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testGetPostsExample() {
@@ -100,7 +100,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWrapEncodingInAFuture() {
@@ -124,7 +124,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFullResponseFutureExample() {
@@ -162,7 +162,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacks() {
@@ -185,7 +185,7 @@ class DataDispatcherTests: XCTestCase {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacksStrongReference() {
@@ -212,7 +212,7 @@ class DataDispatcherTests: XCTestCase {
         // to store a reference to this future in the first place
         
         self.strongFuture?.send()
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {

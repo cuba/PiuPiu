@@ -10,6 +10,7 @@ import Foundation
 
 /// A ResponseFuture is a delayed action that is performed after calling `start()`.
 public class ResponseFuture<T> {
+    public typealias NonFailingResult<T, U> = (success: T?, failure: U?)
     public typealias ActionCallback = (ResponseFuture<T>) throws -> Void
     public typealias SuccessHandler = (T) throws -> Void
     public typealias ErrorHandler = (Error) -> Void
@@ -44,6 +45,7 @@ public class ResponseFuture<T> {
     
     /// The status of the future.
     private(set) public var status: Status
+    private(set) public var progress: Float = 0
     public let order: Int
     
     /// Initialize the future with an action that is triggered when calling the start() method.
@@ -60,7 +62,6 @@ public class ResponseFuture<T> {
     /// - Parameter result: The result that is returned right away.
     public convenience init(order: Int = 1, result: T) {
         self.init(order: order) { future in
-            future.update(progress: 1)
             future.succeed(with: result)
         }
     }
@@ -89,6 +90,10 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter object: The succeeded object required by the future success callback.
     public func succeed(with object: T) {
+        if self.progress < 1 {
+            self.update(progress: 1)
+        }
+        
         DispatchQueue.main.async {
             do {
                 try self.successHandler?(object)
@@ -136,6 +141,9 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter progress: The progress of this future between 0 and 1 where 0 is 0% and 1 being 100%
     public func update(progress: Float) {
+        guard self.progress != progress else { return }
+        self.progress = progress
+        
         DispatchQueue.main.async {
             self.progressCallback?(progress)
         }
@@ -262,6 +270,45 @@ public class ResponseFuture<T> {
                 future.cancel()
             }).send()
         }
+    }
+    
+    
+    /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
+    ///
+    /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
+    /// - Returns: A new response future with a success response with either the object or the error.
+    public func thenError<U>(_ callback: @escaping (Error) throws -> U?) -> ResponseFuture<NonFailingResult<T, U>> {
+        return ResponseFuture<NonFailingResult<T, U>>(order: order + 1) { future in
+            self.success({ response in
+                let result: NonFailingResult<T, U> = (response, nil)
+                future.succeed(with: result)
+            }).error({ error in
+                do {
+                    guard let callbackResult = try callback(error) else {
+                        future.cancel()
+                        return
+                    }
+                    
+                    let result: NonFailingResult<T, U> = (nil, callbackResult)
+                    future.succeed(with: result)
+                } catch let newError {
+                    future.fail(with: newError)
+                }
+            }).progress({ progress in
+                future.update(progress: progress)
+            }).cancellation({
+                future.cancel()
+            }).send()
+        }
+    }
+    
+    /// Allows the error to fail by returning a success response with either the original response or the error
+    ///
+    /// - Returns: A new future containing the original response or an error object.
+    public func nonFailing() -> ResponseFuture<NonFailingResult<T, Error>> {
+        return self.thenError({ error in
+            return error
+        })
     }
     
     /// Return a new future with the results of the future retuned in the callback.

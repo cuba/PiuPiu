@@ -69,6 +69,6 @@ class NetworkSerializerTests: XCTestCase, ServerProvider {
             completionExpectation.fulfill()
         }).send()
         
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 }
