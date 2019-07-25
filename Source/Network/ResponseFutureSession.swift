@@ -124,21 +124,29 @@ class ResponseFutureSession: NSObject {
         }
     }
     
-    private func downloadTask(for task: URLSessionTask) -> ResponseFutureTask<Data?>? {
+    private func downloadTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Data?>? {
         var responseFutureTask: ResponseFutureTask<Data?>?
         
         queue.sync {
             responseFutureTask = downloadTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
+            
+            if removeTask {
+                downloadTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
+            }
         }
         
         return responseFutureTask
     }
     
-    private func dataTask(for task: URLSessionTask) -> ResponseFutureTask<Response<Data?>>? {
+    private func dataTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Response<Data?>>? {
         var responseFutureTask: ResponseFutureTask<Response<Data?>>?
         
         queue.sync {
             responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
+            
+            if removeTask {
+                dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
+            }
         }
         
         return responseFutureTask
@@ -149,15 +157,15 @@ class ResponseFutureSession: NSObject {
 
 extension ResponseFutureSession: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        for responseFutureTask in dataTasks {
+            responseFutureTask.future.cancel()
+        }
+        
+        for responseFutureTask in downloadTasks {
+            responseFutureTask.future.cancel()
+        }
+        
         queue.sync {
-            for responseFutureTask in dataTasks {
-                responseFutureTask.future.cancel()
-            }
-            
-            for responseFutureTask in downloadTasks {
-                responseFutureTask.future.cancel()
-            }
-            
             downloadTasks = []
             dataTasks = []
         }
@@ -168,20 +176,13 @@ extension ResponseFutureSession: URLSessionDelegate {
 
 extension ResponseFutureSession: URLSessionTaskDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let responseFutureTask = self.downloadTask(for: task) {
-            queue.sync {
-                downloadTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
-            }
-            
+        if let responseFutureTask = self.downloadTask(for: task, removeTask: true) {
             if let error = error ?? responseFutureTask.error {
                 responseFutureTask.future.fail(with: error)
             } else {
                 responseFutureTask.future.succeed(with: responseFutureTask.data)
             }
-        } else if let responseFutureTask = self.dataTask(for: task) {
-            queue.sync {
-                dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
-            }
+        } else if let responseFutureTask = self.dataTask(for: task, removeTask: true) {
             // Ensure we don't have an error
             if let error = error ?? responseFutureTask.error {
                 responseFutureTask.future.fail(with: error)
@@ -206,7 +207,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        guard let responseFutureTask = self.dataTask(for: task) else { return }
+        guard let responseFutureTask = self.dataTask(for: task, removeTask: false) else { return }
 
         // When an error occurs this value is -1
         guard totalBytesExpectedToSend > 0 else { return }
@@ -220,12 +221,12 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
 
 extension ResponseFutureSession: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        let responseFutureTask = self.dataTask(for: dataTask)
+        let responseFutureTask = self.dataTask(for: dataTask, removeTask: false)
         responseFutureTask?.data = data
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        guard let responseFutureTask = self.dataTask(for: dataTask) else {
+        guard let responseFutureTask = self.dataTask(for: dataTask, removeTask: false) else {
             completionHandler(.cancel)
             return
         }
@@ -239,7 +240,7 @@ extension ResponseFutureSession: URLSessionDataDelegate {
 
 extension ResponseFutureSession: URLSessionDownloadDelegate {
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        guard let responseFutureTask = self.downloadTask(for: downloadTask) else { return }
+        guard let responseFutureTask = self.downloadTask(for: downloadTask, removeTask: false) else { return }
         
         do {
             let data = try Data(contentsOf: location)
@@ -250,7 +251,7 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        guard let responseFutureTask = self.downloadTask(for: downloadTask) else { return }
+        guard let responseFutureTask = self.downloadTask(for: downloadTask, removeTask: false) else { return }
         
         // When an error occurs this value is -1
         guard totalBytesExpectedToWrite > 0 else { return }
