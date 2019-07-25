@@ -210,7 +210,7 @@ public class ResponseFuture<T> {
     ///   - queue: The queue to run the callback on. The default is a background thread.
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
-    public func then<U>(on queue: DispatchQueue = DispatchQueue.global(qos: .background), _ callback: @escaping (T) throws -> U?) -> ResponseFuture<U> {
+    public func then<U>(on queue: DispatchQueue = DispatchQueue.global(qos: .utility), _ callback: @escaping (T) throws -> U?) -> ResponseFuture<U> {
         return ResponseFuture<U>(order: order + 1) { future in
             self.success({ result in
                 queue.async {
