@@ -16,6 +16,7 @@ public extension Response where T == Data? {
     ///   - encodable: The object to encode into JSON
     ///   - statusCode: The statusCode to use on the response
     ///   - headers: The headers to use on the response
+    ///   - encoder: The encoder to use to encode the object
     /// - Returns: A response object with a Data? data type
     /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
     static func makeMockJSONResponse<T: Encodable>(with urlRequest: URLRequest, encodable: T, statusCode: StatusCode, headers: [String: String] = [:], encoder: JSONEncoder = JSONEncoder()) throws -> Response<Data?> {

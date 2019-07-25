@@ -71,9 +71,20 @@ public extension ResponseInterface where T == Data? {
     /// - Returns: The decoded object
     /// - Throws: `SerializationError`
     func decode<D: Decodable>(_ type: D.Type, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .rfc3339) throws  -> D {
-        let data = try self.unwrapData()
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = dateDecodingStrategy
+        return try decode(type, using: decoder)
+    }
+    
+    /// Attempt to Decode the response data into a Decodable object.
+    ///
+    /// - Parameters:
+    ///   - type: The Decodable type to decode
+    ///   - decoder: The decoder to use.
+    /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
+    func decode<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder) throws  -> D {
+        let data = try self.unwrapData()
         
         do {
             // Attempt to deserialize the object.
