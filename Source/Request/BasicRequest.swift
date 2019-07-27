@@ -5,7 +5,6 @@
 //  Created by Jacob Sikorski on 2018-12-02.
 //  Copyright © 2018 Jacob Sikorski. All rights reserved.
 //
-
 import Foundation
 
 /// A convenience Request object for encoding JSON data.
@@ -32,6 +31,41 @@ public struct BasicRequest: Request {
         for (key, value) in headers {
             self.headers[key] = value
         }
+    }
+    
+    /// Attempt to construct a URL from the request.
+    ///
+    /// - Parameter request: The request that will be sent.
+    /// - Returns: A url to which the request will be sent.
+    /// - Throws: Any errors when trying to create the url.
+    public func url(withBaseURL baseURL: URL) throws -> URL {
+        var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
+        urlComponents?.queryItems = queryItems
+        urlComponents?.path = path
+        
+        if let url = urlComponents?.url {
+            return url
+        } else {
+            throw URLError(.badURL)
+        }
+    }
+    
+    /// Attempt to convert the request to a URLRequest.
+    ///
+    /// - Parameter request: The request that will be converted
+    /// - Returns: The created URLRequest
+    /// - Throws: A RequstError object
+    public func urlRequest(withBaseURL baseURL: URL) throws -> URLRequest {
+        let url = try self.url(withBaseURL: baseURL)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.rawValue
+        urlRequest.httpBody = httpBody
+        
+        for (key, value) in headers {
+            urlRequest.addValue(value, forHTTPHeaderField: key)
+        }
+        
+        return urlRequest
     }
     
     /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.

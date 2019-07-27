@@ -8,16 +8,6 @@
 
 import Foundation
 
-/// The protocol wrapping the response object.
-public protocol ResponseInterface {
-    associatedtype T
-    
-    var data: T { get }
-    var httpResponse: HTTPURLResponse { get }
-    var urlRequest: URLRequest { get }
-    var statusCode: StatusCode { get }
-}
-
 /// A successful response object. This is retuned when there is any 2xx response.
 public struct Response<T>: ResponseInterface {
     public let data: T
@@ -28,7 +18,9 @@ public struct Response<T>: ResponseInterface {
     /// Handles common errors like 4xx and 5xx errors.
     /// Network related errors are handled directly in
     /// The error callback.
-    public let error: ResponseError?
+    public var error: ResponseError? {
+        return statusCode.error
+    }
     
     /// Create a successful response object.
     ///
@@ -37,11 +29,10 @@ public struct Response<T>: ResponseInterface {
     ///   - httpResponse: The `HTTPURLresponse` that is returned.
     ///   - urlRequest: The original `URLRequest` that was created.
     ///   - statusCode: The status code enum that is returned.
-    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode, error: ResponseError?) {
+    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode) {
         self.data = data
         self.httpResponse = httpResponse
         self.urlRequest = urlRequest
         self.statusCode = statusCode
-        self.error = error
     }
 }

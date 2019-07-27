@@ -10,24 +10,32 @@ import XCTest
 @testable import Example
 @testable import PiuPiu
 
-class DocumentationExamples: XCTestCase, ServerProvider {
+class DocumentationExamples: XCTestCase {
+    private var strongFuture: ResponseFuture<Post>?
     
-    struct ServerErrorDetails: Codable {
-    }
-    
-    var baseURL: URL? {
-        return URL(string: "https://jsonplaceholder.typicode.com")
-    }
-    
-    private var strongFuture: ResponseFuture<[Post]>?
-    private weak var weakFuture: ResponseFuture<Response<Data?>>?
+    private let dispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
+            let user = User(id: id, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("users")]) {
+            let user = User(id: 123, name: "Jim Halpert")
+            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
+    })
     
     func testSimpleRequest() {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
         
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             // Handles any responses including negative responses such as 4xx and 5xx
             
             // The error object is available if we get an
@@ -52,7 +60,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
 
-    func testGetPostsExample() {
+    func testGetPostExample() {
+        // Expectations
         let responseExpectation = self.expectation(description: "Response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         let errorExpectation = self.expectation(description: "Error triggered")
@@ -61,7 +70,8 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         completionExpectation.expectedFulfillmentCount = 1
         errorExpectation.isInverted = true
         
-        getPosts().response({ posts in
+        // This is how we handle a request future
+        getPost(id: 1).response({ response in
             // Handle the success which will give your posts.
             responseExpectation.fulfill()
         }).error({ error in
@@ -77,14 +87,14 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    private func getPosts() -> ResponseFuture<[Post]> {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
+    private func getPost(id: Int) -> ResponseFuture<Post> {
         // We create a future and tell it to transform the response using the
-        // `then` callback.
-        return dispatcher.future(from: request).then({ response -> [Post] in
+        // `then` callback. After this we can return this future so the callbacks will
+        // be triggered using the transformed object. We may re-use this method in different
+        return dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
             if let error = response.error {
                 // The error is available when a non-2xx response comes in
                 // Such as a 4xx or 5xx
@@ -93,22 +103,22 @@ class DocumentationExamples: XCTestCase, ServerProvider {
             } else {
                 // Return the decoded object. If an error is thrown while decoding,
                 // It will be caught in the `error` callback.
-                return try response.decode([Post].self)
+                return try response.decode(Post.self)
             }
         })
     }
     
     func testWrapEncodingInAFuture() {
-        // Given
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        // Then
+        // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
+        // Given
+        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+        
         // When
-        dispatcher.future(from: {
-            var request = BasicRequest(method: .post, path: "/posts")
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            var request = URLRequest(url: url, method: .post)
             try request.setJSONBody(post)
             return request
         }).error({ error in
@@ -120,55 +130,10 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testFullConvertExample() {
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: {
-            /// Here we can construct our request.
-            /// Any errors will throw here will be handled in the `error` callback.
-            /// So we can deal with them in one place.
-            /// Note (the errors thrown here are likely due to programmer mistakes).
-            /// Nowever you may chose to do some a validation here.
-            var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(post)
-            return request
-        }).future({ response in
-            /// Convert the `Promise` to a `ResponseFuture` This forces us to convert
-            /// failed response callback to an error.
-            
-            /// NOTE: This callback will change the object from a `Promise` to a `ResponseFuture`
-            /// You will no longer have access to callbacks like `thenFailure`, `success` or `failed`.
-            
-            /// We transform the failed response to anything we want
-            /// We can even parse the response body to get a server error object.
-            /// for now we will just return the response error.
-            throw response.error
-        }).then({ response -> Post in
-            return try response.decode(Post.self)
-        }).response({ post in
-            /// We already transformed the success request
-            /// Handles any successful responses.
-            /// In this case the object returned in the `then` method.
-        }).error({ error in
-            /// Handles any errors during the request process,
-            /// including all request creation errors and anything
-            /// thrown in the `then` or `success` callbacks or returned
-            /// in the `future` callback.
-        }).completion({
-            /// The completion callback guaranteed to be called once
-            /// for every time the `start` method is triggered on the callback.
-        }).send()
-    }
-    
     func testFullResponseFutureExample() {
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: post, status: .ok)
-        
-        dispatcher.future(from: {
-            var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(post)
-            return request
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
             // Handles any responses and transforms them to another type
             // This includes negative responses such as 400s and 500s
@@ -195,69 +160,15 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         }).send()
     }
     
-    func testFullPromiseExample() {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: request).then({ response -> Post in
-            // The `then` callback transforms a successful response
-            return try response.decode(Post.self)
-        }).thenFailure({ response -> ServerErrorDetails in
-            // The `thenFailure` callback transforms a failed response
-            return try response.decode(ServerErrorDetails.self)
-        }).success({ post in
-            // Handles any success responses.
-            // In this case the object returned in the `then` method.
-        }).failure({ serverError in
-            // Handles any graceful errors.
-            // In this case the object returned in the `thenFailure` method.
-        }).error({ error in
-            // Handles any ungraceful errors.
-            // This includes deserialization errors, unwraping failures, and anything else that is thrown
-            // in a `make`, `success`, `error`, `then` or `thenFailure` block in any chained promise.
-        }).completion({
-            // The completion callback guaranteed to be called once
-            // for every time the `send` or `start` method is triggered on the callback.
-        }).send()
-    }
-    
-    func testConvertPromiseToResponseFuture() {
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        
-        dispatcher.promise(from: request).future({ failedResponse in
-            // Sice a `Promise` does not handle `failure` callbacks,
-            // we have to transform this to a response or error object.
-            // This callback will only be trigged if a `failure` callback
-            // would otherwise be triggered.
-            
-            // WARNING: This replaces any `success` callback you made prior to this one.
-            
-            // You can simply throw the response error or throw something a little more custom
-            throw failedResponse.error
-        }).response({ response in
-            // Because we used a Promise initially, this callback will return a `SuccessResponse`.
-        }).error({ error in
-            // Because we used a Promise initially, this callback will handle all errors the promise
-            // handled, plus anything we throw in the `future` callback.
-        }).completion({
-            // Always triggered for every time we trigger `start()`
-        }).send()
-    }
-    
     func testWeakCallbacks() {
+        // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        dispatcher.delay = 2
-        
-        dispatcher.future(from: request).then({ response -> [Post] in
-            // [weak self] not needed as `self` is not called
-            return try response.decode([Post].self)
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
+            return try response.decode(Post.self)
         }).response({ [weak self] post in
             // [weak self] needed as `self` is called
             self?.show(post)
@@ -272,15 +183,15 @@ class DocumentationExamples: XCTestCase, ServerProvider {
     }
     
     func testWeakCallbacksStrongReference() {
+        // Expectations
         let expectation = self.expectation(description: "Success response triggered")
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        dispatcher.delay = 2
         
-        self.strongFuture = dispatcher.future(from: request).then({ response -> [Post] in
+        self.strongFuture = dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response -> Post in
             // [weak self] not needed as `self` is not called
-            return try response.decode([Post].self)
+            return try response.decode(Post.self)
         }).response({ [weak self] post in
             // [weak self] needed as `self` is called
             self?.show(post)
@@ -291,22 +202,21 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         })
         
         // Perform other logic, add delay, do whatever you would do that forced you
-        // to store a reference to this promise in the first place
+        // to store a reference to this future in the first place
         
         self.strongFuture?.send()
         waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {
+        // Expectations
         let expectation = self.expectation(description: "Success response should not be triggered")
         expectation.isInverted = true
         
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        dispatcher.delay = 2
-        
-        self.weakFuture = dispatcher.future(from: request).completion({
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).completion({
             // [weak self] needed as `self` is not called
             expectation.fulfill()
         })
@@ -314,34 +224,122 @@ class DocumentationExamples: XCTestCase, ServerProvider {
         // Our object is already nil because we have not established a strong reference to it.
         // The `send` method will do nothing. No callback will be triggered.
         
-        XCTAssertNil(self.weakFuture)
-        self.weakFuture?.send()
-        waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertNil(weakFuture)
+        weakFuture?.send()
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testWeakCallbacksWeakReference() {
+    func testSeriesJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let dispatcher = try! MockDispatcher.makeDispatcher(with: [post], status: .ok)
-        dispatcher.delay = 2
-        
-        self.weakFuture = dispatcher.future(from: request).completion({
-            // Always triggered
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response in
+            // Transform this response so that we can reference it in the join callback.
+            return try response.decode(Post.self)
+        }).join({ [weak self] post -> ResponseFuture<User>? in
+            guard let self = self else {
+                // We used [weak self] because our dispatcher is referenced on self.
+                // Returning nil will cancel execution of this promise
+                // and triger the `cancellation` and `completion` callbacks.
+                // Do this check to prevent memory leaks.
+                return nil
+            }
+            
+            // Joins a future with another one returning both results.
+            // The post is passed so it can be used in the second request.
+            // In this case, we take the user ID of the post to construct our URL.
+            let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
+            let request = URLRequest(url: url, method: .get)
+            
+            return self.dispatcher.dataFuture(from: request).then({ response -> User in
+                return try response.decode(User.self)
+            })
+        }).success({ post, user in
+            // The final response callback includes both results.
             expectation.fulfill()
         }).send()
         
-        XCTAssertNotNil(self.weakFuture)
-        
-        // This promise may still be nil at this point
-        // if the request is still pending and no errors
-        // are thrown during the request creation process.
-        waitForExpectations(timeout: 5, handler: nil)
-        XCTAssertNil(self.weakFuture)
+        waitForExpectations(timeout: 4, handler: nil)
     }
     
-    private func show(_ posts: [Post]) {
-        print(posts)
+    func testParallelJoin() {
+        let expectation = self.expectation(description: "Success response triggered")
+        
+        dispatcher.dataFuture(from: {
+            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+            return URLRequest(url: url, method: .get)
+        }).then({ response in
+            return try response.decode([Post].self)
+        }).join({ () -> ResponseFuture<[User]> in
+            // Joins a future with another one returning both results.
+            // Since this callback is non-escaping, you don't have to use [weak self]
+            let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+            let request = URLRequest(url: url, method: .get)
+            
+            return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
+                return try response.decode([User].self)
+            })
+        }).success({ posts, users in
+            // The final response callback includes both results.
+            expectation.fulfill()
+        }).send()
+        
+        waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    func testCustomFuture() {
+        // Expectations
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        let image = UIImage()
+        
+        resize(image: image).success({ resizedImage in
+            // Handle success
+        }).error({ error in
+            // Handle error
+        }).completion({
+            // Handle completion
+            completionExpectation.fulfill()
+        }).start()
+        
+        waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    private func resize(image: UIImage) -> ResponseFuture<UIImage> {
+        return ResponseFuture<UIImage>(action: { future in
+            // This is an example of how a future is executed and fulfilled.
+            DispatchQueue.global(qos: .background).async {
+                // lets make an expensive operation on a background thread.
+                // The success and progress and error callbacks will be synced on the main thread
+                // So no need to sync back to the main thread.
+                
+                do {
+                    // Do an expensive operation here ....
+                    let resizedImage = try image.resize(ratio: 16/9)
+                    
+                    // If possible, we can send smaller progress updates
+                    // Otherwise it's a good idea to send 1 to indicate this task is all finished.
+                    // Not sending this won't cause any harm but your progress callback will not be triggered as a result of this future.
+                    future.update(progress: 1)
+                    future.succeed(with: resizedImage)
+                } catch {
+                    future.fail(with: error)
+                }
+            }
+        })
+    }
+    
+    
+    
+    private func show(_ post: Post) {
+        print(post)
+    }
+}
+
+extension UIImage {
+    func resize(ratio: CGFloat) throws -> UIImage {
+        return self
     }
 }

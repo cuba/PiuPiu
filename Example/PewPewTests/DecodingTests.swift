@@ -11,23 +11,27 @@ import XCTest
 @testable import Example
 
 class DecodingTests: XCTestCase {
+    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
+        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
+            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
+        } else if request.pathMatches(pattern: [.constant("posts")]) {
+            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
+            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
+        } else {
+            throw ResponseError.notFound
+        }
+    })
+    
     func testUnwrappingData() {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData(post)
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let data = try response.unwrapData()
             
             // do something with data.
@@ -45,19 +49,11 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData(post)
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let string = try response.decodeString(encoding: .utf8)
             
             // do something with string.
@@ -75,19 +71,11 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData(post)
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let posts = try response.decode(Post.self)
             
             // do something with string.
@@ -105,19 +93,11 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts/1")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData(post)
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let post = try response.decodeMapDecodable(MapCodablePost.self)
             
             // do something with string.
@@ -135,19 +115,11 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData([post])
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.future(from: request).response({ response in
+        dispatcher.dataFuture(from: request).response({ response in
             let posts = try response.decodeMapDecodable([MapCodablePost].self)
             
             // do something with string.
@@ -164,33 +136,20 @@ class DecodingTests: XCTestCase {
     
     func testUnsuccessfulCodableDeserialization() {
         // Given
-        
-        let url = URL(string: "https://jsonplaceholder.typicode.com")!
-        let dispatcher = MockDispatcher(baseUrl: url, mockStatusCode: .ok)
-        let request = BasicRequest(method: .get, path: "/posts")
-        let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            try dispatcher.setMockData([post])
-        } catch {
-            XCTFail("Should not fail serialization")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
         
         // When
-        
         let errorExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        
-        dispatcher.promise(from: request).then({ response in
+        dispatcher.dataFuture(from: request).then({ response in
             // When
             return try response.decode(Post.self)
         }).success({ response in
             // Then
             XCTFail("Should not trigger the success")
-        }).failure({ response in
-            XCTFail("Should not trigger the failure")
         }).error({ error in
             errorExpectation.fulfill()
         }).completion({

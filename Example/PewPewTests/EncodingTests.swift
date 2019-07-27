@@ -15,8 +15,8 @@ class EncodingTests: XCTestCase {
     func testAddDataToRequest() {
         // Given
         let myData = Data(count: 0)
-        
-        var request = BasicRequest(method: .post, path: "/users")
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        var request = URLRequest(url: url)
         request.httpBody = myData
         XCTAssertNotNil(request.httpBody)
     }
@@ -30,48 +30,39 @@ class EncodingTests: XCTestCase {
         """
         
         // Example
-        var request = BasicRequest(method: .post, path: "/users")
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        var request = URLRequest(url: url)
         request.setHTTPBody(string: jsonString, encoding: .utf8)
         XCTAssertNotNil(request.httpBody)
     }
     
     func testEncodeJsonObject() {
-        do {
-            let jsonObject: [String: Any?] = [
-                "id": "123",
-                "name": "Kevin Malone"
-            ]
-            
-            var request = BasicRequest(method: .post, path: "/users")
-            try request.setJSONBody(jsonObject: jsonObject)
-            XCTAssertNotNil(request.httpBody)
-        } catch {
-            XCTFail("Should not throw")
-        }
+        let jsonObject: [String: Any?] = [
+            "id": "123",
+            "name": "Kevin Malone"
+        ]
+        
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        var request = URLRequest(url: url)
+        XCTAssertNoThrow(try request.setJSONBody(jsonObject: jsonObject))
+        XCTAssertNotNil(request.httpBody)
     }
     
     func testEncodeEncodable() {
         let myCodable = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        
-        do {
-            var request = BasicRequest(method: .post, path: "/posts")
-            try request.setJSONBody(encodable: myCodable)
-            XCTAssertNotNil(request.httpBody)
-        } catch {
-            XCTFail("Should not throw")
-        }
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        var request = URLRequest(url: url)
+        XCTAssertNoThrow(try request.setJSONBody(encodable: myCodable))
+        XCTAssertNotNil(request.httpBody)
     }
     
     func testEncodeMapEncodable() {
         let mappable = MapCodablePost(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        var request = BasicRequest(method: .post, path: "/posts")
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        var request = URLRequest(url: url)
         
-        do {
-            try request.setJSONBody(mapEncodable: mappable)
-            XCTAssertNotNil(request.httpBody)
-        } catch {
-            XCTFail("Should not throw")
-        }
+        XCTAssertNoThrow(try request.setJSONBody(mapEncodable: mappable))
+        XCTAssertNotNil(request.httpBody)
     }
 
 }

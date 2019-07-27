@@ -8,18 +8,19 @@
 
 import Foundation
 
+/// A list of typical errors
 public enum ResponseError: Error {
-    case badRequest(cause: Error?)
-    case unauthorized(cause: Error?)
-    case forbidden(cause: Error?)
-    case notFound(cause: Error?)
-    case conflict(cause: Error?)
-    case unprocessableEntity(cause: Error?)
-    case internalServerError(cause: Error?)
-    case serviceUnavailable(cause: Error?)
-    case otherClientError(cause: Error?)
-    case otherServerError(cause: Error?)
-    case unknown(cause: Error?)
+    case badRequest
+    case unauthorized
+    case forbidden
+    case notFound
+    case conflict
+    case unprocessableEntity
+    case internalServerError
+    case serviceUnavailable
+    case otherClientError
+    case otherServerError
+    case unknown
     
     public var errorKey: String {
         switch self {

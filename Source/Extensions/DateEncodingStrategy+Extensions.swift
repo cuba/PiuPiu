@@ -9,13 +9,14 @@
 import Foundation
 
 public extension JSONEncoder.DateEncodingStrategy {
-    
+    /// A date encoding strategy that uses the RFC3339 encoding format
     static var rfc3339: JSONEncoder.DateEncodingStrategy {
         return JSONEncoder.DateEncodingStrategy.formatted(DateFormatter.rfc3339)
     }
 }
 
 public extension JSONDecoder.DateDecodingStrategy {
+    /// A date decoding strategy that uses the RFC3339 encoding format
     static var rfc3339: JSONDecoder.DateDecodingStrategy {
         return JSONDecoder.DateDecodingStrategy.formatted(DateFormatter.rfc3339)
     }

@@ -29,6 +29,11 @@ public struct SuccessResponse<T>: ResponseInterface {
         self.statusCode = statusCode
     }
     
+    /// Create a response object from another response object of any other type.
+    ///
+    /// - Parameters:
+    ///   - data: The data object to return.
+    ///   - response: The response to extract `httpResponse`, `urlRequest` and `statusCode` from.
     public init<U: ResponseInterface>(data: T, response: U) {
         self.data = data
         self.httpResponse = response.httpResponse
