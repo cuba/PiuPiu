@@ -1,5 +1,5 @@
 //
-//  NetworkSerializerTests.swift
+//  RequestSerializerTests.swift
 //  PewPewTests
 //
 //  Created by Jacob Sikorski on 2019-07-16.
@@ -10,7 +10,7 @@ import XCTest
 @testable import PiuPiu
 @testable import Example
 
-class NetworkSerializerTests: XCTestCase, ServerProvider {
+class RequestSerializerTests: XCTestCase, ServerProvider {
     
     var baseURL: URL? {
         return URL(string: "https://jsonplaceholder.typicode.com/posts/1")
@@ -37,7 +37,7 @@ class NetworkSerializerTests: XCTestCase, ServerProvider {
         errorExpectation.isInverted = true
         
         // Given
-        let networkSerializer = NetworkSerializer(dispatcher: instantDispatcher, serverProvider: self)
+        let networkSerializer = RequestSerializer(dispatcher: instantDispatcher, serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts/1")
         
         // Then

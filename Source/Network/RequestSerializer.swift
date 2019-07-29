@@ -1,5 +1,5 @@
 //
-//  NetworkSerializer.swift
+//  RequestSerializer.swift
 //  PiuPiu iOS
 //
 //  Created by Jacob Sikorski on 2019-07-16.
@@ -8,9 +8,8 @@
 
 import Foundation
 
-
 /// This class wraps the dispatcher and users a `Request` protocol to send the request. This way you don't have to manually create the url request when using the same type of request.
-public class NetworkSerializer {
+public class RequestSerializer {
     public var dispatcher: DataDispatcher
     public weak var serverProvider: ServerProvider?
     
@@ -60,3 +59,6 @@ public class NetworkSerializer {
         }
     }
 }
+
+@available(*, deprecated, renamed: "RequestSerializer")
+typealias NetworkSerializer = RequestSerializer

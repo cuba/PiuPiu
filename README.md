@@ -37,7 +37,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.4.0
 * Change `Request` protocol to return a `URLRequest`
-* Replace  `Dispatcher` and `NetworkDispatcher` with `NetworkSerializer`. 
+* Replace  `Dispatcher` and `NetworkDispatcher` with `RequestSerializer`. 
 * Callbacks will only be triggered once.  Once a callback is triggered, its reference is released (nullified).
   * This is to prevent memory leaks.
 * Added `DataDispatcher`, `UploadDispatcher`, and `DownloadDispatcher` protocols which use a basic `URLRequest`.
