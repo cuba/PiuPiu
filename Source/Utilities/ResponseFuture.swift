@@ -118,8 +118,8 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// Cancel this future. The cancellation and completion callbacks will be triggered on this future and no further callbacks will be triggered.
-    func cancel() {
+    /// Cancel this future. The cancellation and completion callbacks will be triggered on this future and no further callbacks will be triggered. This method does not cancel the URLSessionTask itself. When manually creating a wrapped ResponseFuture, you need to make sure you call cancel on the new future to continue the cancellation chain.
+    public func cancel() {
         DispatchQueue.main.async {
             self.cancellationHandler?()
             self.status = .cancelled
