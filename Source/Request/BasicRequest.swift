@@ -72,11 +72,45 @@ public struct BasicRequest: Request {
     ///
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    ///   - encoder: The `JSONEncoder` to use on the encodable object.
+    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    mutating public func setJSONBody<T: Encodable>(encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
+        self.httpBody = try encoder.encode(encodable)
+        ensureJSONContentType()
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    ///   - encoder: The `JSONEncoder` to use on the encodable object.
+    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    mutating public func setJSONBody<T: Encodable>(_ encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
+        try setJSONBody(encodable: encodable, encoder: encoder)
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `DateEncodingStrategy`.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    ///   - dateEncodingStrategy: The `DateEncodingStrategy` to use on the encoder.
     /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
     mutating public func setJSONBody<T: Encodable>(encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
         let encoder = JSONEncoder()
-        self.httpBody = try encoder.encode(encodable)
-        ensureJSONContentType()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        try setJSONBody(encodable: encodable, encoder: encoder)
+    }
+    
+    /// Add JSON body to the request from an `Encodable` object using the `DateEncodingStrategy`.
+    ///
+    /// - Parameters:
+    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
+    ///   - dateEncodingStrategy: The `DateEncodingStrategy` to use on the encoder.
+    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    mutating public func setJSONBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = dateEncodingStrategy
+        try setJSONBody(encodable: encodable, encoder: encoder)
     }
     
     /// Add body to the request from a string.
@@ -139,15 +173,6 @@ public struct BasicRequest: Request {
     mutating public func setJSONBody(jsonArray: [[String: Any?]], options: JSONSerialization.WritingOptions = []) throws {
         try setHTTPBody(jsonArray: jsonArray, options: options)
         ensureJSONContentType()
-    }
-    
-    /// Add JSON body to the request from an `Encodable` object using the `JSONEncoder`.
-    ///
-    /// - Parameters:
-    ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
-    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
-    mutating public func setJSONBody<T: Encodable>(_ encodable: T, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .rfc3339) throws {
-        try setJSONBody(encodable: encodable, dateEncodingStrategy: dateEncodingStrategy)
     }
     
     mutating public func ensureJSONContentType() {
