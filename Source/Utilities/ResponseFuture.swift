@@ -207,15 +207,15 @@ public class ResponseFuture<T> {
     /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
     ///
     /// - Parameters:
-    ///   - queue: The queue to run the callback on. The default is a background thread.
+    ///   - queue: The queue to run the callback on. The default is the main thread.
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
-    public func then<U>(on queue: DispatchQueue = DispatchQueue.global(qos: .utility), _ callback: @escaping (T) throws -> U?) -> ResponseFuture<U> {
+    public func then<U>(on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U?) -> ResponseFuture<U> {
         return ResponseFuture<U>(order: order + 1) { future in
             self.success({ result in
                 queue.async {
                     do {
-                        guard let transformed = try callback(result) else {
+                        guard let transformed = try successCallback(result) else {
                             future.cancel()
                             return
                         }
@@ -320,13 +320,13 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
-    public func replace<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
+    public func replace<U>(_ successCallback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
         return ResponseFuture<U>(order: order + 1) { future in
             let secondWeight = Float(1)/Float(future.order)
             let firstWeight = 1 - secondWeight
             
             self.success({ response in
-                guard let newPromise = try callback(response) else {
+                guard let newPromise = try successCallback(response) else {
                     future.cancel()
                     return
                 }
