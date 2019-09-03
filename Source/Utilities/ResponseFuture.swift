@@ -278,20 +278,23 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
     /// - Returns: A new response future with a success response with either the object or the error.
-    public func thenError<U>(_ callback: @escaping (Error) throws -> U?) -> ResponseFuture<NonFailingResult<T, U>> {
-        return ResponseFuture<NonFailingResult<T, U>>(order: order + 1) { future in
+    public func thenError<U>(_ callback: @escaping (T?, Error?) throws -> U?) -> ResponseFuture<U> {
+        return ResponseFuture<U>(order: order + 1) { future in
             self.success({ response in
-                let result: NonFailingResult<T, U> = (response, nil)
-                future.succeed(with: result)
+                guard let callbackResult = try callback(response, nil) else {
+                    future.cancel()
+                    return
+                }
+                
+                future.succeed(with: callbackResult)
             }).error({ error in
                 do {
-                    guard let callbackResult = try callback(error) else {
+                    guard let callbackResult = try callback(nil, error) else {
                         future.cancel()
                         return
                     }
                     
-                    let result: NonFailingResult<T, U> = (nil, callbackResult)
-                    future.succeed(with: result)
+                    future.succeed(with: callbackResult)
                 } catch let newError {
                     future.fail(with: newError)
                 }
@@ -307,8 +310,8 @@ public class ResponseFuture<T> {
     ///
     /// - Returns: A new future containing the original response or an error object.
     public func nonFailing() -> ResponseFuture<NonFailingResult<T, Error>> {
-        return self.thenError({ error in
-            return error
+        return self.thenError({ (response, error) -> NonFailingResult<T, Error> in
+            return (response, error)
         })
     }
     
