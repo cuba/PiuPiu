@@ -203,7 +203,7 @@ public class ResponseFuture<T> {
     }
     
     /// Convert the success callback to another type.
-    /// Passing nil will cause a cancellation error to be triggered.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
     ///
     /// - Parameters:
@@ -236,7 +236,7 @@ public class ResponseFuture<T> {
     }
     
     /// Return a new future with the results of both futures.
-    /// Passing nil will cause a cancellation error to be triggered.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
@@ -274,6 +274,7 @@ public class ResponseFuture<T> {
     
     
     /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
     /// - Returns: A new response future with a success response with either the object or the error.
@@ -312,7 +313,7 @@ public class ResponseFuture<T> {
     }
     
     /// Return a new future with the results of the future retuned in the callback.
-    /// Passing nil will cause a cancellation error to be triggered.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
@@ -349,7 +350,7 @@ public class ResponseFuture<T> {
     }
     
     /// Return a new future with the results of the future retuned in the callback.
-    /// Passing nil will cause a cancellation error to be triggered.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
