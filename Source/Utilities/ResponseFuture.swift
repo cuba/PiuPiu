@@ -46,12 +46,12 @@ public class ResponseFuture<T> {
     /// The status of the future.
     private(set) public var status: Status
     private(set) public var progress: Float = 0
-    public let order: Int
+    public let order: UInt
     
     /// Initialize the future with an action that is triggered when calling the start() method.
     ///
     /// - Parameter action: The action that is performed. The action returns this future when triggered.
-    public init(order: Int = 1, action: @escaping ActionCallback) {
+    public init(order: UInt = 1, action: @escaping ActionCallback) {
         self.action = action
         self.status = .created
         self.order = order
@@ -60,7 +60,7 @@ public class ResponseFuture<T> {
     /// Initialize the future with an result that triggers the success callback as soon as `send` or `start` is called.
     ///
     /// - Parameter result: The result that is returned right away.
-    public convenience init(order: Int = 1, result: T) {
+    public convenience init(order: UInt = 1, result: T) {
         self.init(order: order) { future in
             future.succeed(with: result)
         }
