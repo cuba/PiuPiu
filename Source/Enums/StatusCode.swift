@@ -166,7 +166,7 @@ public enum StatusCode: Equatable {
     }
     
     /// Returns any errors associated with this status code. This will always return a value unless the status code is either 1xx (informational), 2xx (success) or 3xx (rediect).
-    var error: ResponseError? {
+    public var error: ResponseError? {
         switch self {
         case .badRequest:           return ResponseError.badRequest
         case .unauthorized:         return ResponseError.unauthorized
