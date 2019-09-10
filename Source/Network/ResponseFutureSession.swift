@@ -222,7 +222,15 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
 extension ResponseFutureSession: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let responseFutureTask = self.dataTask(for: dataTask, removeTask: false)
-        responseFutureTask?.data = data
+        
+        // Data is not recieved all at once
+        // So we create an empty data set and append the results
+        if responseFutureTask?.data == nil {
+            responseFutureTask?.data = Data()
+        }
+        
+        // Append data
+        responseFutureTask?.data?.append(data)
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
