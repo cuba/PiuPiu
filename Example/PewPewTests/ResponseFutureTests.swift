@@ -263,60 +263,6 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 1, handler: nil)
     }
     
-    func testFutureIsCancelledWhenNilIsReturnedInThen() {
-        let successExpectation = self.expectation(description: "Success response triggered")
-        let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
-        let completionExpectation = self.expectation(description: "Completion triggered")
-        errorExpectation.isInverted = true
-        successExpectation.isInverted = true
-        
-        instantDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).then({ response -> Post? in
-            return nil
-        }).success({ response in
-            successExpectation.fulfill()
-        }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
-        }).cancellation({
-            cancellationExpectation.fulfill()
-        }).completion({
-            completionExpectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testFutureIsCancelledWhenNilIsReturnedInThenError() {
-        let successExpectation = self.expectation(description: "Success response triggered")
-        let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
-        let completionExpectation = self.expectation(description: "Completion triggered")
-        errorExpectation.isInverted = true
-        successExpectation.isInverted = true
-        
-        instantDispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).thenError({ (response, error) -> Post? in
-            return nil
-        }).success({ response in
-            successExpectation.fulfill()
-        }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
-        }).cancellation({
-            cancellationExpectation.fulfill()
-        }).completion({
-            completionExpectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
         let successExpectation = self.expectation(description: "Success response triggered")
         let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
