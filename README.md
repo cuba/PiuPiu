@@ -101,6 +101,14 @@ github "cuba/PiuPiu" ~> 1.4
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
 
+### Cocoapods
+
+To integrate PiuPiu into your project using Cocoapods, specify it in your `Podfile`:
+
+```bash
+pod 'PiuPiu', '~> 1.4'
+```
+
 ## Usage
 
 ### 1. Import `PiuPiu` into your file
