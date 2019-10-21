@@ -121,6 +121,9 @@ class UploadViewController: BaseViewController {
         case .savedPhotosAlbum:
             // Not supported
             break
+        @unknown default:
+            // Not supported
+            break
         }
     }
     
@@ -202,11 +205,12 @@ extension UploadViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension UIImagePickerController.SourceType {
-    var title: String {
+    var title: String? {
         switch self {
         case .camera:           return "Camera"
         case .photoLibrary:     return "Photo Library"
         case .savedPhotosAlbum: return "Photo Album"
+        @unknown default:       return nil
         }
     }
 }
