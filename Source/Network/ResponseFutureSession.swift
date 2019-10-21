@@ -24,7 +24,7 @@ class ResponseFutureSession: NSObject {
     ///   - configuration: The configuration that will be used to create a `URLSession`.
     public init(configuration: URLSessionConfiguration = .default) {
         self.configuration = configuration
-        self.queue = DispatchQueue(label: "com.jacobsikorski.PiuPiu.ResponseFutureSession", attributes: .concurrent)
+        self.queue = DispatchQueue(label: "com.jacobsikorski.PiuPiu.ResponseFutureSession")
     }
     
     deinit {
@@ -139,17 +139,15 @@ class ResponseFutureSession: NSObject {
     }
     
     private func dataTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Response<Data?>>? {
-        var responseFutureTask: ResponseFutureTask<Response<Data?>>?
-        
         queue.sync {
-            responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
+            let responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
             
             if removeTask {
                 dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
             }
+            
+            return responseFutureTask
         }
-        
-        return responseFutureTask
     }
 }
 
@@ -157,16 +155,10 @@ class ResponseFutureSession: NSObject {
 
 extension ResponseFutureSession: URLSessionDelegate {
     public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-        for responseFutureTask in dataTasks {
-            responseFutureTask.future.cancel()
-        }
-        
-        for responseFutureTask in downloadTasks {
-            responseFutureTask.future.cancel()
-        }
-        
         queue.sync {
+            downloadTasks.forEach({ $0.future.cancel() })
             downloadTasks = []
+            dataTasks.forEach({ $0.future.cancel() })
             dataTasks = []
         }
     }
