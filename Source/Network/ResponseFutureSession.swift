@@ -139,15 +139,17 @@ class ResponseFutureSession: NSObject {
     }
     
     private func dataTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Response<Data?>>? {
+        var responseFutureTask: ResponseFutureTask<Response<Data?>>?
+        
         queue.sync {
-            let responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
+            responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
             
             if removeTask {
                 dataTasks.removeAll(where: { $0.taskIdentifier == task.taskIdentifier })
             }
-            
-            return responseFutureTask
         }
+        
+        return responseFutureTask
     }
 }
 
