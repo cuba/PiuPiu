@@ -11,6 +11,11 @@
 		8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
 		8CC5081E1ED35E7D00C19524 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */; };
+		DA173AF0238F5EFC0045617E /* URLTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AEF238F5EFC0045617E /* URLTransformTests.swift */; };
+		DA173AF5238F60C20045617E /* KeyedDecodingContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF4238F60C20045617E /* KeyedDecodingContainerTests.swift */; };
+		DA173AF7238F60D20045617E /* KeyedEncodingContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */; };
+		DA173AFE238F72650045617E /* TimeZoneTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */; };
+		DA173B00238F747A0045617E /* DateTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AFF238F747A0045617E /* DateTransformTests.swift */; };
 		DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326522CD7A2F00027DBA /* UploadViewController.swift */; };
 		DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */; };
 		DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */; };
@@ -114,6 +119,11 @@
 		8CC5081A1ED35E7D00C19524 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Example/Assets.xcassets; sourceTree = "<group>"; };
 		8CC5081D1ED35E7D00C19524 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8CC5081F1ED35E7D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Example/Info.plist; sourceTree = "<group>"; };
+		DA173AEF238F5EFC0045617E /* URLTransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTransformTests.swift; sourceTree = "<group>"; };
+		DA173AF4238F60C20045617E /* KeyedDecodingContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedDecodingContainerTests.swift; sourceTree = "<group>"; };
+		DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedEncodingContainerTests.swift; sourceTree = "<group>"; };
+		DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeZoneTransformTests.swift; sourceTree = "<group>"; };
+		DA173AFF238F747A0045617E /* DateTransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTransformTests.swift; sourceTree = "<group>"; };
 		DA28326522CD7A2F00027DBA /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallelRequestsViewController.swift; sourceTree = "<group>"; };
 		DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryApiManager.swift; sourceTree = "<group>"; };
@@ -317,6 +327,11 @@
 				DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */,
 				DAE5EF6922190A0200D1990B /* Info.plist */,
 				DAA9F5E42263D513002CDAAF /* TestHelper.swift */,
+				DA173AEF238F5EFC0045617E /* URLTransformTests.swift */,
+				DA173AF4238F60C20045617E /* KeyedDecodingContainerTests.swift */,
+				DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */,
+				DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */,
+				DA173AFF238F747A0045617E /* DateTransformTests.swift */,
 			);
 			path = PewPewTests;
 			sourceTree = "<group>";
@@ -520,11 +535,16 @@
 				DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */,
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
+				DA173AFE238F72650045617E /* TimeZoneTransformTests.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
+				DA173B00238F747A0045617E /* DateTransformTests.swift in Sources */,
 				DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */,
+				DA173AF5238F60C20045617E /* KeyedDecodingContainerTests.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 				DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */,
+				DA173AF7238F60D20045617E /* KeyedEncodingContainerTests.swift in Sources */,
+				DA173AF0238F5EFC0045617E /* URLTransformTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

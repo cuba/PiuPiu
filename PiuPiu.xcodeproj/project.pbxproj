@@ -12,6 +12,30 @@
 		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
 		DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
 		DA137AD522CACD6B00387C34 /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
+		DA173AD7238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
+		DA173AD8238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
+		DA173AD9238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
+		DA173ADA238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
+		DA173ADC238F557F0045617E /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173ADB238F557F0045617E /* URLTransform.swift */; };
+		DA173ADD238F557F0045617E /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173ADB238F557F0045617E /* URLTransform.swift */; };
+		DA173ADE238F557F0045617E /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173ADB238F557F0045617E /* URLTransform.swift */; };
+		DA173ADF238F557F0045617E /* URLTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173ADB238F557F0045617E /* URLTransform.swift */; };
+		DA173AE6238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */; };
+		DA173AE7238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */; };
+		DA173AE8238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */; };
+		DA173AE9238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */; };
+		DA173AEB238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */; };
+		DA173AEC238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */; };
+		DA173AED238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */; };
+		DA173AEE238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */; };
+		DA173AF9238F713F0045617E /* TimeZoneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF8238F713F0045617E /* TimeZoneTransform.swift */; };
+		DA173AFA238F713F0045617E /* TimeZoneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF8238F713F0045617E /* TimeZoneTransform.swift */; };
+		DA173AFB238F713F0045617E /* TimeZoneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF8238F713F0045617E /* TimeZoneTransform.swift */; };
+		DA173AFC238F713F0045617E /* TimeZoneTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF8238F713F0045617E /* TimeZoneTransform.swift */; };
+		DA173B02238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
+		DA173B03238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
+		DA173B04238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
+		DA173B05238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
 		DA1ED7AF226A86770058EE26 /* PiuPiu_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -133,6 +157,12 @@
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
 		DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureSession.swift; sourceTree = "<group>"; };
 		DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTask.swift; sourceTree = "<group>"; };
+		DA173AD6238F54DE0045617E /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
+		DA173ADB238F557F0045617E /* URLTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTransform.swift; sourceTree = "<group>"; };
+		DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Transform.swift"; sourceTree = "<group>"; };
+		DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedEncodingContainer+Transform.swift"; sourceTree = "<group>"; };
+		DA173AF8238F713F0045617E /* TimeZoneTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeZoneTransform.swift; sourceTree = "<group>"; };
+		DA173B01238F76900045617E /* DateTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTransform.swift; sourceTree = "<group>"; };
 		DA1ED79F226A86760058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_tvOS.h; sourceTree = "<group>"; };
 		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -238,6 +268,7 @@
 		8CC507E61ED35A8D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DA173AD5238F54740045617E /* Transforms */,
 				DA3E507821B4A250001450EC /* Network */,
 				DA3E506E21B45904001450EC /* Enums */,
 				DA28353E22DE0C8800027DBA /* Request */,
@@ -266,8 +297,21 @@
 				DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */,
 				DA28328622D0F74800027DBA /* URLRequest+Extensions.swift */,
 				DA2832FD22D8647C00027DBA /* URL+Extensions.swift */,
+				DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */,
+				DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DA173AD5238F54740045617E /* Transforms */ = {
+			isa = PBXGroup;
+			children = (
+				DA173AD6238F54DE0045617E /* Transform.swift */,
+				DA173ADB238F557F0045617E /* URLTransform.swift */,
+				DA173AF8238F713F0045617E /* TimeZoneTransform.swift */,
+				DA173B01238F76900045617E /* DateTransform.swift */,
+			);
+			path = Transforms;
 			sourceTree = "<group>";
 		};
 		DA1ED7A0226A86760058EE26 /* PiuPiu tvOS */ = {
@@ -566,6 +610,7 @@
 				DA28354422DE0D4F00027DBA /* ServerProvider.swift in Sources */,
 				DA28325522CD6F7B00027DBA /* URLRequestDispatcher.swift in Sources */,
 				DA28328722D0F74800027DBA /* URLRequest+Extensions.swift in Sources */,
+				DA173AE6238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */,
 				DA28354222DE0CEC00027DBA /* BasicRequest.swift in Sources */,
 				DAE6F73E1FEF0C830060AA80 /* SerializationError.swift in Sources */,
 				DA2832F822D646D100027DBA /* PathValue.swift in Sources */,
@@ -574,16 +619,21 @@
 				DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */,
 				DA0A3E56222973E60050E073 /* DateFormatter+Extensions.swift in Sources */,
 				DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */,
+				DA173AD7238F54DE0045617E /* Transform.swift in Sources */,
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
 				DA28327A22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28354022DE0CC700027DBA /* Request.swift in Sources */,
 				DA28352822DC4D6E00027DBA /* ResponseInterface.swift in Sources */,
 				DA28355222DE209B00027DBA /* RequestSerializer.swift in Sources */,
+				DA173B02238F76900045617E /* DateTransform.swift in Sources */,
 				DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */,
+				DA173AEB238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832FE22D8647C00027DBA /* URL+Extensions.swift in Sources */,
+				DA173ADC238F557F0045617E /* URLTransform.swift in Sources */,
 				DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */,
 				DA28325722CD719500027DBA /* DataDispatcher.swift in Sources */,
 				DA2832F422D646A100027DBA /* PathComponent.swift in Sources */,
+				DA173AF9238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28328B22D24C3800027DBA /* MockURLRequestDispatcher.swift in Sources */,
 				DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */,
 				DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */,
@@ -601,6 +651,7 @@
 				DA28355D22DE244E00027DBA /* BasicRequest.swift in Sources */,
 				DA28357522DE24B100027DBA /* URL+Extensions.swift in Sources */,
 				DA28356C22DE249100027DBA /* PathComponent.swift in Sources */,
+				DA173AE7238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */,
 				DA28356F22DE249A00027DBA /* PathValue.swift in Sources */,
 				DA2832E522D3B58F00027DBA /* URLRequest+Extensions.swift in Sources */,
 				DA2832A322D3B53C00027DBA /* URLRequestDispatcher.swift in Sources */,
@@ -609,16 +660,21 @@
 				DA28327B22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326222CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325822CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA173AD8238F54DE0045617E /* Transform.swift in Sources */,
 				DA28356322DE245700027DBA /* RequestSerializer.swift in Sources */,
 				DA2832DF22D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DA2832BB22D3B55F00027DBA /* Response.swift in Sources */,
 				DA2832D922D3B58200027DBA /* Response+Extensions.swift in Sources */,
 				DA2832AF22D3B54800027DBA /* ResponseFutureTask.swift in Sources */,
+				DA173B03238F76900045617E /* DateTransform.swift in Sources */,
 				DA2832BE22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA173AEC238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AC22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
+				DA173ADD238F557F0045617E /* URLTransform.swift in Sources */,
 				DA28355A22DE244900027DBA /* Request.swift in Sources */,
 				DA2832DC22D3B58500027DBA /* DateFormatter+Extensions.swift in Sources */,
 				DA2832D622D3B57F00027DBA /* ResponseFuture.swift in Sources */,
+				DA173AFA238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356922DE248000027DBA /* ResponseInterface.swift in Sources */,
 				DA28356622DE245C00027DBA /* RequestError.swift in Sources */,
 				DA2832B822D3B55A00027DBA /* HTTPMethod.swift in Sources */,
@@ -636,6 +692,7 @@
 				DA28355E22DE244F00027DBA /* BasicRequest.swift in Sources */,
 				DA28357822DE273C00027DBA /* URL+Extensions.swift in Sources */,
 				DA28356D22DE249100027DBA /* PathComponent.swift in Sources */,
+				DA173AE8238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */,
 				DA28357022DE249A00027DBA /* PathValue.swift in Sources */,
 				DA2832E622D3B59000027DBA /* URLRequest+Extensions.swift in Sources */,
 				DA2832A422D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */,
@@ -644,16 +701,21 @@
 				DA28327C22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326322CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325922CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA173AD9238F54DE0045617E /* Transform.swift in Sources */,
 				DA28356422DE245700027DBA /* RequestSerializer.swift in Sources */,
 				DA2832E022D3B58900027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DA2832BC22D3B55F00027DBA /* Response.swift in Sources */,
 				DA2832DA22D3B58200027DBA /* Response+Extensions.swift in Sources */,
 				DA2832B022D3B54900027DBA /* ResponseFutureTask.swift in Sources */,
+				DA173B04238F76900045617E /* DateTransform.swift in Sources */,
 				DA2832BF22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA173AED238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AD22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
+				DA173ADE238F557F0045617E /* URLTransform.swift in Sources */,
 				DA28355B22DE244B00027DBA /* Request.swift in Sources */,
 				DA2832DD22D3B58600027DBA /* DateFormatter+Extensions.swift in Sources */,
 				DA2832D722D3B57F00027DBA /* ResponseFuture.swift in Sources */,
+				DA173AFB238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356A22DE248000027DBA /* ResponseInterface.swift in Sources */,
 				DA28356722DE245D00027DBA /* RequestError.swift in Sources */,
 				DA2832B922D3B55A00027DBA /* HTTPMethod.swift in Sources */,
@@ -671,6 +733,7 @@
 				DA28355F22DE244F00027DBA /* BasicRequest.swift in Sources */,
 				DA28357922DE273D00027DBA /* URL+Extensions.swift in Sources */,
 				DA28356E22DE249200027DBA /* PathComponent.swift in Sources */,
+				DA173AE9238F56C90045617E /* KeyedDecodingContainer+Transform.swift in Sources */,
 				DA28357122DE249B00027DBA /* PathValue.swift in Sources */,
 				DA2832E722D3B59100027DBA /* URLRequest+Extensions.swift in Sources */,
 				DA2832A522D3B53D00027DBA /* URLRequestDispatcher.swift in Sources */,
@@ -679,16 +742,21 @@
 				DA28327D22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
 				DA28326422CD745800027DBA /* DownloadDispatcher.swift in Sources */,
 				DA28325A22CD719500027DBA /* DataDispatcher.swift in Sources */,
+				DA173ADA238F54DE0045617E /* Transform.swift in Sources */,
 				DA28356522DE245800027DBA /* RequestSerializer.swift in Sources */,
 				DA2832E122D3B58A00027DBA /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DA2832BD22D3B56000027DBA /* Response.swift in Sources */,
 				DA2832DB22D3B58300027DBA /* Response+Extensions.swift in Sources */,
 				DA2832B122D3B54A00027DBA /* ResponseFutureTask.swift in Sources */,
+				DA173B05238F76900045617E /* DateTransform.swift in Sources */,
 				DA2832C022D3B56400027DBA /* SuccessResponse.swift in Sources */,
+				DA173AEE238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AE22D3B54700027DBA /* ResponseFutureSession.swift in Sources */,
+				DA173ADF238F557F0045617E /* URLTransform.swift in Sources */,
 				DA28355C22DE244B00027DBA /* Request.swift in Sources */,
 				DA2832DE22D3B58700027DBA /* DateFormatter+Extensions.swift in Sources */,
 				DA2832D822D3B58000027DBA /* ResponseFuture.swift in Sources */,
+				DA173AFC238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356B22DE248100027DBA /* ResponseInterface.swift in Sources */,
 				DA28356822DE245D00027DBA /* RequestError.swift in Sources */,
 				DA2832BA22D3B55B00027DBA /* HTTPMethod.swift in Sources */,
