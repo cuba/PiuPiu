@@ -555,7 +555,7 @@ struct ExampleModel: Codable {
 }
 ```
 
-In the above example, we are passing the `TimeZoneTransform()` to the `decode` and `encode` methods becuse it conforms to the `EncodingTransform` and `DecodingTransform` protocols. This works for  `encode`, `encodeIfPresent`, `decode` and `decodeIfPresent`. We can also just use the `EncodingTransform` (if we don't care about )
+In the above example, we are passing the `TimeZoneTransform()` to the `decode` and `encode` methods becuse it conforms to the `EncodingTransform` and `DecodingTransform` protocols. We can also just use the `EncodingTransform` if we just need it for encoding or `DecodingTransform` if we only need our transform for decoding. If you need both, you can just use the `Transform` protocol which contains both.
 
 ### Custom transforms
 
