@@ -36,6 +36,18 @@
 		DA173B03238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
 		DA173B04238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
 		DA173B05238F76900045617E /* DateTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B01238F76900045617E /* DateTransform.swift */; };
+		DA173B07238F87210045617E /* IntFromStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B06238F87210045617E /* IntFromStringTransform.swift */; };
+		DA173B08238F87210045617E /* IntFromStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B06238F87210045617E /* IntFromStringTransform.swift */; };
+		DA173B09238F87210045617E /* IntFromStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B06238F87210045617E /* IntFromStringTransform.swift */; };
+		DA173B0A238F87210045617E /* IntFromStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B06238F87210045617E /* IntFromStringTransform.swift */; };
+		DA173B0C238F875F0045617E /* StringFromIntTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B0B238F875F0045617E /* StringFromIntTransform.swift */; };
+		DA173B0D238F875F0045617E /* StringFromIntTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B0B238F875F0045617E /* StringFromIntTransform.swift */; };
+		DA173B0E238F875F0045617E /* StringFromIntTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B0B238F875F0045617E /* StringFromIntTransform.swift */; };
+		DA173B0F238F875F0045617E /* StringFromIntTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B0B238F875F0045617E /* StringFromIntTransform.swift */; };
+		DA173B11238F8A390045617E /* EmptyStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B10238F8A390045617E /* EmptyStringTransform.swift */; };
+		DA173B12238F8A390045617E /* EmptyStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B10238F8A390045617E /* EmptyStringTransform.swift */; };
+		DA173B13238F8A390045617E /* EmptyStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B10238F8A390045617E /* EmptyStringTransform.swift */; };
+		DA173B14238F8A390045617E /* EmptyStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B10238F8A390045617E /* EmptyStringTransform.swift */; };
 		DA1ED7AF226A86770058EE26 /* PiuPiu_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7BF226A87160058EE26 /* PiuPiu_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA1ED7CC226A878C0058EE26 /* PiuPiu_watchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -163,6 +175,9 @@
 		DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedEncodingContainer+Transform.swift"; sourceTree = "<group>"; };
 		DA173AF8238F713F0045617E /* TimeZoneTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeZoneTransform.swift; sourceTree = "<group>"; };
 		DA173B01238F76900045617E /* DateTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTransform.swift; sourceTree = "<group>"; };
+		DA173B06238F87210045617E /* IntFromStringTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntFromStringTransform.swift; sourceTree = "<group>"; };
+		DA173B0B238F875F0045617E /* StringFromIntTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFromIntTransform.swift; sourceTree = "<group>"; };
+		DA173B10238F8A390045617E /* EmptyStringTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStringTransform.swift; sourceTree = "<group>"; };
 		DA1ED79F226A86760058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_tvOS.h; sourceTree = "<group>"; };
 		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -310,6 +325,9 @@
 				DA173ADB238F557F0045617E /* URLTransform.swift */,
 				DA173AF8238F713F0045617E /* TimeZoneTransform.swift */,
 				DA173B01238F76900045617E /* DateTransform.swift */,
+				DA173B06238F87210045617E /* IntFromStringTransform.swift */,
+				DA173B0B238F875F0045617E /* StringFromIntTransform.swift */,
+				DA173B10238F8A390045617E /* EmptyStringTransform.swift */,
 			);
 			path = Transforms;
 			sourceTree = "<group>";
@@ -636,10 +654,13 @@
 				DA173AF9238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28328B22D24C3800027DBA /* MockURLRequestDispatcher.swift in Sources */,
 				DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */,
+				DA173B0C238F875F0045617E /* StringFromIntTransform.swift in Sources */,
+				DA173B11238F8A390045617E /* EmptyStringTransform.swift in Sources */,
 				DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */,
 				DA28355422DE20CF00027DBA /* RequestError.swift in Sources */,
 				DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */,
 				DA28326122CD745800027DBA /* DownloadDispatcher.swift in Sources */,
+				DA173B07238F87210045617E /* IntFromStringTransform.swift in Sources */,
 				DA137AD522CACD6B00387C34 /* ResponseFutureTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -677,10 +698,13 @@
 				DA173AFA238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356922DE248000027DBA /* ResponseInterface.swift in Sources */,
 				DA28356622DE245C00027DBA /* RequestError.swift in Sources */,
+				DA173B0D238F875F0045617E /* StringFromIntTransform.swift in Sources */,
+				DA173B12238F8A390045617E /* EmptyStringTransform.swift in Sources */,
 				DA2832B822D3B55A00027DBA /* HTTPMethod.swift in Sources */,
 				DA2832D022D3B57800027DBA /* SerializationError.swift in Sources */,
 				DA2832CD22D3B57500027DBA /* ResponseError.swift in Sources */,
 				DA28357222DE249E00027DBA /* WildcardType.swift in Sources */,
+				DA173B08238F87210045617E /* IntFromStringTransform.swift in Sources */,
 				DA2832A922D3B54200027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -718,10 +742,13 @@
 				DA173AFB238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356A22DE248000027DBA /* ResponseInterface.swift in Sources */,
 				DA28356722DE245D00027DBA /* RequestError.swift in Sources */,
+				DA173B0E238F875F0045617E /* StringFromIntTransform.swift in Sources */,
+				DA173B13238F8A390045617E /* EmptyStringTransform.swift in Sources */,
 				DA2832B922D3B55A00027DBA /* HTTPMethod.swift in Sources */,
 				DA2832D122D3B57800027DBA /* SerializationError.swift in Sources */,
 				DA2832CE22D3B57500027DBA /* ResponseError.swift in Sources */,
 				DA28357322DE249E00027DBA /* WildcardType.swift in Sources */,
+				DA173B09238F87210045617E /* IntFromStringTransform.swift in Sources */,
 				DA2832AA22D3B54300027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -759,10 +786,13 @@
 				DA173AFC238F713F0045617E /* TimeZoneTransform.swift in Sources */,
 				DA28356B22DE248100027DBA /* ResponseInterface.swift in Sources */,
 				DA28356822DE245D00027DBA /* RequestError.swift in Sources */,
+				DA173B0F238F875F0045617E /* StringFromIntTransform.swift in Sources */,
+				DA173B14238F8A390045617E /* EmptyStringTransform.swift in Sources */,
 				DA2832BA22D3B55B00027DBA /* HTTPMethod.swift in Sources */,
 				DA2832D222D3B57900027DBA /* SerializationError.swift in Sources */,
 				DA2832CF22D3B57600027DBA /* ResponseError.swift in Sources */,
 				DA28357422DE249E00027DBA /* WildcardType.swift in Sources */,
+				DA173B0A238F87210045617E /* IntFromStringTransform.swift in Sources */,
 				DA2832AB22D3B54400027DBA /* MockURLRequestDispatcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

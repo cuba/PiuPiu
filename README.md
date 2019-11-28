@@ -533,40 +533,29 @@ dispatcher.dataFuture(from: request).response({ response in
 
 Transforms let you handle custom objects that are not `Encodable` or `Decodable` or if the default `Encodable` or `Decodable` logic on the object does not work for you. 
 
-For example, let's say we want to change how we encode a `TimeZone`. So we can use the included `DateTransform` object like this:
+For example, let's say we want to change how we encode a `TimeZone` so that it encodes or decodes a timezone identifier (example: `America/Montreal`). We can use the included `TimeZoneTransform` object like this:
 
 ```swift
 struct ExampleModel: Codable {
     enum CodingKeys: String, CodingKey {
-        case startDate
+        case timeZoneId
     }
     
-    /// A formatter using the following format: `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
-    private static let formatter: DateFormatter = {
-        let rfc3339DateFormatter = DateFormatter()
-        rfc3339DateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        rfc3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        rfc3339DateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return rfc3339DateFormatter
-    }()
-    
-    let startDate: Date
+    let timeZone: TimeZone
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let dateTransform = DateTransform(formatter: ExampleModel.formatter)
-        self.startDate = try container.decode(using: dateTransform, forKey: .startDate)
+        self.timeZone = try container.decode(using: TimeZoneTransform(), forKey: .timeZoneId)
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        let dateTransform = DateTransform(formatter: ExampleModel.formatter)
-        try container.encode(startDate, forKey: .startDate, using: dateTransform)
+        try container.encode(timeZone, forKey: .timeZoneId, using: TimeZoneTransform())
     }
 }
 ```
 
-Notice that we are passing the `DateTransform(formatter:)` to the decode and encode methods.  This works for  `encode`, `encodeIfPresent`, `decode` and `decodeIfPresent`
+In the above example, we are passing the `TimeZoneTransform()` to the `decode` and `encode` methods becuse it conforms to the `EncodingTransform` and `DecodingTransform` protocols. This works for  `encode`, `encodeIfPresent`, `decode` and `decodeIfPresent`. We can also just use the `EncodingTransform` (if we don't care about )
 
 ### Custom transforms
 
@@ -628,17 +617,35 @@ public class DateTransform: Transform {
 
 The following transforms are included:
 
-#### DateTransform
+#### `DateTransform`
 
 Converts a `String` to a `Date` and vice versa using a custom formatter.
 
-#### TimeZoneTransform
+#### `TimeZoneTransform`
 
 Converts a time zone identifier (example: `America/Montreal`) to a `TimeZone` and vice versa.
 
-#### URLTransform
+#### `URLTransform`
 
 Converts a URL `String` (example: `https://example.com`) to a `URL` object and vice versa. 
+
+#### `IntFromStringTransform`
+
+Converts a `String` to an `Int64` in both directions.
+
+#### `StringFromIntTransform`
+
+Converts an `Int64` (including `Int`) to a `String` in both directions.
+
+#### `EmptyStringTransform` 
+
+Will convert an empty string (`""`) to a nil.
+
+NOTE: Using `decodeIfPresent` will result in a double optional (i.e. `??`). You can solve this by colescing to a `nil`. For example: 
+
+```swift
+self.value = try container.decodeIfPresent(using: EmptyStringTransform(), forKey: .value) ?? nil
+```
 
 ## Memory Managment
 

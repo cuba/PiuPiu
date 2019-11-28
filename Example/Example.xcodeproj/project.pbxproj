@@ -16,6 +16,7 @@
 		DA173AF7238F60D20045617E /* KeyedEncodingContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */; };
 		DA173AFE238F72650045617E /* TimeZoneTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */; };
 		DA173B00238F747A0045617E /* DateTransformTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AFF238F747A0045617E /* DateTransformTests.swift */; };
+		DA173B1B238F8B6A0045617E /* EmptyStringTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173B1A238F8B6A0045617E /* EmptyStringTransform.swift */; };
 		DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326522CD7A2F00027DBA /* UploadViewController.swift */; };
 		DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */; };
 		DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */; };
@@ -124,6 +125,7 @@
 		DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedEncodingContainerTests.swift; sourceTree = "<group>"; };
 		DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeZoneTransformTests.swift; sourceTree = "<group>"; };
 		DA173AFF238F747A0045617E /* DateTransformTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTransformTests.swift; sourceTree = "<group>"; };
+		DA173B1A238F8B6A0045617E /* EmptyStringTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStringTransform.swift; sourceTree = "<group>"; };
 		DA28326522CD7A2F00027DBA /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
 		DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallelRequestsViewController.swift; sourceTree = "<group>"; };
 		DA28327122CE448E00027DBA /* CloudinaryApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryApiManager.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 				DA173AF6238F60D20045617E /* KeyedEncodingContainerTests.swift */,
 				DA173AFD238F72650045617E /* TimeZoneTransformTests.swift */,
 				DA173AFF238F747A0045617E /* DateTransformTests.swift */,
+				DA173B1A238F8B6A0045617E /* EmptyStringTransform.swift */,
 			);
 			path = PewPewTests;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA173AFE238F72650045617E /* TimeZoneTransformTests.swift in Sources */,
 				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
+				DA173B1B238F8B6A0045617E /* EmptyStringTransform.swift in Sources */,
 				DA173B00238F747A0045617E /* DateTransformTests.swift in Sources */,
 				DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */,
 				DA173AF5238F60C20045617E /* KeyedDecodingContainerTests.swift in Sources */,
