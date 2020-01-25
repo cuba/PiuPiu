@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Decodes a  time zone identifier represented as a `String` into a `TimeZone` and vice versa. An example of an identifier is `America/Montreal`. A time zone identifier (unlike an offset) has more regional information.
 public class TimeZoneTransform: Transform {
     public enum TransformError: Error {
         case invalidIdentifier
@@ -17,6 +18,7 @@ public class TimeZoneTransform: Transform {
         // Empty
     }
     
+    /// Decodes a  time zone identifier represented as a `String` into a `TimeZone`.  If the value cannot be decoded, a `TimeZoneTransform.TransformError` will be thrown.
     public func transform(json: String) throws -> TimeZone {
         guard let url = TimeZone(identifier: json) else {
             throw TransformError.invalidIdentifier
@@ -25,6 +27,7 @@ public class TimeZoneTransform: Transform {
         return url
     }
     
+    /// Encodes a `TimeZone` into its identifier `String` representation. No error is ever thrown because a `TimeZone` can always be converted to an identifier.
     public func transform(value: TimeZone) throws -> String {
         return value.identifier
     }

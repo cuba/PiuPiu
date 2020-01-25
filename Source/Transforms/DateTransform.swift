@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Decodes a  `String` represented date to a `Date` object with a given `DateFormatter` and vice versa.
 public class DateTransform: Transform {
     public let formatter: DateFormatter
     
@@ -19,6 +20,7 @@ public class DateTransform: Transform {
         case invalidDateFormat(expectedFormat: String, received: String)
     }
     
+    /// Decodes a  `String` represented date to a `Date` object using the specified `DateFormatter`.  If the value cannot be decoded, `DateTransform.TransformError` will be thrown.
     public func transform(json: String) throws -> Date {
         guard let date = formatter.date(from: json) else {
             throw TransformError.invalidDateFormat(expectedFormat: formatter.dateFormat, received: json)
@@ -27,6 +29,7 @@ public class DateTransform: Transform {
         return date
     }
     
+    /// Encodes a `Date` into its `String` representation using the specified `DateFormater`. No error is ever thrown because a `Date` can always be converted to string.
     public func transform(value: Date) throws -> String {
         return formatter.string(from: value)
     }

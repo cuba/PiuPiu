@@ -8,18 +8,23 @@
 
 import Foundation
 
+/// Defines a protocol for encoding data to JSON
 public protocol EncodingTransform {
     associatedtype ValueSource
     associatedtype JSONDestination: Encodable
     
+    /// Transform any type to an `Encodable` type which will be encoded further by the `Encoder`.
     func transform(value: Self.ValueSource) throws -> Self.JSONDestination
 }
 
+/// Defines a protocol for decoding data from JSON
 public protocol DecodingTransform {
     associatedtype JSONSource: Decodable
     associatedtype ValueDesitination
     
+    /// Transform a `Decodable` value to any type. The `Decodable` type specified will be parsed by a `Decoder`.
     func transform(json: Self.JSONSource) throws -> Self.ValueDesitination
 }
 
+/// A protocol that encompasses both `EncodingTransform` and `DecodingTransform`
 public protocol Transform: EncodingTransform, DecodingTransform {}

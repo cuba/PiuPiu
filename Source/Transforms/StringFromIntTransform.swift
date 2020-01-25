@@ -8,13 +8,16 @@
 
 import Foundation
 
+/// Converts an `Int64` into a `String` in both directions (to JSON and from JSON)
 public class StringFromIntTransform: Transform {
     public init() {}
     
+    /// Converts an `Int64` into a `String`. No error is ever thrown.
     public func transform(json: Int64) throws -> String {
         return "\(json)"
     }
     
+    /// Converts an `Int64` into a `String`. No error is ever thrown.
     public func transform(value: Int64) throws -> String {
         return "\(value)"
     }

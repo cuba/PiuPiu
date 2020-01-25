@@ -8,9 +8,11 @@
 
 import Foundation
 
+/// Filters out empty strings and returns a nil value in both directions (to JSON and from JSON)
 public class EmptyStringTransform: Transform {
     public init() {}
-    
+
+    /// Filters out empty strings and returns a nil value.
     public func transform(json: String) throws -> String? {
         if !json.isEmpty {
             return json
@@ -19,6 +21,7 @@ public class EmptyStringTransform: Transform {
         }
     }
     
+    /// Filters out empty strings and returns a nil value.
     public func transform(value: String) throws -> String? {
         if !value.isEmpty {
             return value
