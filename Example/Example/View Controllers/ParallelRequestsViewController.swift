@@ -14,8 +14,7 @@ class ParallelRequestsViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Send", for: .normal)
         button.addTarget(self, action: #selector(tappedSendButton), for: .touchUpInside)
-        button.setTitleColor(UIColor.blue, for: .normal)
-        button.tintColor = UIColor.black
+        button.setTitleColor(UIColor.systemBlue, for: .normal)
         return button
     }()
     

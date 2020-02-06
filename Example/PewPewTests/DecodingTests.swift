@@ -89,51 +89,6 @@ class DecodingTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testDecodingMapDecodable() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-        let request = URLRequest(url: url, method: .get)
-        
-        // Example
-        dispatcher.dataFuture(from: request).response({ response in
-            let post = try response.decodeMapDecodable(MapCodablePost.self)
-            
-            // do something with string.
-            print(post)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
-    func testDecodingMapDecodableArray() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
-        
-        // Example
-        dispatcher.dataFuture(from: request).response({ response in
-            let posts = try response.decodeMapDecodable([MapCodablePost].self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-            print(error)
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
     func testUnsuccessfulCodableDeserialization() {
         // Given
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!

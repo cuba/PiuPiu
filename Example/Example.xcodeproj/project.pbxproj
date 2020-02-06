@@ -23,7 +23,6 @@
 		DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */; };
 		DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28327722CE4D8600027DBA /* CloudinaryError.swift */; };
 		DA28328D22D255D300027DBA /* DataDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28328C22D255D300027DBA /* DataDispatcherTests.swift */; };
-		DA2832EE22D3BEB000027DBA /* URLRequest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */; };
 		DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */; };
 		DA28330422D867F800027DBA /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28330322D867F800027DBA /* Endpoint.swift */; };
 		DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28351422D8780600027DBA /* PerformanceTests.swift */; };
@@ -40,14 +39,9 @@
 		DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */; };
 		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
 		DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84522CA62E800C126E5 /* BaseViewController.swift */; };
-		DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */; };
-		DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54922623666002CDAAF /* MappablePost.swift */; };
 		DAA9F54C2262369B002CDAAF /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54B2262369B002CDAAF /* Post.swift */; };
 		DAA9F54E226236DD002CDAAF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F54D226236DD002CDAAF /* User.swift */; };
 		DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F551226241C4002CDAAF /* EncodingTests.swift */; };
-		DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F55322624298002CDAAF /* MapCodablePost.swift */; };
-		DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55D22624465002CDAAF /* MapCodableKit.framework */; };
-		DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAA9F55E22624465002CDAAF /* ObjectMapper.framework */; };
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
@@ -132,7 +126,6 @@
 		DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryUploadErrorResponse.swift; sourceTree = "<group>"; };
 		DA28327722CE4D8600027DBA /* CloudinaryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudinaryError.swift; sourceTree = "<group>"; };
 		DA28328C22D255D300027DBA /* DataDispatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcherTests.swift; sourceTree = "<group>"; };
-		DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Extensions.swift"; sourceTree = "<group>"; };
 		DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensionTests.swift; sourceTree = "<group>"; };
 		DA28330322D867F800027DBA /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		DA28351422D8780600027DBA /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
@@ -149,20 +142,14 @@
 		DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DAA9A84322C9ABA200C126E5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		DAA9A84522CA62E800C126E5 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
-		DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
-		DAA9F54922623666002CDAAF /* MappablePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MappablePost.swift; sourceTree = "<group>"; };
 		DAA9F54B2262369B002CDAAF /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		DAA9F54D226236DD002CDAAF /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DAA9F551226241C4002CDAAF /* EncodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodingTests.swift; sourceTree = "<group>"; };
-		DAA9F55322624298002CDAAF /* MapCodablePost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCodablePost.swift; sourceTree = "<group>"; };
-		DAA9F55D22624465002CDAAF /* MapCodableKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapCodableKit.framework; path = Carthage/Build/iOS/MapCodableKit.framework; sourceTree = "<group>"; };
-		DAA9F55E22624465002CDAAF /* ObjectMapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectMapper.framework; path = Carthage/Build/iOS/ObjectMapper.framework; sourceTree = "<group>"; };
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
 		DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = PiuPiu.xcodeproj; path = ../PiuPiu.xcodeproj; sourceTree = "<group>"; };
-		DAA9F595226303FC002CDAAF /* Cartfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
-		DAA9F596226303FC002CDAAF /* Cartfile.resolved */ = {isa = PBXFileReference; lastKnownFileType = text; path = Cartfile.resolved; sourceTree = "<group>"; };
 		DAA9F5E42263D513002CDAAF /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
+		DAD58BCB23ECCAA70009E425 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Example.entitlements; path = Example/Example.entitlements; sourceTree = "<group>"; };
 		DAE5EF6522190A0100D1990B /* PewPewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PewPewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationExamples.swift; sourceTree = "<group>"; };
@@ -174,8 +161,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */,
-				DAA9F56122624465002CDAAF /* ObjectMapper.framework in Frameworks */,
-				DAA9F56022624465002CDAAF /* MapCodableKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +177,7 @@
 		8CC508071ED35E7D00C19524 = {
 			isa = PBXGroup;
 			children = (
+				DAD58BCB23ECCAA70009E425 /* Example.entitlements */,
 				DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */,
 				8CC508121ED35E7D00C19524 /* Source */,
 				DAA9F5862262E47C002CDAAF /* Supporting Files */,
@@ -217,7 +203,6 @@
 				DAA9A84222C9AB5900C126E5 /* View Controllers */,
 				DA787581226A73AA00A626AF /* Errors */,
 				DAA9F5482262365C002CDAAF /* Models */,
-				DAA9F52B22604DDD002CDAAF /* Extensions */,
 				8CC508131ED35E7D00C19524 /* AppDelegate.swift */,
 				DAA9A84322C9ABA200C126E5 /* Cell.swift */,
 			);
@@ -271,22 +256,11 @@
 			path = "View Controllers";
 			sourceTree = "<group>";
 		};
-		DAA9F52B22604DDD002CDAAF /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				DA2832ED22D3BEB000027DBA /* URLRequest+Extensions.swift */,
-				DAA9F52C22604DF8002CDAAF /* Response+Extensions.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		DAA9F5482262365C002CDAAF /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				DAA9F54B2262369B002CDAAF /* Post.swift */,
 				DAA9F54D226236DD002CDAAF /* User.swift */,
-				DAA9F54922623666002CDAAF /* MappablePost.swift */,
-				DAA9F55322624298002CDAAF /* MapCodablePost.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -296,8 +270,6 @@
 			children = (
 				DA53DAAA2289DE3300722CD8 /* README.md */,
 				DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */,
-				DAA9F595226303FC002CDAAF /* Cartfile */,
-				DAA9F596226303FC002CDAAF /* Cartfile.resolved */,
 				8CC5081A1ED35E7D00C19524 /* Assets.xcassets */,
 				8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */,
 				8CC5081F1ED35E7D00C19524 /* Info.plist */,
@@ -309,8 +281,6 @@
 		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DAA9F55D22624465002CDAAF /* MapCodableKit.framework */,
-				DAA9F55E22624465002CDAAF /* ObjectMapper.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -350,7 +320,6 @@
 				8CC5080D1ED35E7D00C19524 /* Frameworks */,
 				8CC5080E1ED35E7D00C19524 /* Resources */,
 				8CC508531ED35F7A00C19524 /* Embed Frameworks */,
-				DADDFF651FEF2676005FEC56 /* Carthage */,
 			);
 			buildRules = (
 			);
@@ -479,25 +448,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		DADDFF651FEF2676005FEC56 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/MapCodableKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ObjectMapper.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		8CC5080C1ED35E7D00C19524 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -506,12 +456,9 @@
 				8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */,
 				DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */,
 				DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */,
-				DAA9F55422624298002CDAAF /* MapCodablePost.swift in Sources */,
-				DAA9F52D22604DF8002CDAAF /* Response+Extensions.swift in Sources */,
 				DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */,
 				DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */,
 				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
-				DA2832EE22D3BEB000027DBA /* URLRequest+Extensions.swift in Sources */,
 				DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */,
@@ -524,7 +471,6 @@
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
 				DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */,
-				DAA9F54A22623666002CDAAF /* MappablePost.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,6 +642,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -706,6 +654,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -715,6 +664,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -725,6 +676,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

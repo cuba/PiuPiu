@@ -55,14 +55,4 @@ class EncodingTests: XCTestCase {
         XCTAssertNoThrow(try request.setJSONBody(encodable: myCodable))
         XCTAssertNotNil(request.httpBody)
     }
-    
-    func testEncodeMapEncodable() {
-        let mappable = MapCodablePost(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        var request = URLRequest(url: url)
-        
-        XCTAssertNoThrow(try request.setJSONBody(mapEncodable: mappable))
-        XCTAssertNotNil(request.httpBody)
-    }
-
 }

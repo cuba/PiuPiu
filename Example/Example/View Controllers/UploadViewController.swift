@@ -14,8 +14,7 @@ class UploadViewController: BaseViewController {
         let button = UIButton()
         button.setTitle("Select File", for: .normal)
         button.addTarget(self, action: #selector(tappedSelectButton), for: .touchUpInside)
-        button.setTitleColor(UIColor.blue, for: .normal)
-        button.tintColor = UIColor.black
+        button.setTitleColor(UIColor.systemBlue, for: .normal)
         return button
     }()
     
