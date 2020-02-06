@@ -87,7 +87,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let model = try decoder.decode(ExampleEncodingModel.self, from: data)
+            let model = try decoder.decode(ExampleDecodingModel.self, from: data)
             
             // Then
             XCTAssertNil(model.stringWithRequiredKey)
@@ -105,7 +105,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let model = try decoder.decode(ExampleModel.self, from: data)
+            let model = try decoder.decode(ExampleDecodingModel.self, from: data)
             
             // Then
             XCTAssertNil(model.stringWithRequiredKey)
