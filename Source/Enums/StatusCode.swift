@@ -167,26 +167,15 @@ public enum StatusCode: Equatable {
     
     /// Returns any errors associated with this status code. This will always return a value unless the status code is either 1xx (informational), 2xx (success) or 3xx (rediect).
     public var error: ResponseError? {
-        switch self {
-        case .badRequest:           return ResponseError.badRequest
-        case .unauthorized:         return ResponseError.unauthorized
-        case .forbidden:            return ResponseError.forbidden
-        case .notFound:             return ResponseError.notFound
-        case .conflict:             return ResponseError.conflict
-        case .unprocessableEntity:  return ResponseError.unprocessableEntity
-        case .internalServerError:  return ResponseError.internalServerError
-        case .serviceUnavailable:   return ResponseError.serviceUnavailable
-        default:
-            switch type {
-            case .clientError:
-                return ResponseError.otherClientError
-            case .serverError:
-                return ResponseError.otherServerError
-            case .invalid:
-                return ResponseError.unknown
-            default:
-                return nil
-            }
+        switch type {
+        case .clientError:
+            return ResponseError.clientError(self)
+        case .serverError:
+            return ResponseError.serverError(self)
+        case .invalid:
+            return ResponseError.invalidStatusCode(self)
+        case .success, .redirect, .informational:
+            return nil
         }
     }
     

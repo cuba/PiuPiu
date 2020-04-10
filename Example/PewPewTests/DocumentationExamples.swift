@@ -27,7 +27,7 @@ class DocumentationExamples: XCTestCase {
             let user = User(id: 123, name: "Jim Halpert")
             return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
-            throw ResponseError.notFound
+            return try Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
     

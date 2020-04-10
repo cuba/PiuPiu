@@ -29,12 +29,8 @@
 		DA28355622DE243E00027DBA /* RequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28355522DE243E00027DBA /* RequestSerializerTests.swift */; };
 		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787582226A73BD00A626AF /* BaseNetworkError.swift */; };
-		DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787586226A742D00A626AF /* ResponseError+Extensions.swift */; };
-		DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA787588226A747E00A626AF /* SerializationError+Extensions.swift */; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
-		DA78758F226A763900A626AF /* TranslationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758E226A763900A626AF /* TranslationTests.swift */; };
 		DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */; };
 		DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */; };
 		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
@@ -132,12 +128,8 @@
 		DA28355522DE243E00027DBA /* RequestSerializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestSerializerTests.swift; sourceTree = "<group>"; };
 		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		DA787582226A73BD00A626AF /* BaseNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkError.swift; sourceTree = "<group>"; };
-		DA787586226A742D00A626AF /* ResponseError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ResponseError+Extensions.swift"; sourceTree = "<group>"; };
-		DA787588226A747E00A626AF /* SerializationError+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SerializationError+Extensions.swift"; sourceTree = "<group>"; };
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
 		DA78758C226A759C00A626AF /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
-		DA78758E226A763900A626AF /* TranslationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationTests.swift; sourceTree = "<group>"; };
 		DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DAA9A84322C9ABA200C126E5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
@@ -233,9 +225,6 @@
 		DA787581226A73AA00A626AF /* Errors */ = {
 			isa = PBXGroup;
 			children = (
-				DA787582226A73BD00A626AF /* BaseNetworkError.swift */,
-				DA787586226A742D00A626AF /* ResponseError+Extensions.swift */,
-				DA787588226A747E00A626AF /* SerializationError+Extensions.swift */,
 				DA78758C226A759C00A626AF /* String+Extensions.swift */,
 				DA28327522CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift */,
 				DA28327722CE4D8600027DBA /* CloudinaryError.swift */,
@@ -292,7 +281,6 @@
 				DA28351422D8780600027DBA /* PerformanceTests.swift */,
 				DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */,
 				DA28328C22D255D300027DBA /* DataDispatcherTests.swift */,
-				DA78758E226A763900A626AF /* TranslationTests.swift */,
 				DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */,
 				DAA9F56A22624A25002CDAAF /* DecodingTests.swift */,
 				DAA9F551226241C4002CDAAF /* EncodingTests.swift */,
@@ -455,15 +443,12 @@
 			files = (
 				8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */,
 				DA28326622CD7A2F00027DBA /* UploadViewController.swift in Sources */,
-				DA787589226A747E00A626AF /* SerializationError+Extensions.swift in Sources */,
 				DAA9A84622CA62E800C126E5 /* BaseViewController.swift in Sources */,
 				DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */,
 				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
 				DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
-				DA787587226A742D00A626AF /* ResponseError+Extensions.swift in Sources */,
 				DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */,
-				DA787583226A73BD00A626AF /* BaseNetworkError.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
 				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
@@ -484,7 +469,6 @@
 				DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */,
 				DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */,
 				DA173AFE238F72650045617E /* TimeZoneTransformTests.swift in Sources */,
-				DA78758F226A763900A626AF /* TranslationTests.swift in Sources */,
 				DA173B1B238F8B6A0045617E /* EmptyStringTransform.swift in Sources */,
 				DA173B00238F747A0045617E /* DateTransformTests.swift in Sources */,
 				DA2832FC22D85F6600027DBA /* URLExtensionTests.swift in Sources */,

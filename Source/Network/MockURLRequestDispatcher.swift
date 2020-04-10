@@ -35,7 +35,7 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             guard let self = self else { return }
             
             guard let response = try self.callback?(urlRequest) else {
-                throw ResponseError.unknown
+                throw MockDispatcherError.callbackNotSet
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
@@ -55,7 +55,7 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             guard let self = self else { return }
             
             guard let response = try self.callback?(urlRequest) else {
-                throw ResponseError.unknown
+                throw MockDispatcherError.callbackNotSet
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
@@ -75,7 +75,7 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             guard let self = self else { return }
             
             guard let response = try self.callback?(urlRequest) else {
-                throw ResponseError.unknown
+                throw MockDispatcherError.callbackNotSet
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
@@ -96,7 +96,7 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             guard let self = self else { return }
             
             guard let response = try self.callback?(urlRequest) else {
-                throw ResponseError.unknown
+                throw MockDispatcherError.callbackNotSet
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {

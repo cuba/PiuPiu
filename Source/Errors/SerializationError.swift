@@ -9,13 +9,13 @@
 import Foundation
 
 public enum SerializationError: Error {
-    case failedToDecodeResponseData(cause: Error?)
     case unexpectedEmptyResponse
+    case failedToDecodeDataToString(encoding: String.Encoding)
     
     public var errorKey: String {
         switch self {
-        case .failedToDecodeResponseData: return "InvalidObject"
-        case .unexpectedEmptyResponse   : return "EmptyResponse"
+        case .unexpectedEmptyResponse   : return "UnexpectedEmptyResponse"
+        case .failedToDecodeDataToString: return "FailedToDecodeDataToString"
         }
     }
 }

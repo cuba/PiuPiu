@@ -42,7 +42,7 @@ public extension ResponseInterface where T == Data? {
         
         // Attempt to deserialize the object.
         guard let string = String(data: data, encoding: encoding) else {
-            throw SerializationError.failedToDecodeResponseData(cause: nil)
+            throw SerializationError.failedToDecodeDataToString(encoding: encoding)
         }
         
         return string
@@ -55,12 +55,7 @@ public extension ResponseInterface where T == Data? {
     /// - Throws: `SerializationError`
     func decodeJSONObject(options: JSONSerialization.ReadingOptions = .mutableContainers) throws -> Any {
         let data = try self.unwrapData()
-        
-        do {
-            return try JSONSerialization.jsonObject(with: data, options: options)
-        } catch {
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
+        return try JSONSerialization.jsonObject(with: data, options: options)
     }
     
     /// Attempt to Decode the response data into a Decodable object.
@@ -85,14 +80,7 @@ public extension ResponseInterface where T == Data? {
     /// - Throws: `SerializationError`
     func decode<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder) throws  -> D {
         let data = try self.unwrapData()
-        
-        do {
-            // Attempt to deserialize the object.
-            return try decoder.decode(D.self, from: data)
-        } catch {
-            // Wrap this error so that we're controlling the error type and return a safe message to the user.
-            throw SerializationError.failedToDecodeResponseData(cause: error)
-        }
+        return try decoder.decode(type, from: data)
     }
 }
 

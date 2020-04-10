@@ -12,6 +12,7 @@
 		DA0A3E582229788E0050E073 /* DateEncodingStrategy+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */; };
 		DA137AD322CACD5500387C34 /* ResponseFutureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */; };
 		DA137AD522CACD6B00387C34 /* ResponseFutureTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */; };
+		DA145F5E2440B31F00251A12 /* MockDispatcherError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA145F5D2440B31F00251A12 /* MockDispatcherError.swift */; };
 		DA173AD7238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
 		DA173AD8238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
 		DA173AD9238F54DE0045617E /* Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA173AD6238F54DE0045617E /* Transform.swift */; };
@@ -169,6 +170,7 @@
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
 		DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureSession.swift; sourceTree = "<group>"; };
 		DA137AD422CACD6B00387C34 /* ResponseFutureTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTask.swift; sourceTree = "<group>"; };
+		DA145F5D2440B31F00251A12 /* MockDispatcherError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDispatcherError.swift; sourceTree = "<group>"; };
 		DA173AD6238F54DE0045617E /* Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transform.swift; sourceTree = "<group>"; };
 		DA173ADB238F557F0045617E /* URLTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLTransform.swift; sourceTree = "<group>"; };
 		DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+Transform.swift"; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 				DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */,
 				DAE6F73D1FEF0C830060AA80 /* SerializationError.swift */,
 				DA28355322DE20CF00027DBA /* RequestError.swift */,
+				DA145F5D2440B31F00251A12 /* MockDispatcherError.swift */,
 			);
 			path = Errors;
 			sourceTree = "<group>";
@@ -640,6 +643,7 @@
 				DA173AD7238F54DE0045617E /* Transform.swift in Sources */,
 				DA3E507021B4590F001450EC /* StatusCode.swift in Sources */,
 				DA28327A22CE71D100027DBA /* UploadDispatcher.swift in Sources */,
+				DA145F5E2440B31F00251A12 /* MockDispatcherError.swift in Sources */,
 				DA28354022DE0CC700027DBA /* Request.swift in Sources */,
 				DA28352822DC4D6E00027DBA /* ResponseInterface.swift in Sources */,
 				DA28355222DE209B00027DBA /* RequestSerializer.swift in Sources */,

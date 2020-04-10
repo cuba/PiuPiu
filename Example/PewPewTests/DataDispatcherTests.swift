@@ -19,7 +19,7 @@ class DataDispatcherTests: XCTestCase {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
         } else {
-            throw ResponseError.notFound
+            return try Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
     

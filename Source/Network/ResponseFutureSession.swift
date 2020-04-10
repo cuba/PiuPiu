@@ -185,7 +185,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             
             // Ensure there is a http response
             guard let httpResponse = responseFutureTask.response as? HTTPURLResponse else {
-                let error = ResponseError.unknown
+                let error = ResponseError.missingHTTPResponse
                 responseFutureTask.future.fail(with: error)
                 return
             }

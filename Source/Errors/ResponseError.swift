@@ -10,31 +10,17 @@ import Foundation
 
 /// A list of typical errors
 public enum ResponseError: Error {
-    case badRequest
-    case unauthorized
-    case forbidden
-    case notFound
-    case conflict
-    case unprocessableEntity
-    case internalServerError
-    case serviceUnavailable
-    case otherClientError
-    case otherServerError
-    case unknown
+    case clientError(StatusCode)
+    case serverError(StatusCode)
+    case invalidStatusCode(StatusCode)
+    case missingHTTPResponse
     
     public var errorKey: String {
         switch self {
-        case .badRequest            : return "BadRequest"
-        case .unauthorized          : return "Unauthorized"
-        case .forbidden             : return "Forbidden"
-        case .notFound              : return "NotFound"
-        case .conflict              : return "Conflict"
-        case .unprocessableEntity   : return "UnprocessableEntity"
-        case .internalServerError   : return "InternalServerError"
-        case .serviceUnavailable    : return "ServiceUnavailable"
-        case .otherClientError      : return "OtherClientError"
-        case .otherServerError      : return "OtherClientError"
-        case .unknown               : return "Unknown"
+        case .clientError:          return "ClientError"
+        case .serverError:          return "ServerError"
+        case .invalidStatusCode:    return "InvalidStatusCode"
+        case .missingHTTPResponse:  return "MissingHTTPResponse"
         }
     }
 }
