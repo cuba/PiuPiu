@@ -9,7 +9,7 @@
 import Foundation
 
 /// A mock dispatcher that does not actually make any network calls.
-open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadDispatcher {
+open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     public typealias ResponseCallback = (URLRequest) throws -> Response<Data?>
     open var delay: TimeInterval = 0
     
@@ -41,26 +41,6 @@ open class MockURLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadD
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
                 future.update(progress: 1)
                 future.succeed(with: response)
-            }
-        }
-    }
-    
-    /// Create a future to make a download request.
-    ///
-    /// - Parameters:
-    ///   - request: The request to send
-    /// - Returns: The promise that will send the request.
-    open func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<Data?> {
-        return ResponseFuture<Data?>() { [weak self] future in
-            guard let self = self else { return }
-            
-            guard let response = try self.callback?(urlRequest) else {
-                throw MockDispatcherError.callbackNotSet
-            }
-            
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                future.update(progress: 1)
-                future.succeed(with: response.data)
             }
         }
     }

@@ -45,7 +45,7 @@ class ParallelRequestsViewController: UIViewController {
         
         var future = ResponseFuture<[String]>(result: [])
         
-        for id in 1...1000 {
+        for id in 1...100 {
             future = future.join({ () -> ResponseFuture<String> in
                 return self.fetchUser(forId: id)
             }).then({ response in
