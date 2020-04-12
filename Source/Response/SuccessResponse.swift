@@ -1,5 +1,5 @@
 //
-//  SuccessResponse.swift
+//  HTTPResponse.swift
 //  PiuPiu iOS
 //
 //  Created by Jacob Sikorski on 2019-03-31.
@@ -9,11 +9,26 @@
 import Foundation
 
 /// A successful response object. This is retuned when there is any 2xx response.
-public struct SuccessResponse<T>: ResponseInterface {
+public struct HTTPResponse<T>: ResponseInterface {
     public let data: T
+    public var urlRequest: URLRequest
     public let httpResponse: HTTPURLResponse
-    public let urlRequest: URLRequest
-    public let statusCode: StatusCode
+    
+    public var urlResponse: URLResponse {
+        return httpResponse
+    }
+    
+    /// Returns a status code in as an enum
+    var statusCode: StatusCode {
+        return StatusCode(rawValue: httpResponse.statusCode)
+    }
+    
+    /// Handles common HTTP errors like 4xx and 5xx errors.
+    /// Network related errors are handled directly in
+    /// The error callback.
+    var httpError: HTTPError? {
+        return statusCode.httpError
+    }
     
     /// Create a successful response object.
     ///
@@ -22,22 +37,35 @@ public struct SuccessResponse<T>: ResponseInterface {
     ///   - httpResponse: The `HTTPURLresponse` that is returned.
     ///   - urlRequest: The original `URLRequest` that was created.
     ///   - statusCode: The status code enum that is returned.
-    public init(data: T, httpResponse: HTTPURLResponse, urlRequest: URLRequest, statusCode: StatusCode) {
+    public init(data: T, urlRequest: URLRequest, httpResponse: HTTPURLResponse) {
         self.data = data
-        self.httpResponse = httpResponse
         self.urlRequest = urlRequest
-        self.statusCode = statusCode
+        self.httpResponse = httpResponse
     }
-    
-    /// Create a response object from another response object of any other type.
+}
+
+extension HTTPResponse where T == Data? {
+    /// Attempt to Decode the response to a response containing a decodable object
     ///
     /// - Parameters:
-    ///   - data: The data object to return.
-    ///   - response: The response to extract `httpResponse`, `urlRequest` and `statusCode` from.
-    public init<U: ResponseInterface>(data: T, response: U) {
-        self.data = data
-        self.httpResponse = response.httpResponse
-        self.urlRequest = response.urlRequest
-        self.statusCode = response.statusCode
+    ///   - type: The Decodable type to decode
+    ///   - decoder: The decoder to use.
+    /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
+    public func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D> {
+        let decoded = try self.decode(type, using: decoder)
+        return HTTPResponse<D>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
+    }
+    
+    /// Attempt to Decode the response to a response containing a decodable object
+    ///
+    /// - Parameters:
+    ///   - type: The Decodable type to decode
+    ///   - decoder: The decoder to use.
+    /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
+    public func decodedResponseIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D?> {
+        let decoded = try self.decodeIfPresent(type, using: decoder)
+        return HTTPResponse<D?>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
     }
 }

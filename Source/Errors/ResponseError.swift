@@ -10,17 +10,17 @@ import Foundation
 
 /// A list of typical errors
 public enum ResponseError: Error {
-    case clientError(StatusCode)
-    case serverError(StatusCode)
-    case invalidStatusCode(StatusCode)
-    case missingHTTPResponse
+    case noResponse
+    case notHTTPResponse
+    case unexpectedEmptyResponse
+    case failedToDecodeDataToString(encoding: String.Encoding)
     
     public var errorKey: String {
         switch self {
-        case .clientError:          return "ClientError"
-        case .serverError:          return "ServerError"
-        case .invalidStatusCode:    return "InvalidStatusCode"
-        case .missingHTTPResponse:  return "MissingHTTPResponse"
+        case .noResponse:                   return "NoResponse"
+        case .notHTTPResponse:              return "NotHTTPResponse"
+        case .unexpectedEmptyResponse:      return "UnexpectedEmptyResponse"
+        case .failedToDecodeDataToString:   return "FailedToDecodeDataToString"
         }
     }
 }

@@ -66,7 +66,7 @@ public extension Response where T == Data? {
     static func makeMockResponse(with urlRequest: URLRequest, data: Data? = nil, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         let url = urlRequest.url!
         let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
-        let response = Response(data: data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode)
+        let response = Response(data: data, urlRequest: urlRequest, urlResponse: httpResponse)
         
         return response
     }

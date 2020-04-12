@@ -157,6 +157,11 @@ public enum StatusCode: Equatable {
         }
     }
     
+    
+    public var localizedDescription: String {
+        return HTTPURLResponse.localizedString(forStatusCode: rawValue)
+    }
+    
     public init(rawValue: Int) {
         if let statusCode = StatusCode.predefined.first(where: { $0.rawValue == rawValue }) {
             self = statusCode
@@ -166,14 +171,14 @@ public enum StatusCode: Equatable {
     }
     
     /// Returns any errors associated with this status code. This will always return a value unless the status code is either 1xx (informational), 2xx (success) or 3xx (rediect).
-    public var error: ResponseError? {
+    public var httpError: HTTPError? {
         switch type {
         case .clientError:
-            return ResponseError.clientError(self)
+            return HTTPError.clientError(self)
         case .serverError:
-            return ResponseError.serverError(self)
+            return HTTPError.serverError(self)
         case .invalid:
-            return ResponseError.invalidStatusCode(self)
+            return HTTPError.invalidStatusCode(self)
         case .success, .redirect, .informational:
             return nil
         }

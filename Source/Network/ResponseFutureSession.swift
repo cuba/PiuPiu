@@ -184,16 +184,14 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             }
             
             // Ensure there is a http response
-            guard let httpResponse = responseFutureTask.response as? HTTPURLResponse else {
-                let error = ResponseError.missingHTTPResponse
-                responseFutureTask.future.fail(with: error)
+            guard let urlResponse = responseFutureTask.response else {
+                responseFutureTask.future.fail(with: ResponseError.noResponse)
                 return
             }
             
             // Create the response
             let urlRequest = responseFutureTask.urlRequest
-            let statusCode = StatusCode(rawValue: httpResponse.statusCode)
-            let response = Response(data: responseFutureTask.data, httpResponse: httpResponse, urlRequest: urlRequest, statusCode: statusCode)
+            let response = Response(data: responseFutureTask.data, urlRequest: urlRequest, urlResponse: urlResponse)
             
             responseFutureTask.future.update(progress: 1)
             responseFutureTask.future.succeed(with: response)

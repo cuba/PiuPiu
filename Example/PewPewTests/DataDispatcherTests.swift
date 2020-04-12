@@ -34,13 +34,13 @@ class DataDispatcherTests: XCTestCase {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
         }).response({ response in
-            // Handles any responses including negative responses such as 4xx and 5xx
+            // Attempt to get a http response
+            let httpResponse = try response.makeHTTPResponse()
             
-            // The error object is available if we get an
-            // undesirable status code such as a 4xx or 5xx
-            if let error = response.error {
+            // Check if we have any http error
+            if let error = httpResponse.httpError {
                 // Throwing an error in any callback will trigger the `error` callback.
-                // This allows us to pool all failures in one place.
+                // This allows us to pool all failures in that callback if we want to
                 throw error
             }
             
@@ -77,16 +77,19 @@ class DataDispatcherTests: XCTestCase {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> [Post] in
-            if let error = response.error {
-                // The error is available when a non-2xx response comes in
-                // Such as a 4xx or 5xx
-                // You may also parse a custom error object here.
+            // Attempt to get a http response
+            let httpResponse = try response.makeHTTPResponse()
+            
+            // Check if we have any http error
+            if let error = httpResponse.httpError {
+                // Throwing an error in any callback will trigger the `error` callback.
+                // This allows us to pool all failures in that callback if we want to
                 throw error
-            } else {
-                // Return the decoded object. If an error is thrown while decoding,
-                // It will be caught in the `error` callback.
-                return try response.decode([Post].self)
             }
+            
+            // Return the decoded object. If an error is thrown while decoding,
+            // It will be caught in the `error` callback.
+            return try response.decode([Post].self)
         }).response({ posts in
             // Handle the success which will give your posts.
             responseExpectation.fulfill()
@@ -137,18 +140,19 @@ class DataDispatcherTests: XCTestCase {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
         }).then({ response -> Post in
-            // Handles any responses and transforms them to another type
-            // This includes negative responses such as 400s and 500s
+            // Attempt to get a http response
+            let httpResponse = try response.makeHTTPResponse()
             
-            if let error = response.error {
-                // We throw the error so we can handle it in the `error` callback.
-                // We can also handle the error response in a more custom way if we chose.
+            // Check if we have any http error
+            if let error = httpResponse.httpError {
+                // Throwing an error in any callback will trigger the `error` callback.
+                // This allows us to pool all failures in that callback if we want to
                 throw error
-            } else {
-                // if we have no error, we just return the decoded object
-                // If anything is thrown, it will be caught in the `error` callback.
-                return try response.decode(Post.self)
             }
+            
+            // If we have no error, we just return the decoded object
+            // If anything is thrown, it will be caught in the `error` callback.
+            return try response.decode(Post.self)
         }).response({ post in
             // Handles any success responses.
             // In this case the object returned in the `then` method.

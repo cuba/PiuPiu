@@ -137,91 +137,309 @@ class ViewController: UIViewController {
 
 You should have a strong reference to this object as it is held on weakly by your callbacks.
 
-### 3. Making a request.
+### 3. Making a request
+Here we have a complete request example, including error handling and decoding.
+
 
 ```swift
 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
 let request = URLRequest(url: url, method: .get)
 
-dispatcher.dataFuture(from: request).response({ response in
-    // Handles any responses including negative responses such as 4xx and 5xx
-
-    // The error object is available if we get an
-    // undesirable status code such as a 4xx or 5xx
-    if let error = response.error {
-        // Throwing an error in any callback will trigger the `error` callback.
-        // This allows us to pool all failures in one place.
-        throw error
-    }
-
-    let post = try response.decode(Post.self)
-    // Do something with our deserialized object
-    // ...
-    print(post)
-}).error({ error in
-    // Handles any errors during the request process,
-    // including all request creation errors and anything
-    // thrown in the `then` or `success` callbacks.
-}).completion({
-    // The completion callback is guaranteed to be called once
-    // for every time the `start` method is triggered on the future.
-}).send()
-```
-
-**NOTE**: Nothing will happen if you don't call `start()`.
-
-### 4. (Optional) Separating concerns and transforming the future
-
-*Pun not indended (honestly)*
-
-Now lets move the part of the future that decodes our object to another method.  This way, our business logic is not mixed up with our serialization logic.
-One of the great thing about using futures is that we can return them!
-
-Lets create a method similar to this:
-
-```swift
-private func getPost(id: Int) -> ResponseFuture<Post> {
-    // We create a future and tell it to transform the response using the
-    // `then` callback. After this we can return this future so the callbacks will
-    // be triggered using the transformed object. We may re-use this method in different
-    return dispatcher.dataFuture(from: {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-        return URLRequest(url: url, method: .get)
-    }).then({ response -> Post in
-        if let error = response.error {
-            // The error is available when a non-2xx response comes in
-            // Such as a 4xx or 5xx
-            // You may also parse a custom error object here.
+dispatcher.dataFuture(from: request)
+    .response { response in
+        // Here we handle our response as long as nothing was thrown along the way
+        // This method is always invoked on the main queue.
+        
+        // Here we check if we have an HTTP response.
+        // Anything we throw in this method will be handled on the `error` callback.
+        // If PiuPiu cannot create an http response, the method will throw an error.
+        // Unhandled, it will just end up in our `error` callback.
+        let httpResponse = try response.makeHTTPResponse()
+        
+        // We also ensure that our HTTP response is valid (i.e. a 1xx, 2xx or 3xx response)
+        if let error = httpResponse.httpError {
+            // HTTP errors are not thrown automatically so you get a chance to handle them
+            // If we want it to be handled in our `error` callback, we simply just throw it
             throw error
         } else {
-            // Return the decoded object. If an error is thrown while decoding,
-            // It will be caught in the `error` callback.
-            return try response.decode(Post.self)
+            // PiuPiu has a convenience method to decode `Decodable` objects
+            self.post = try response.decode(Post.self)
+
+            // now we can present our post
+            // ...
         }
-    })
+    }
+    .error { error in
+        // Here we handle any errors that were thrown along the way
+        // This method is always invoked on the main queue.
+        
+        // This includes all errors thrown by PiuPiu during the request
+        // creation/dispatching process as well as any network failures.
+        // It also includes anything we threw in our previous callbacks
+        // such as any decoding issues, http errors, etc.
+        print(error)
+    }
+    .completion {
+        // The completion callback is guaranteed to be called once
+        // for every time the `start` method is triggered on the future
+        // regardless of success or error.
+        // It will always be the last callback to be triggered.
+    }
+    .send()
+```
+
+**NOTE**: Nothing will happen if you don't call `start()` or `send()`.
+
+## Advanced Usage
+
+### Seperating concerns
+
+Often times we want to seperate our responses into different parts so we can handle them differently. We also want to decode on a background thread so that it doesn't make our UI choppy.  We can do this using the `then` callback. 
+
+Each `then` callback transforms the response and returns a new one.
+
+```swift
+let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+let request = URLRequest(url: url, method: .get)
+
+dispatcher.dataFuture(from: request)
+    .then() { response -> HTTPResponse<Data?> in
+        // In this callback we handle common HTTP errors
+        
+        // Here we check if we have an HTTP response.
+        // Anything we throw in this method will be handled on the `error` callback.
+        // If PiuPiu cannot create an http response, the method will throw an error.
+        // Unhandled, it will just end up in our `error` callback.
+        let httpResponse = try response.makeHTTPResponse()
+        
+        // We also ensure that our HTTP response is valid (i.e. a 1xx, 2xx or 3xx response)
+        if let error = httpResponse.httpError {
+            // HTTP errors are not thrown automatically so you get a chance to handle them
+            // If we want it to be handled in our `error` callback, we simply just throw it
+            throw error
+        }
+        
+        // Everything is good, so we just return our HTTP response.
+        return httpResponse
+    }
+    .then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<Post> in
+        // Here we decode the http response into an object using `Decodable`
+        // We use the `background` thread because decoding can be somewhat intensive.
+        
+        // WARNING: Do not use `self` here as
+        // this `callback` is being invoked on a `background` queue
+        
+        // PiuPiu has a convenience method to decode responses containing `Decodable` objects
+        // We use `decodeResponse` instead of just `decode`. This will convert
+        // HTTPResponse<Data?> into HTTPResponse<Post>
+        return try httpResponse.decodedResponse(Post.self)
+    }
+    .success { response in
+        // Here we handle our success as long as nothing was thrown along the way
+        // This method is always invoked on the main queue.
+        
+        // At this point, we know all of our errors are handled
+        // and our object is deserialized so we can use it simply like this:
+        self.post = response.data
+
+        // now we can present our post
+        // ...
+    }
+    .error { error in
+        // Here we handle any errors that were thrown along the way
+        // This method is always invoked on the main queue.
+        
+        // This includes all errors thrown by PiuPiu during the request
+        // creation/dispatching process as well as any network failures.
+        // It also includes anything we threw in our previous callbacks
+        // such as any decoding issues, http errors, etc.
+        print(error)
+    }
+    .completion {
+        // The completion callback is guaranteed to be called once
+        // for every time the `start` method is triggered on the future
+        // regardless of success or error.
+        // It will always be the last callback to be triggered.
+    }
+    .send()
+```
+
+**NOTE**: Nothing will happen if you don't call `start()` or `send()`.
+
+
+### Re-usability
+
+In the above example, we show a number of `then` callbacks to transform our response. In the first `then` callback we deal with common HTTP errors. In the other, we deal with with decoding a specific `Post` object. However none of the code is yet re-usable. 
+
+One way to do that is through chaining.
+
+```swift
+/// This method returns an HTTP response containing a decoded `Post` object
+func getPost(id: Int) -> ResponseFuture<HTTPResponse<Post>> {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+    let request = URLRequest(url: url, method: .get)
+    
+    return getHTTPResponse(from: request)
+        .then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<Post> in
+            // Here we decode the http response into an object using `Decodable`
+            // We use the `background` thread because decoding can be somewhat intensive.
+            
+            // WARNING: Do not use `self` here as
+            // this `callback` is being invoked on a `background` queue
+            
+            // PiuPiu has a convenience method to decode `Decodable` objects
+            return try httpResponse.decodedResponse(Post.self)
+        }
+}
+
+/// This method handles common HTTP errors and returns an HTTP response.
+private func getHTTPResponse(from request: URLRequest) -> ResponseFuture<HTTPResponse<Data?>> {
+    return dispatcher.dataFuture(from: request)
+        .then { response -> HTTPResponse<Data?> in
+            // In this callback we handle common HTTP errors
+            
+            // Here we check if we have an HTTP response.
+            // Anything we throw in this method will be handled on the `error` callback.
+            // If PiuPiu cannot create an http response, method will throw an error.
+            // Unhandled, it will just end up in our `error` callback.
+            let httpResponse = try response.makeHTTPResponse()
+            
+            // We also ensure that our HTTP response is valid (i.e. a 1xx, 2xx or 3xx response)
+            // because there is no point deserializing anything unless we have a valid response
+            if let error = httpResponse.httpError {
+                // HTTP errors are not thrown automatically so you get a chance to handle them
+                // If we want it to be handled in our `error` callback, we simply just throw it
+                throw error
+            }
+            
+            // Everything is good, so we just return our HTTP response.
+            return httpResponse
+        }
 }
 ```
 
-**NOTE**: We intentionally did not call `start()` in this case. 
-
-Then we can simply call it like this:
+To use this we can just simply call `getPost` like so:
 
 ```swift
-getPost(id: 1).response({ post in
-    // Handle the success which will give your posts.
-    responseExpectation.fulfill()
-}).error({ error in
-    // Triggers whenever an error is thrown.
-    // This includes deserialization errors, unwraping failures, and anything else that is thrown
-    // in a any other throwable callback.
-}).completion({
-    // Always triggered at the very end to inform you this future has been satisfied.
-}).send()
+getPost(id: 1)
+    .response { response in
+        // This method is always invoked on the main queue.
+        
+        // At this point, we know all of our errors are handled
+        // and our object is deserialized
+        let post = response.data
+
+        // Do something with our deserialized object ...
+        print(post)
+        
+    }
+    .error { error in
+        // This method is always invoked on the main queue.
+        
+        // Handles any errors during the request process,
+        // including all request creation errors and anything
+        // thrown in the `then` or `success` callbacks.
+        if let responseError = error as? ResponseError {
+            print(responseError)
+        } else if let httpError = error as? HTTPError {
+            print(httpError.statusCode.localizedDescription)
+        }
+    }
+    .completion {
+        // The completion callback is guaranteed to be called once
+        // for every time the `start` method is triggered on the future.
+    }
+    .send()
 ```
+
+This concept should not be too new for us since we're probably done similar type of chaining using regular callbacks. Our method `getPost` creates the request and parses a `Post` object. Internally it calls `getHTTPResponse` which dispatches our request and handles `HTTP` errors. 
+
+But we don't need to nest callbacks anymore. It makes our code flatter and easier to follow (once we get used to it).
+
+### Adding extensions to Futures
+
+Another way to handle common logic is to add extensions to futures. 
+
+We can perform our `getHTTPResponse` logic inside an extension such as this:
+
+```swift
+extension ResponseFuture where T == Response<Data?> {
+    /// This method handles common HTTP errors and returns an HTTP response.
+    func validHTTPResponse() -> ResponseFuture<HTTPResponse<Data?>> {
+        return then { response -> HTTPResponse<Data?> in
+            // In this callback we handle common HTTP errors
+            
+            // Here we check if we have an HTTP response.
+            // Anything we throw in this method will be handled on the `error` callback.
+            // If PiuPiu cannot create an http response, method will throw an error.
+            // Unhandled, it will just end up in our `error` callback.
+            let httpResponse = try response.makeHTTPResponse()
+            
+            // We also ensure that our HTTP response is valid (i.e. a 1xx, 2xx or 3xx response)
+            // because there is no point deserializing anything unless we have a valid response
+            if let error = httpResponse.httpError {
+                // HTTP errors are not thrown automatically so you get a chance to handle them
+                // If we want it to be handled in our `error` callback, we simply just throw it
+                throw error
+            }
+            
+            // Everything is good, so we just return our HTTP response.
+            return httpResponse
+        }
+    }
+}
+```
+
+The only difference in this extension from the original `getHTTPResponse` is that that the `then` callback is added to **all** futures that have the `Response<Data?>` object. This means that this method is more modular as it does not force us to call an arbitrary `getHTTPResponse(from request: URLRequest)` function to use it. This we will see in a moment will allow us to re-use this logic in a more flexible way.
+
+But first let's also add an extension that helps us parse the `Post` object.
+
+```swift
+extension ResponseFuture where T == HTTPResponse<Data?> {
+    /// This method returns an HTTP response containing a decoded object
+    func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
+        return then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in
+            return try httpResponse.decodedResponse(type, using: decoder)
+        }
+    }
+}
+```
+
+Here we took a slightly different approach. We changed our method to support **any** `Decodable` object. In other words, this method allows us to convert **any** `ResponseFuture` containing an `HTTPResponse<Data?>` object to one that contains **any** `Decodable` object. 
+
+In addition, we do the decoding on a background thread so it doesn't stall our UI while doing so.
+
+And now, not only can we use these two extensions on our `getPost` call, but we can also use it on other calls such as this `getUser` call such as this one:
+
+```swift
+/// This method returns an HTTP response containing a decoded `Post` object
+func getPost(id: Int) -> ResponseFuture<HTTPResponse<Post>> {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+    let request = URLRequest(url: url, method: .get)
+    
+    return dispatcher.dataFuture(from: request)
+        .validHTTPResponse()
+        .decodedResponse(Post.self)
+}
+
+/// This method returns an HTTP response containing a decoded `User` object
+func getUser(id: Int) -> ResponseFuture<HTTPResponse<User>> {
+    let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
+    let request = URLRequest(url: url, method: .get)
+    
+    return dispatcher.dataFuture(from: request)
+        .validHTTPResponse()
+        .decodedResponse(User.self)
+}
+```
+
+But these are just some examples. There is an infinite number of combinations you can create. This is why futures are far superior to using simple callbacks.
 
 ## Future
 
 You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around. But besides the simple examples above, there is so much more you can do to make your code amazingly clean!
+
+Here is an example of some of the built in callbacks available to a `ResponseFuture`. Below you will see a description of what each one does.
 
 ```swift
 dispatcher.dataFuture(from: {

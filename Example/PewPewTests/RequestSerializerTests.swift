@@ -42,14 +42,13 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         
         // Then
         networkSerializer.dataFuture(from: request).then({ response -> Post in
-            // Handles any responses and transforms them to another type
-            // This includes negative responses such as 4xx and 5xx
+            // Attempt to get a http response
+            let httpResponse = try response.makeHTTPResponse()
             
-            // The error object is available if we get an
-            // undesirable status code such as a 4xx or 5xx
-            if let error = response.error {
+            // Check if we have any http error
+            if let error = httpResponse.httpError {
                 // Throwing an error in any callback will trigger the `error` callback.
-                // This allows us to pool all our errors in one place.
+                // This allows us to pool all failures in that callback if we want to
                 throw error
             }
             

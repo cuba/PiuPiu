@@ -2,9 +2,10 @@
 //  RequestError.swift
 //  PiuPiu iOS
 //
-//  Created by Jacob Sikorski on 2019-02-16.
-//  Copyright © 2019 Jacob Sikorski. All rights reserved.
+//  Created by Jacob Sikorski on 2017-12-23.
+//  Copyright © 2017 Jacob Sikorski. All rights reserved.
 //
+
 import Foundation
 
 public enum RequestError: Error {
