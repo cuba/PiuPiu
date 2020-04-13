@@ -11,7 +11,7 @@ import Foundation
 class ResponseFutureSession: NSObject {
     let configuration: URLSessionConfiguration
     private var downloadTasks: [ResponseFutureTask<URL>] = []
-    private var dataTasks: [ResponseFutureTask<Response<Data?>>] = []
+    private var dataTasks: [ResponseFutureTask<Data?>] = []
     private let queue: DispatchQueue
     
     private lazy var urlSession: URLSession = {
@@ -54,7 +54,7 @@ class ResponseFutureSession: NSObject {
             guard let self = self else { return }
             // Create the request and store it internally
             let task = self.urlSession.dataTask(with: urlRequest)
-            let dataTask = ResponseFutureTask<Response<Data?>>(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
                 self.dataTasks.append(dataTask)
@@ -68,13 +68,13 @@ class ResponseFutureSession: NSObject {
     /// - Parameters:
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
-    open func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<URL> {
-        return ResponseFuture<URL>() { [weak self] future in
+    open func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<URL>> {
+        return ResponseFuture<Response<URL>>() { [weak self] future in
             guard let self = self else { return }
             
             // Create the request and store it internally
             let task = self.urlSession.downloadTask(with: urlRequest)
-            let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
                 self.downloadTasks.append(downloadTask)
@@ -94,7 +94,7 @@ class ResponseFutureSession: NSObject {
             
             // Create the request and store it internally
             let task = self.urlSession.dataTask(with: urlRequest)
-            let dataTask = ResponseFutureTask<Response<Data?>>(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
                 self.dataTasks.append(dataTask)
@@ -115,7 +115,7 @@ class ResponseFutureSession: NSObject {
             
             // Create the request and store it internally
             let task = self.urlSession.uploadTask(with: urlRequest, from: data)
-            let dataTask = ResponseFutureTask<Response<Data?>>(taskIdentifier: task.taskIdentifier, future: future, urlRequest: urlRequest)
+            let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
                 self.dataTasks.append(dataTask)
@@ -138,8 +138,8 @@ class ResponseFutureSession: NSObject {
         return responseFutureTask
     }
     
-    private func dataTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Response<Data?>>? {
-        var responseFutureTask: ResponseFutureTask<Response<Data?>>?
+    private func dataTask(for task: URLSessionTask, removeTask: Bool) -> ResponseFutureTask<Data?>? {
+        var responseFutureTask: ResponseFutureTask<Data?>?
         
         queue.sync {
             responseFutureTask = dataTasks.first(where: { $0.taskIdentifier == task.taskIdentifier })
@@ -178,13 +178,16 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             }
             
             // Ensure there is a http response
-            guard let urlResponse = responseFutureTask.response else {
+            guard let urlResponse = task.response else {
                 responseFutureTask.future.fail(with: ResponseError.noResponse)
                 return
             }
             
             // Create the response
-            let urlRequest = responseFutureTask.urlRequest
+            guard let urlRequest = task.currentRequest ?? task.originalRequest else {
+                return
+            }
+            
             let response = Response(data: responseFutureTask.data, urlRequest: urlRequest, urlResponse: urlResponse)
             
             responseFutureTask.future.update(progress: 1)
@@ -227,12 +230,11 @@ extension ResponseFutureSession: URLSessionDataDelegate {
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        guard let responseFutureTask = self.dataTask(for: dataTask, removeTask: false) else {
+        guard self.dataTask(for: dataTask, removeTask: false) != nil else {
             completionHandler(.cancel)
             return
         }
         
-        responseFutureTask.response = response
         completionHandler(.allow)
     }
 }
@@ -242,7 +244,20 @@ extension ResponseFutureSession: URLSessionDataDelegate {
 extension ResponseFutureSession: URLSessionDownloadDelegate {
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let responseFutureTask = self.downloadTask(for: downloadTask, removeTask: true) else { return }
-        responseFutureTask.future.succeed(with: location)
+        
+        // Ensure there is a http response
+        guard let urlResponse = downloadTask.response else {
+            responseFutureTask.future.fail(with: ResponseError.noResponse)
+            return
+        }
+        
+        // Create the response
+        guard let urlRequest = downloadTask.currentRequest ?? downloadTask.originalRequest else {
+            return
+        }
+        
+        let response = Response(data: location, urlRequest: urlRequest, urlResponse: urlResponse)
+        responseFutureTask.future.succeed(with: response)
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {

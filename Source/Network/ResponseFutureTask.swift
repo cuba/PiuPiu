@@ -10,15 +10,12 @@ import Foundation
 
 class ResponseFutureTask<T> {
     open var taskIdentifier: Int
-    open var future: ResponseFuture<T>
+    open var future: ResponseFuture<Response<T>>
     open var error: Error?
-    open var response: URLResponse?
     open var data: Data?
-    open var urlRequest: URLRequest
     
-    public init(taskIdentifier: Int, future: ResponseFuture<T>, urlRequest: URLRequest) {
+    public init(taskIdentifier: Int, future: ResponseFuture<Response<T>>) {
         self.taskIdentifier = taskIdentifier
         self.future = future
-        self.urlRequest = urlRequest
     }
 }

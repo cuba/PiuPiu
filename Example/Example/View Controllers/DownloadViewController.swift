@@ -73,8 +73,8 @@ class DownloadViewController: BaseViewController {
         }).progress({ [weak self] progress in
             print("PROGRESS: \(progress)")
             self?.progressView.progress = Float(progress)
-        }).success({ [weak self] temporaryURL in
-            let data = try Data(contentsOf: temporaryURL)
+        }).success({ [weak self] response in
+            let data = try Data(contentsOf: response.data)
             let image = UIImage(data: data)
             self?.imageView.image = image
         }).error({ [weak self] error in
