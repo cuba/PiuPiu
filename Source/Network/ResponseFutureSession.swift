@@ -227,6 +227,10 @@ extension ResponseFutureSession: URLSessionDataDelegate {
         
         // Append data
         responseFutureTask?.data?.append(data)
+        
+        if let progress = dataTask.percentageTransferred {
+            responseFutureTask?.future.update(progress: progress)
+        }
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
@@ -269,5 +273,42 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
         let progress = Float(integerLiteral: totalBytesWritten) / Float(integerLiteral: totalBytesExpectedToWrite)
         
         responseFutureTask.future.update(progress: progress)
+    }
+}
+
+private extension URLSessionTask {
+    var percentageTransferred: Float? {
+        var expectedToSend: Int64 = 0
+        var expectedToReceive: Int64 = 0
+        
+        if countOfBytesExpectedToReceive > 0 {
+            expectedToReceive = countOfBytesExpectedToReceive
+        }
+        
+        if #available(iOSApplicationExtension 11.0, *) {
+            if expectedToReceive == 0 && countOfBytesClientExpectsToReceive > 0 {
+                expectedToReceive = countOfBytesClientExpectsToReceive
+            }
+        }
+        
+        if countOfBytesExpectedToSend > 0 {
+            expectedToSend += countOfBytesExpectedToSend
+        }
+        
+        if #available(iOSApplicationExtension 11.0, *) {
+            if expectedToSend == 0 && countOfBytesClientExpectsToSend > 0 {
+                expectedToSend = countOfBytesClientExpectsToReceive
+            }
+        }
+        
+        let expected = expectedToSend + expectedToReceive
+        
+        if expected > 0 {
+            let dataTransferred = countOfBytesReceived + countOfBytesSent
+            let progress = Float(integerLiteral: dataTransferred) / Float(integerLiteral: expected)
+            return progress
+        } else {
+            return nil
+        }
     }
 }
