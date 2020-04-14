@@ -13,6 +13,7 @@ class ResponseFutureSession: NSObject {
     private var downloadTasks: [ResponseFutureTask<URL>] = []
     private var dataTasks: [ResponseFutureTask<Data?>] = []
     private let queue: DispatchQueue
+    private var downloadedFiles: [URL] = []
     
     private lazy var urlSession: URLSession = {
         return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
@@ -28,6 +29,22 @@ class ResponseFutureSession: NSObject {
     }
     
     deinit {
+        for fileURL in downloadedFiles {
+            // Save the file somewhere else
+            do {
+                if FileManager.default.fileExists(atPath: fileURL.path) {
+                    try FileManager.default.removeItem(at: fileURL)
+
+                    #if DEBUG
+                    print("Deleting file `\(fileURL.absoluteString)`")
+                    #endif
+                }
+            } catch {
+                assertionFailure(error.localizedDescription)
+                return
+            }
+        }
+        
         #if DEBUG
         print("DEINIT - ResponseFutureSession")
         #endif
@@ -260,8 +277,41 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
             return
         }
         
-        let response = Response(data: location, urlRequest: urlRequest, urlResponse: urlResponse)
-        responseFutureTask.future.succeed(with: response)
+        let fileName = UUID().uuidString
+        let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let downloadDirectory = temporaryDirectory.appendingPathComponent("PiuPiu")
+        
+        // Save the file somewhere else
+        do {
+            if !FileManager.default.fileExists(atPath: downloadDirectory.path) {
+                try FileManager.default.createDirectory(at: downloadDirectory, withIntermediateDirectories: false)
+            }
+        } catch {
+            responseFutureTask.future.fail(with: error)
+            return
+        }
+        
+        let fileURL = downloadDirectory.appendingPathComponent(fileName).appendingPathExtension("tmp")
+        
+        #if DEBUG
+        print("Moving file from `\(location.absoluteString)` to `\(fileURL.absoluteString)`")
+        #endif
+        
+        // Save the file somewhere else
+        do {
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                try FileManager.default.removeItem(at: fileURL)
+            }
+            
+            try FileManager.default.copyItem(at: location, to: fileURL)
+            downloadedFiles.append(fileURL)
+
+            let response = Response(data: fileURL, urlRequest: urlRequest, urlResponse: urlResponse)
+            responseFutureTask.future.succeed(with: response)
+        } catch {
+            responseFutureTask.future.fail(with: error)
+            return
+        }
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
