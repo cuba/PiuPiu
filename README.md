@@ -36,6 +36,13 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.5.0
+* Download requests returns `Response` with temporary `URL` instead of `Data`
+* Errors have been re-organized. The largest change is that they no longer handle HTTP errors.
+* `JSONSerializer` errors no longer are wrapped by another error
+* `Decodable` errors are no longer wrapped
+
+
 ### 1.4.0
 * Change `Request` protocol to return a `URLRequest`
 * Replace  `Dispatcher` and `NetworkDispatcher` with `RequestSerializer`. 
