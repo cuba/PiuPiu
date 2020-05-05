@@ -112,6 +112,7 @@ public enum StatusCode: Equatable {
     /// Any status code that does not fit in the predifined ones
     case other(Int)
     
+    /// The raw representation of the status code in its integer format
     public var rawValue: Int {
         switch self {
         case .ok                        : return 200
@@ -157,7 +158,7 @@ public enum StatusCode: Equatable {
         }
     }
     
-    
+    /// Convenince method that returns `HTTPURLResponse.localizedString(forStatusCode: rawValue)`
     public var localizedDescription: String {
         return HTTPURLResponse.localizedString(forStatusCode: rawValue)
     }

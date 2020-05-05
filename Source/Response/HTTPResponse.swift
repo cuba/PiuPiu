@@ -23,9 +23,7 @@ public struct HTTPResponse<T>: ResponseInterface {
         return StatusCode(rawValue: httpResponse.statusCode)
     }
     
-    /// Handles common HTTP errors like 4xx and 5xx errors.
-    /// Network related errors are handled directly in
-    /// The error callback.
+    /// Convenience method for `statusCode.httpError`
     public var httpError: HTTPError? {
         return statusCode.httpError
     }
