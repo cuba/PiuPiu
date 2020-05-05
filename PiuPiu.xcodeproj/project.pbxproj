@@ -95,9 +95,9 @@
 		DA2832BB22D3B55F00027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
 		DA2832BC22D3B55F00027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
 		DA2832BD22D3B56000027DBA /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
-		DA2832BE22D3B56300027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
-		DA2832BF22D3B56300027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
-		DA2832C022D3B56400027DBA /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
+		DA2832BE22D3B56300027DBA /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* HTTPResponse.swift */; };
+		DA2832BF22D3B56300027DBA /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* HTTPResponse.swift */; };
+		DA2832C022D3B56400027DBA /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* HTTPResponse.swift */; };
 		DA2832CD22D3B57500027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
 		DA2832CE22D3B57500027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
 		DA2832CF22D3B57600027DBA /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
@@ -158,7 +158,7 @@
 		DA3D809D221784AE00D49CD0 /* ResponseFuture.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3D809C221784AE00D49CD0 /* ResponseFuture.swift */; };
 		DA3E507021B4590F001450EC /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
 		DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
-		DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* SuccessResponse.swift */; };
+		DA74C6C522517EB100B7005D /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* HTTPResponse.swift */; };
 		DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
 		DAE5EF96221EBD5B00D1990B /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
 		DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
@@ -212,7 +212,7 @@
 		DA3E506F21B4590F001450EC /* StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusCode.swift; sourceTree = "<group>"; };
 		DA3E507121B4595E001450EC /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		DA53DA932289CDA900722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		DA74C6C422517EB100B7005D /* SuccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResponse.swift; sourceTree = "<group>"; };
+		DA74C6C422517EB100B7005D /* HTTPResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPResponse.swift; sourceTree = "<group>"; };
 		DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PiuPiu.podspec; sourceTree = "<group>"; };
 		DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAE5EF95221EBD5B00D1990B /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -415,7 +415,7 @@
 			children = (
 				DAE5EF95221EBD5B00D1990B /* Response.swift */,
 				DA28352722DC4D6E00027DBA /* ResponseInterface.swift */,
-				DA74C6C422517EB100B7005D /* SuccessResponse.swift */,
+				DA74C6C422517EB100B7005D /* HTTPResponse.swift */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -652,7 +652,7 @@
 				DA28355222DE209B00027DBA /* RequestSerializer.swift in Sources */,
 				DA145F602440C64B00251A12 /* HTTPError.swift in Sources */,
 				DA173B02238F76900045617E /* DateTransform.swift in Sources */,
-				DA74C6C522517EB100B7005D /* SuccessResponse.swift in Sources */,
+				DA74C6C522517EB100B7005D /* HTTPResponse.swift in Sources */,
 				DA173AEB238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832FE22D8647C00027DBA /* URL+Extensions.swift in Sources */,
 				DA173ADC238F557F0045617E /* URLTransform.swift in Sources */,
@@ -695,7 +695,7 @@
 				DA2832D922D3B58200027DBA /* Response+Extensions.swift in Sources */,
 				DA2832AF22D3B54800027DBA /* ResponseFutureTask.swift in Sources */,
 				DA173B03238F76900045617E /* DateTransform.swift in Sources */,
-				DA2832BE22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA2832BE22D3B56300027DBA /* HTTPResponse.swift in Sources */,
 				DA173AEC238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AC22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
 				DA173ADD238F557F0045617E /* URLTransform.swift in Sources */,
@@ -740,7 +740,7 @@
 				DA2832DA22D3B58200027DBA /* Response+Extensions.swift in Sources */,
 				DA2832B022D3B54900027DBA /* ResponseFutureTask.swift in Sources */,
 				DA173B04238F76900045617E /* DateTransform.swift in Sources */,
-				DA2832BF22D3B56300027DBA /* SuccessResponse.swift in Sources */,
+				DA2832BF22D3B56300027DBA /* HTTPResponse.swift in Sources */,
 				DA173AED238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AD22D3B54600027DBA /* ResponseFutureSession.swift in Sources */,
 				DA173ADE238F557F0045617E /* URLTransform.swift in Sources */,
@@ -785,7 +785,7 @@
 				DA2832DB22D3B58300027DBA /* Response+Extensions.swift in Sources */,
 				DA2832B122D3B54A00027DBA /* ResponseFutureTask.swift in Sources */,
 				DA173B05238F76900045617E /* DateTransform.swift in Sources */,
-				DA2832C022D3B56400027DBA /* SuccessResponse.swift in Sources */,
+				DA2832C022D3B56400027DBA /* HTTPResponse.swift in Sources */,
 				DA173AEE238F59F10045617E /* KeyedEncodingContainer+Transform.swift in Sources */,
 				DA2832AE22D3B54700027DBA /* ResponseFutureSession.swift in Sources */,
 				DA173ADF238F557F0045617E /* URLTransform.swift in Sources */,
