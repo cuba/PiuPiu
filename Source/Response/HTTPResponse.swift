@@ -19,14 +19,14 @@ public struct HTTPResponse<T>: ResponseInterface {
     }
     
     /// Returns a status code in as an enum
-    var statusCode: StatusCode {
+    public var statusCode: StatusCode {
         return StatusCode(rawValue: httpResponse.statusCode)
     }
     
     /// Handles common HTTP errors like 4xx and 5xx errors.
     /// Network related errors are handled directly in
     /// The error callback.
-    var httpError: HTTPError? {
+    public var httpError: HTTPError? {
         return statusCode.httpError
     }
     
