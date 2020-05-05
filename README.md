@@ -39,7 +39,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 ### 1.5.0
 * Download requests returns `Response` with temporary `URL` instead of `Data`
 * Re-shuffled "Response" objects 
-  * `Respons#error` has been renamed to `Response#httpError`
+  * `Response#error` has been remoed and replaced with `HTTPResponse#httpError`
   * `SuccessResponse` has been renamed to `HTTPResponse`
   * `ResponseInterface` returns `URLResponse` instead of `HTTPURLResponse`
   * `Response` returns `URLResponse` instead of `HTTPURLResponse` 
