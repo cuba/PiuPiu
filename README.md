@@ -38,19 +38,20 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.5.0
 * Download requests returns `Response` with temporary `URL` instead of `Data`
+* Added `localizedDescription` to `StatusCode` which returns Apple's translated error message 
 * Re-shuffled "Response" objects 
   * `Response#error` has been removed and replaced with `HTTPResponse#httpError`
   * `SuccessResponse` has been renamed to `HTTPResponse`
   * `ResponseInterface` returns `URLResponse` instead of `HTTPURLResponse`
   * `Response` returns `URLResponse` instead of `HTTPURLResponse` 
-  * To get an `HTTPError`, you need to conert a `Response` to an `HTTPResponse` first (see the [example](#making-a-request) below) 
+  * You need to manually convert a `Response` to an `HTTPResponse` first (see the [example](#making-a-request) below) 
 * Errors have been re-organized.
   * `ResponseError` cases have been reduced to 4 and renamed to `HTTPError`
-  * `HTTPError` cases contain more generic http errors instead of specific http errors based on status code. For specific httpErrors use the status code.
+  * `HTTPError` cases contain more generic HTTP errors instead of specific HTTP errors based on status code.
   * `SerializationError` has been moved to `ResponseError` and 2 new cases have been added
-* `JSONSerializer` errors no longer are wrapped by another error
-* `Decodable` errors are no longer wrapped
-* Added `localizedDescription` to `StatusCode` which returns Apple's translated error message 
+* Error handling has been simplified
+  * `JSONSerializer` errors no longer are wrapped by another error
+  * `Decodable` errors are no longer wrapped
 
 
 ### 1.4.0
