@@ -102,9 +102,6 @@ public extension ResponseInterface where T == Data? {
         guard let data = self.data else { return nil }
         return try decoder.decode(type, from: data)
     }
-}
-
-public extension ResponseInterface where Self.T == Data? {
     
     /// A method to print the request and response in the console.
     /// **Warning** This should not be used in a production environment.

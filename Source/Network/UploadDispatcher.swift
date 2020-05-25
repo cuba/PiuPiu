@@ -45,4 +45,23 @@ public extension UploadDispatcher {
             future.fulfill(with: nestedFuture)
         }
     }
+    
+    /// Create a future to make an upload request.
+    ///
+    /// - Parameters:
+    ///   - data: The data to send
+    ///   - callback: A callback that returns the future to send
+    /// - Returns: The promise that will send the request.
+    func uploadFuture(data: Data, from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
+        return ResponseFuture<Response<Data?>> { [weak self] future in
+            guard let self = self else { return }
+            guard let urlRequest = try callback() else {
+                future.cancel()
+                return
+            }
+            
+            let nestedFuture = self.uploadFuture(from: urlRequest, data: data)
+            future.fulfill(with: nestedFuture)
+        }
+    }
 }
