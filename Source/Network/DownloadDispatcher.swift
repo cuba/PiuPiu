@@ -15,7 +15,7 @@ public protocol DownloadDispatcher: class {
     /// - Parameters:
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
-    func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<URL>>
+    func downloadFuture(from urlRequest: URLRequest, to destination: URL) -> ResponseFuture<Response<URL>>
 }
 
 public extension DownloadDispatcher {
@@ -24,7 +24,7 @@ public extension DownloadDispatcher {
     /// - Parameters:
     ///   - callback: A callback that returns the future to send. Returning nil will cancel the request.
     /// - Returns: The promise that will send the request.
-    func downloadFuture(from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<URL>> {
+    func downloadFuture(destination: URL, from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<URL>> {
         return ResponseFuture<Response<URL>> { [weak self] future in
             guard let self = self else { return }
             guard let urlRequest = try callback() else {
@@ -32,7 +32,7 @@ public extension DownloadDispatcher {
                 return
             }
             
-            let nestedFuture = self.downloadFuture(from: urlRequest)
+            let nestedFuture = self.downloadFuture(from: urlRequest, to: destination)
             future.fulfill(with: nestedFuture)
         }
     }

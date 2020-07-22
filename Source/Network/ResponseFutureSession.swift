@@ -85,13 +85,13 @@ class ResponseFutureSession: NSObject {
     /// - Parameters:
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
-    open func downloadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<URL>> {
+    open func downloadFuture(from urlRequest: URLRequest, to destination: URL) -> ResponseFuture<Response<URL>> {
         return ResponseFuture<Response<URL>>() { [weak self] future in
             guard let self = self else { return }
             
             // Create the request and store it internally
             let task = self.urlSession.downloadTask(with: urlRequest)
-            let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future)
+            let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future, destination: destination)
             
             self.queue.sync {
                 self.downloadTasks.append(downloadTask)
@@ -277,36 +277,24 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
             return
         }
         
-        let fileName = UUID().uuidString
-        let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        let downloadDirectory = temporaryDirectory.appendingPathComponent("PiuPiu")
-        
-        // Save the file somewhere else
-        do {
-            if !FileManager.default.fileExists(atPath: downloadDirectory.path) {
-                try FileManager.default.createDirectory(at: downloadDirectory, withIntermediateDirectories: false)
-            }
-        } catch {
-            responseFutureTask.future.fail(with: error)
-            return
+        guard let destination = responseFutureTask.destination else {
+            preconditionFailure("You need to set a destination")
         }
         
-        let fileURL = downloadDirectory.appendingPathComponent(fileName).appendingPathExtension("tmp")
-        
         #if DEBUG
-        print("Moving file from `\(location.absoluteString)` to `\(fileURL.absoluteString)`")
+        print("Moving file from `\(location.absoluteString)` to `\(destination.absoluteString)`")
         #endif
         
         // Save the file somewhere else
         do {
-            if FileManager.default.fileExists(atPath: fileURL.path) {
-                try FileManager.default.removeItem(at: fileURL)
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
             }
             
-            try FileManager.default.copyItem(at: location, to: fileURL)
-            downloadedFiles.append(fileURL)
+            try FileManager.default.copyItem(at: location, to: destination)
+            downloadedFiles.append(destination)
 
-            let response = Response(data: fileURL, urlRequest: urlRequest, urlResponse: urlResponse)
+            let response = Response(data: destination, urlRequest: urlRequest, urlResponse: urlResponse)
             responseFutureTask.future.succeed(with: response)
         } catch {
             responseFutureTask.future.fail(with: error)

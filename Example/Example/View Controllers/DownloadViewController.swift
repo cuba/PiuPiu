@@ -67,14 +67,16 @@ class DownloadViewController: BaseViewController {
         progressView.progress = 0
         
         guard let urlString = fileUrlTextField.text, let url = URL(string: urlString) else { return }
+        let destination = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("tmp")
         
-        dispatcher.downloadFuture(from: {
+        dispatcher.downloadFuture(destination: destination, from: {
             return URLRequest(url: url, method: .get)
         }).progress({ [weak self] progress in
             print("PROGRESS: \(progress)")
             self?.progressView.progress = Float(progress)
         }).success({ [weak self] response in
-            let data = try Data(contentsOf: response.data)
+            let url = response.data
+            let data = try Data(contentsOf: url)
             let image = UIImage(data: data)
             self?.imageView.image = image
         }).error({ [weak self] error in

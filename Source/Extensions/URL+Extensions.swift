@@ -11,6 +11,9 @@ import Foundation
 // MARK: - Testing Extensions
 
 public extension URL {
+    static var temporaryDirectory: URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+    }
     
     /// Returns values extracted from the path. The path must match exactly.
     ///

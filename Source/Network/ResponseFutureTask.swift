@@ -9,13 +9,16 @@
 import Foundation
 
 class ResponseFutureTask<T> {
-    open var taskIdentifier: Int
-    open var future: ResponseFuture<Response<T>>
-    open var error: Error?
-    open var data: Data?
+    let taskIdentifier: Int
+    let future: ResponseFuture<Response<T>>
+    let destination: URL?
+    var error: Error?
+    var data: Data?
     
-    public init(taskIdentifier: Int, future: ResponseFuture<Response<T>>) {
+    
+    public init(taskIdentifier: Int, future: ResponseFuture<Response<T>>, destination: URL? = nil) {
         self.taskIdentifier = taskIdentifier
         self.future = future
+        self.destination = destination
     }
 }
