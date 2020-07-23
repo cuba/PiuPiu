@@ -32,6 +32,13 @@ class UploadViewController: BaseViewController {
         return imagePicker
     }()
     
+    lazy var filePicker: UIDocumentPickerViewController = {
+        let filePicker = UIDocumentPickerViewController(documentTypes: ["public.image"], in: .import)
+        filePicker.delegate = self
+        filePicker.allowsMultipleSelection = true
+        return filePicker
+    }()
+    
     private let apiManager: CloudinaryApiManager
     
     init() {
@@ -62,7 +69,11 @@ class UploadViewController: BaseViewController {
     
     @objc
     private func tappedSelectButton() {
-        showMediaPicker()
+        #if targetEnvironment(macCatalyst)
+        showFilePicker()
+        #else
+        showSourcePicker()
+        #endif
     }
     
     private func setupLayout() {
@@ -88,30 +99,32 @@ class UploadViewController: BaseViewController {
         textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20).isActive = true
     }
     
-    private func showMediaPicker() {
+    private func showFilePicker() {
+        present(filePicker, animated: true, completion: nil)
+    }
+    
+    private func showSourcePicker() {
         let availableSourceTypes = UIImagePickerController.filterAvailable(sourceTypes: [.camera, .photoLibrary])
-        
-        guard availableSourceTypes.count > 1 else {
-            guard let sourceType = availableSourceTypes.first else { return }
-            showMediaPicker(for: sourceType)
-            return
-        }
-        
         let alertController = UIAlertController(title: "Select Source", message: nil, preferredStyle: .actionSheet)
         
         for sourceType in availableSourceTypes {
             alertController.addAction(UIAlertAction(title: sourceType.title, style: .default, handler: { _ in
-                self.showMediaPicker(for: sourceType)
+                self.showSourcePicker(for: sourceType)
             }))
         }
+        
+        alertController.addAction(UIAlertAction(title: "Files", style: .default, handler: { _ in
+            self.showFilePicker()
+        }))
         
         alertController.popoverPresentationController?.sourceView = selectButton
         alertController.popoverPresentationController?.sourceRect = selectButton.frame
         alertController.popoverPresentationController?.permittedArrowDirections = .any
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
     
-    private func showMediaPicker(for type: UIImagePickerController.SourceType) {
+    private func showSourcePicker(for type: UIImagePickerController.SourceType) {
         switch type {
         case .camera:
             showCamera()
@@ -142,6 +155,22 @@ class UploadViewController: BaseViewController {
         present(imagePicker, animated: true, completion: nil)
     }
     
+    private func upload(files: [(data: Data, type: FileType)]) {
+        apiManager.uploadToCloudinary(files: files, folderName: "test")
+            .progress({ [weak self] progress in
+                print("PROGRESS: \(progress)")
+                self?.progressView.progress = progress
+            })
+            .response({ [weak self] response in
+                let strings = try response.map({ try $0.decodeString(encoding: .utf8) })
+                self?.textView.text = strings.joined(separator: "\n")
+            })
+            .error({ [weak self] error in
+                self?.showAlert(title: "Whoops!", message: error.localizedDescription)
+            })
+            .send()
+    }
+    
     private func upload(data: Data, type: FileType) {
         apiManager.uploadToCloudinary(file: data, type: type, folderName: "test")
             .progress({ [weak self] progress in
@@ -163,23 +192,14 @@ class UploadViewController: BaseViewController {
 
 extension UploadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let mediaUrl = info[.imageURL] as? URL {
+        if let mediaUrl = info[.imageURL] as? URL ?? info[.mediaURL] as? URL {
             guard let data = try? Data(contentsOf: mediaUrl) else { return }
-            let pathExtension = mediaUrl.pathExtension
-            
-            switch pathExtension {
-            case "jpg", "jpeg":
-                upload(data: data, type: .jpg)
-            case "png":
-                upload(data: data, type: .png)
-            case "gif":
-                upload(data: data, type: .gif)
-            default:
-                break
+            guard let type = fileType(forURL: mediaUrl) else {
+                assertionFailure("Unsupported type")
+                return
             }
-        } else if let mediaUrl = info[.mediaURL] as? URL {
-            guard let data = try? Data(contentsOf: mediaUrl) else { return }
-            upload(data: data, type: .jpg)
+            
+            upload(data: data, type: type)
         } else if let image = info[.originalImage] as? UIImage {
             guard let data = image.jpegData(compressionQuality: 1) else { return }
             upload(data: data, type: .jpg)
@@ -217,5 +237,46 @@ extension UIImagePickerController.SourceType {
 extension UIImagePickerController {
     static func filterAvailable(sourceTypes: [UIImagePickerController.SourceType]) -> [UIImagePickerController.SourceType] {
         return sourceTypes.filter({ self.isSourceTypeAvailable($0) })
+    }
+}
+
+extension UploadViewController: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        let files = urls.compactMap { url -> (Data, FileType)? in
+            guard let type = fileType(forURL: url) else {
+                assertionFailure("Unsupported type")
+                return nil
+            }
+            
+            guard let data = try? Data(contentsOf: url) else { return nil }
+            return (data, type)
+        }
+        
+        upload(files: files)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+        guard let data = try? Data(contentsOf: url) else { return }
+        guard let type = fileType(forURL: url) else {
+            assertionFailure("Unsupported type")
+            return
+        }
+        
+        upload(data: data, type: type)
+    }
+    
+    private func fileType(forURL url: URL) -> FileType? {
+        let fileExtension = url.pathExtension.lowercased()
+        
+        switch fileExtension {
+        case "jpg", "jpeg":
+            return .jpg
+        case "png":
+            return .png
+        case "gif":
+            return .gif
+        default:
+            return nil
+        }
     }
 }

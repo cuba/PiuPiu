@@ -38,6 +38,32 @@ open class CloudinaryApiManager {
         self.dispatcher = dispatcher
     }
     
+    open func uploadToCloudinary(files: [(data: Data, type: FileType)], folderName: String) -> ResponseFuture<[Response<Data?>]> {
+        let publicId = "\(folderName)/\(UUID().uuidString)"
+        let path = "/v1_1/dvb4otyuk/image/upload"
+        
+        let parameters: [String: String] = [
+            "upload_preset": "piupiu",
+            "public_id": publicId
+        ]
+        
+        var future = ResponseFuture<[Response<Data?>]>(result: [])
+        
+        for file in files {
+            future = future
+                .join {
+                    return self.upload(file: file.data, type: file.type, path: path, parameters: parameters)
+                }
+                .then { response -> [Response<Data?>] in
+                    var result = response.0
+                    result.append(response.1)
+                    return result
+                }
+        }
+        
+        return future
+    }
+    
     open func uploadToCloudinary(file: Data, type: FileType, folderName: String) -> ResponseFuture<Response<Data?>> {
         let publicId = "\(folderName)/\(UUID().uuidString)"
         let path = "/v1_1/dvb4otyuk/image/upload"
