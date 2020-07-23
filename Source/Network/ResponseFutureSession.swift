@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ResponseFutureSession: NSObject {
+open class ResponseFutureSession: NSObject {
     let configuration: URLSessionConfiguration
     private var downloadTasks: [ResponseFutureTask<URL>] = []
     private var dataTasks: [ResponseFutureTask<Data?>] = []
@@ -29,22 +29,6 @@ class ResponseFutureSession: NSObject {
     }
     
     deinit {
-        for fileURL in downloadedFiles {
-            // Save the file somewhere else
-            do {
-                if FileManager.default.fileExists(atPath: fileURL.path) {
-                    try FileManager.default.removeItem(at: fileURL)
-
-                    #if DEBUG
-                    print("Deleting file `\(fileURL.absoluteString)`")
-                    #endif
-                }
-            } catch {
-                assertionFailure(error.localizedDescription)
-                return
-            }
-        }
-        
         #if DEBUG
         print("DEINIT - ResponseFutureSession")
         #endif
@@ -67,10 +51,20 @@ class ResponseFutureSession: NSObject {
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
     open func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
+        let task = self.urlSession.dataTask(with: urlRequest)
+        return dataFuture(from: task)
+    }
+    
+    /// Create a future to make a data request using a data task.
+    ///
+    /// - Parameters:
+    ///   - request: The task to execute
+    /// - Returns: The promise that will send the request.
+    open func dataFuture(from task: URLSessionDataTask) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
+            
             // Create the request and store it internally
-            let task = self.urlSession.dataTask(with: urlRequest)
             let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
@@ -84,13 +78,24 @@ class ResponseFutureSession: NSObject {
     ///
     /// - Parameters:
     ///   - request: The request to send
+    ///   - destination: The location to store the downloaded file in
     /// - Returns: The promise that will send the request.
     open func downloadFuture(from urlRequest: URLRequest, to destination: URL) -> ResponseFuture<Response<URL>> {
+        let task = self.urlSession.downloadTask(with: urlRequest)
+        return downloadFuture(from: task, to: destination)
+    }
+    
+    /// Create a future to make a download request.
+    ///
+    /// - Parameters:
+    ///   - task: The download task to perform
+    ///   - destination: The location to store the downloaded file in
+    /// - Returns: The promise that will send the request.
+    open func downloadFuture(from task: URLSessionDownloadTask, to destination: URL) -> ResponseFuture<Response<URL>> {
         return ResponseFuture<Response<URL>>() { [weak self] future in
             guard let self = self else { return }
             
             // Create the request and store it internally
-            let task = self.urlSession.downloadTask(with: urlRequest)
             let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future, destination: destination)
             
             self.queue.sync {
@@ -100,38 +105,38 @@ class ResponseFutureSession: NSObject {
         }
     }
     
-    /// Create a future to make a upload request.
+    /// Create a future to make a upload request using data.
     ///
     /// - Parameters:
-    ///   - request: The request to send with data encoded as multpart
+    ///   - request: The request to send
+    ///   - data: The data to include in the request
     /// - Returns: The promise that will send the request.
-    open func uploadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { [weak self] future in
-            guard let self = self else { return }
-            
-            // Create the request and store it internally
-            let task = self.urlSession.dataTask(with: urlRequest)
-            let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
-            
-            self.queue.sync {
-                self.dataTasks.append(dataTask)
-                task.resume()
-            }
-        }
+    open func uploadFuture(from urlRequest: URLRequest, with data: Data) -> ResponseFuture<Response<Data?>> {
+        let task = self.urlSession.uploadTask(with: urlRequest, from: data)
+        return uploadFuture(from: task)
     }
     
     /// Create a future to make a data request.
     ///
     /// - Parameters:
     ///   - request: The request to send
-    ///   - data: The data to send
+    ///   - url: The file url to send
     /// - Returns: The promise that will send the request.
-    func uploadFuture(from urlRequest: URLRequest, data: Data) -> ResponseFuture<Response<Data?>> {
+    func uploadFuture(from urlRequest: URLRequest, withFile url: URL) -> ResponseFuture<Response<Data?>> {
+        let task = self.urlSession.uploadTask(with: urlRequest, fromFile: url)
+        return uploadFuture(from: task)
+    }
+    
+    /// Create a future to make a upload request.
+    ///
+    /// - Parameters:
+    ///   - request: The request to send with data encoded as multpart
+    /// - Returns: The promise that will send the request.
+    open func uploadFuture(from task: URLSessionUploadTask) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
             
             // Create the request and store it internally
-            let task = self.urlSession.uploadTask(with: urlRequest, from: data)
             let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
             
             self.queue.sync {
@@ -292,8 +297,7 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
             }
             
             try FileManager.default.copyItem(at: location, to: destination)
-            downloadedFiles.append(destination)
-
+            
             let response = Response(data: destination, urlRequest: urlRequest, urlResponse: urlResponse)
             responseFutureTask.future.succeed(with: response)
         } catch {
@@ -323,21 +327,39 @@ private extension URLSessionTask {
             expectedToReceive = countOfBytesExpectedToReceive
         }
         
+        
+        #if os(iOS) || os(watchOS) || os(tvOS)
         if #available(iOSApplicationExtension 11.0, *) {
             if expectedToReceive == 0 && countOfBytesClientExpectsToReceive > 0 {
                 expectedToReceive = countOfBytesClientExpectsToReceive
             }
         }
+        #elseif os(macOS)
+        if #available(OSXApplicationExtension 10.13, *) {
+            if expectedToReceive == 0 && countOfBytesClientExpectsToReceive > 0 {
+                expectedToReceive = countOfBytesClientExpectsToReceive
+            }
+        }
+        #endif
         
         if countOfBytesExpectedToSend > 0 {
             expectedToSend += countOfBytesExpectedToSend
         }
         
+        #if os(iOS) || os(watchOS) || os(tvOS)
         if #available(iOSApplicationExtension 11.0, *) {
             if expectedToSend == 0 && countOfBytesClientExpectsToSend > 0 {
                 expectedToSend = countOfBytesClientExpectsToReceive
             }
         }
+        #elseif os(macOS)
+        if #available(OSXApplicationExtension 10.13, *) {
+            if expectedToSend == 0 && countOfBytesClientExpectsToSend > 0 {
+                expectedToSend = countOfBytesClientExpectsToReceive
+            }
+        }
+        #endif
+        
         
         let expected = expectedToSend + expectedToReceive
         

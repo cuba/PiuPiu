@@ -15,44 +15,19 @@ public protocol UploadDispatcher: class {
     ///
     /// - Parameters:
     ///   - request: The request to send
-    /// - Returns: The promise that will send the request.
-    func uploadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>>
-    
-    /// Create a future to make an upload request.
-    ///
-    /// - Parameters:
-    ///   - request: The request to send
     ///   - data: The data to send
     /// - Returns: The promise that will send the request.
-    func uploadFuture(from urlRequest: URLRequest, data: Data) -> ResponseFuture<Response<Data?>>
+    func uploadFuture(from urlRequest: URLRequest, with data: Data) -> ResponseFuture<Response<Data?>>
 }
 
 public extension UploadDispatcher {
-    /// Create a future to make a download request.
-    ///
-    /// - Parameters:
-    ///   - callback: A callback that returns the future to send
-    /// - Returns: The promise that will send the request.
-    func uploadFuture(from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>> { [weak self] future in
-            guard let self = self else { return }
-            guard let urlRequest = try callback() else {
-                future.cancel()
-                return
-            }
-            
-            let nestedFuture = self.uploadFuture(from: urlRequest)
-            future.fulfill(with: nestedFuture)
-        }
-    }
-    
     /// Create a future to make an upload request.
     ///
     /// - Parameters:
     ///   - data: The data to send
     ///   - callback: A callback that returns the future to send
     /// - Returns: The promise that will send the request.
-    func uploadFuture(data: Data, from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
+    func uploadFuture(with data: Data, from callback: @escaping () throws -> URLRequest?) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>> { [weak self] future in
             guard let self = self else { return }
             guard let urlRequest = try callback() else {
@@ -60,7 +35,7 @@ public extension UploadDispatcher {
                 return
             }
             
-            let nestedFuture = self.uploadFuture(from: urlRequest, data: data)
+            let nestedFuture = self.uploadFuture(from: urlRequest, with: data)
             future.fulfill(with: nestedFuture)
         }
     }

@@ -71,7 +71,7 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     ///   - request: The request to send
     ///   - data: The data to send
     /// - Returns: The promise that will send the request.
-    open func uploadFuture(from urlRequest: URLRequest, data: Data) -> ResponseFuture<Response<Data?>> {
+    open func uploadFuture(from urlRequest: URLRequest, with data: Data) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
             

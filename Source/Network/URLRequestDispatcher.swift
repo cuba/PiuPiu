@@ -53,15 +53,6 @@ open class URLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadDispa
         return session.downloadFuture(from: urlRequest, to: destination)
     }
     
-    /// Create a future to make a upload request.
-    ///
-    /// - Parameters:
-    ///   - urlRequest: The request to send
-    /// - Returns: The promise that will send the request.
-    open func uploadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
-        return session.uploadFuture(from: urlRequest)
-    }
-    
     
     /// Create a future to make a data request.
     ///
@@ -69,7 +60,7 @@ open class URLRequestDispatcher: DataDispatcher, DownloadDispatcher, UploadDispa
     ///   - urlRequest: The request to send
     ///   - data: The data to send
     /// - Returns: The promise that will send the request.
-    open func uploadFuture(from urlRequest: URLRequest, data: Data) -> ResponseFuture<Response<Data?>> {
-        return session.uploadFuture(from: urlRequest, data: data)
+    open func uploadFuture(from urlRequest: URLRequest, with data: Data) -> ResponseFuture<Response<Data?>> {
+        return session.uploadFuture(from: urlRequest, with: data)
     }
 }
