@@ -31,6 +31,7 @@
 		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
+		DA80072724CC930D00FAB3F9 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */; };
 		DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */; };
 		DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */; };
 		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
@@ -130,6 +131,7 @@
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
 		DA78758C226A759C00A626AF /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewController.swift; sourceTree = "<group>"; };
 		DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DAA9A84322C9ABA200C126E5 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 		8CC508121ED35E7D00C19524 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				DA80072224CC92FC00FAB3F9 /* Extensions */,
 				DA28327022CE447E00027DBA /* API */,
 				DAA9A84222C9AB5900C126E5 /* View Controllers */,
 				DA787581226A73AA00A626AF /* Errors */,
@@ -230,6 +233,14 @@
 				DA28327722CE4D8600027DBA /* CloudinaryError.swift */,
 			);
 			path = Errors;
+			sourceTree = "<group>";
+		};
+		DA80072224CC92FC00FAB3F9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		DAA9A84222C9AB5900C126E5 /* View Controllers */ = {
@@ -447,6 +458,7 @@
 				DA28327622CE4D6900027DBA /* CloudinaryUploadErrorResponse.swift in Sources */,
 				DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */,
 				DA28327822CE4D8600027DBA /* CloudinaryError.swift in Sources */,
+				DA80072724CC930D00FAB3F9 /* UIColor+Extensions.swift in Sources */,
 				8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */,
 				DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */,
 				DAA9F54E226236DD002CDAAF /* User.swift in Sources */,

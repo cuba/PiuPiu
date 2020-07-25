@@ -35,7 +35,7 @@ class SeriesRequestsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.groupTableViewBackground
+        view.backgroundColor = UIColor.groupedBackground
         title = "Series"
         setupLayout()
     }

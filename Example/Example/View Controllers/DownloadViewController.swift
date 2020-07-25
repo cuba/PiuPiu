@@ -49,7 +49,7 @@ class DownloadViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.groupTableViewBackground
+        view.backgroundColor = UIColor.groupedBackground
         title = "Download"
         setupLayout()
         
