@@ -159,6 +159,10 @@
 		DA3E507021B4590F001450EC /* StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E506F21B4590F001450EC /* StatusCode.swift */; };
 		DA3E507221B4595E001450EC /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3E507121B4595E001450EC /* HTTPMethod.swift */; };
 		DA74C6C522517EB100B7005D /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA74C6C422517EB100B7005D /* HTTPResponse.swift */; };
+		DA80072A24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */; };
+		DA80072B24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */; };
+		DA80072C24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */; };
+		DA80072D24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */; };
 		DAE5EF94221EBD1E00D1990B /* Response+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */; };
 		DAE5EF96221EBD5B00D1990B /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF95221EBD5B00D1990B /* Response.swift */; };
 		DAE6F73C1FEF02D30060AA80 /* ResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE6F73B1FEF02D30060AA80 /* ResponseError.swift */; };
@@ -213,6 +217,7 @@
 		DA3E507121B4595E001450EC /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		DA53DA932289CDA900722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DA74C6C422517EB100B7005D /* HTTPResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPResponse.swift; sourceTree = "<group>"; };
+		DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionTask+Extensions.swift"; sourceTree = "<group>"; };
 		DAA9F5E12263B9EE002CDAAF /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = PiuPiu.podspec; sourceTree = "<group>"; };
 		DAE5EF93221EBD1E00D1990B /* Response+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+Extensions.swift"; sourceTree = "<group>"; };
 		DAE5EF95221EBD5B00D1990B /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -319,6 +324,7 @@
 				DA2832FD22D8647C00027DBA /* URL+Extensions.swift */,
 				DA173AE5238F56C90045617E /* KeyedDecodingContainer+Transform.swift */,
 				DA173AEA238F59F10045617E /* KeyedEncodingContainer+Transform.swift */,
+				DA80072924CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -631,6 +637,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA80072A24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */,
 				DA28354422DE0D4F00027DBA /* ServerProvider.swift in Sources */,
 				DA28325522CD6F7B00027DBA /* URLRequestDispatcher.swift in Sources */,
 				DA28328722D0F74800027DBA /* URLRequest+Extensions.swift in Sources */,
@@ -676,6 +683,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA80072B24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */,
 				DA28355D22DE244E00027DBA /* BasicRequest.swift in Sources */,
 				DA28357522DE24B100027DBA /* URL+Extensions.swift in Sources */,
 				DA28356C22DE249100027DBA /* PathComponent.swift in Sources */,
@@ -721,6 +729,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA80072C24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */,
 				DA28355E22DE244F00027DBA /* BasicRequest.swift in Sources */,
 				DA28357822DE273C00027DBA /* URL+Extensions.swift in Sources */,
 				DA28356D22DE249100027DBA /* PathComponent.swift in Sources */,
@@ -766,6 +775,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA80072D24CCC38F00FAB3F9 /* URLSessionTask+Extensions.swift in Sources */,
 				DA28355F22DE244F00027DBA /* BasicRequest.swift in Sources */,
 				DA28357922DE273D00027DBA /* URL+Extensions.swift in Sources */,
 				DA28356E22DE249200027DBA /* PathComponent.swift in Sources */,
@@ -1020,7 +1030,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -1054,7 +1064,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 11.0;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
@@ -1162,7 +1172,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1196,7 +1206,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 4.0;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};

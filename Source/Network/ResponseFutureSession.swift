@@ -250,7 +250,7 @@ extension ResponseFutureSession: URLSessionDataDelegate {
         // Append data
         responseFutureTask?.data?.append(data)
         
-        if let progress = dataTask.percentageTransferred {
+        if let progress = dataTask.percentTransferred {
             responseFutureTask?.future.update(progress: progress)
         }
     }
@@ -315,60 +315,5 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
         let progress = Float(integerLiteral: totalBytesWritten) / Float(integerLiteral: totalBytesExpectedToWrite)
         
         responseFutureTask.future.update(progress: progress)
-    }
-}
-
-private extension URLSessionTask {
-    var percentageTransferred: Float? {
-        var expectedToSend: Int64 = 0
-        var expectedToReceive: Int64 = 0
-        
-        if countOfBytesExpectedToReceive > 0 {
-            expectedToReceive = countOfBytesExpectedToReceive
-        }
-        
-        
-        #if os(iOS) || os(watchOS) || os(tvOS)
-        if #available(iOSApplicationExtension 11.0, *) {
-            if expectedToReceive == 0 && countOfBytesClientExpectsToReceive > 0 {
-                expectedToReceive = countOfBytesClientExpectsToReceive
-            }
-        }
-        #elseif os(macOS)
-        if #available(OSXApplicationExtension 10.13, *) {
-            if expectedToReceive == 0 && countOfBytesClientExpectsToReceive > 0 {
-                expectedToReceive = countOfBytesClientExpectsToReceive
-            }
-        }
-        #endif
-        
-        if countOfBytesExpectedToSend > 0 {
-            expectedToSend += countOfBytesExpectedToSend
-        }
-        
-        #if os(iOS) || os(watchOS) || os(tvOS)
-        if #available(iOSApplicationExtension 11.0, *) {
-            if expectedToSend == 0 && countOfBytesClientExpectsToSend > 0 {
-                expectedToSend = countOfBytesClientExpectsToReceive
-            }
-        }
-        #elseif os(macOS)
-        if #available(OSXApplicationExtension 10.13, *) {
-            if expectedToSend == 0 && countOfBytesClientExpectsToSend > 0 {
-                expectedToSend = countOfBytesClientExpectsToReceive
-            }
-        }
-        #endif
-        
-        
-        let expected = expectedToSend + expectedToReceive
-        
-        if expected > 0 {
-            let dataTransferred = countOfBytesReceived + countOfBytesSent
-            let progress = Float(integerLiteral: dataTransferred) / Float(integerLiteral: expected)
-            return progress
-        } else {
-            return nil
-        }
     }
 }
