@@ -176,7 +176,6 @@
 /* Begin PBXFileReference section */
 		8CC507E41ED35A8D00C19524 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC507E71ED35A8D00C19524 /* PiuPiu-iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PiuPiu-iOS.h"; sourceTree = "<group>"; };
-		8CC507E81ED35A8D00C19524 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA0A3E55222973E60050E073 /* DateFormatter+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extensions.swift"; sourceTree = "<group>"; };
 		DA0A3E572229788E0050E073 /* DateEncodingStrategy+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateEncodingStrategy+Extensions.swift"; sourceTree = "<group>"; };
 		DA137AD222CACD5500387C34 /* ResponseFutureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureSession.swift; sourceTree = "<group>"; };
@@ -194,13 +193,10 @@
 		DA173B10238F8A390045617E /* EmptyStringTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStringTransform.swift; sourceTree = "<group>"; };
 		DA1ED79F226A86760058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_tvOS.h; sourceTree = "<group>"; };
-		DA1ED7A2226A86760058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA1ED7BB226A87160058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_macOS.h; sourceTree = "<group>"; };
-		DA1ED7BE226A87160058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA1ED7C8226A878C0058EE26 /* PiuPiu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PiuPiu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PiuPiu_watchOS.h; sourceTree = "<group>"; };
-		DA1ED7CB226A878C0058EE26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DA28325422CD6F7B00027DBA /* URLRequestDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLRequestDispatcher.swift; sourceTree = "<group>"; };
 		DA28325622CD719500027DBA /* DataDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDispatcher.swift; sourceTree = "<group>"; };
 		DA28326022CD745800027DBA /* DownloadDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDispatcher.swift; sourceTree = "<group>"; };
@@ -352,7 +348,6 @@
 			isa = PBXGroup;
 			children = (
 				DA1ED7A1226A86760058EE26 /* PiuPiu_tvOS.h */,
-				DA1ED7A2226A86760058EE26 /* Info.plist */,
 			);
 			path = "PiuPiu tvOS";
 			sourceTree = "<group>";
@@ -361,7 +356,6 @@
 			isa = PBXGroup;
 			children = (
 				DA1ED7BD226A87160058EE26 /* PiuPiu_macOS.h */,
-				DA1ED7BE226A87160058EE26 /* Info.plist */,
 			);
 			path = "PiuPiu macOS";
 			sourceTree = "<group>";
@@ -370,7 +364,6 @@
 			isa = PBXGroup;
 			children = (
 				DA1ED7CA226A878C0058EE26 /* PiuPiu_watchOS.h */,
-				DA1ED7CB226A878C0058EE26 /* Info.plist */,
 			);
 			path = "PiuPiu watchOS";
 			sourceTree = "<group>";
@@ -378,7 +371,6 @@
 		DA1ED7D0226A87F30058EE26 /* PiuPiu iOS */ = {
 			isa = PBXGroup;
 			children = (
-				8CC507E81ED35A8D00C19524 /* Info.plist */,
 				8CC507E71ED35A8D00C19524 /* PiuPiu-iOS.h */,
 			);
 			path = "PiuPiu iOS";
@@ -887,6 +879,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -961,6 +954,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -985,7 +979,6 @@
 		8CC507F91ED35A8E00C19524 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
@@ -993,7 +986,6 @@
 		8CC507FA1ED35A8E00C19524 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "PiuPiu iOS/Info.plist";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
@@ -1003,7 +995,6 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu tvOS/Info.plist";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SDKROOT = appletvos;
@@ -1016,7 +1007,6 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu tvOS/Info.plist";
 				MTL_FAST_MATH = YES;
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -1028,9 +1018,7 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -1042,9 +1030,7 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu macOS/Info.plist";
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 			};
@@ -1055,7 +1041,6 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu watchOS/Info.plist";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				SDKROOT = watchos;
@@ -1068,7 +1053,6 @@
 			buildSettings = {
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = "PiuPiu watchOS/Info.plist";
 				MTL_FAST_MATH = YES;
 				SDKROOT = watchos;
 				TARGETED_DEVICE_FAMILY = 4;
