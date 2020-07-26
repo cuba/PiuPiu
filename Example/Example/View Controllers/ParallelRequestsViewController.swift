@@ -27,7 +27,9 @@ class ParallelRequestsViewController: UIViewController {
         return progressView
     }()
     
-    let dispatcher = URLRequestDispatcher()
+    private let sampleCount = 100
+    private let dispatcher = URLRequestDispatcher()
+    private var pendingTasks: Set<URLSessionTask> = []
     
     deinit {
         dispatcher.invalidateAndCancel()
@@ -45,7 +47,7 @@ class ParallelRequestsViewController: UIViewController {
         
         var future = ResponseFuture<[String]>(result: [])
         
-        for id in 1...100 {
+        for id in 1...sampleCount {
             future = future.join({ () -> ResponseFuture<String> in
                 return self.fetchUser(forId: id)
             }).then({ response in
@@ -55,14 +57,31 @@ class ParallelRequestsViewController: UIViewController {
             })
         }
         
-        future.progress({ [weak self] progress in
+        future.updated { [weak self] task in
+            guard let self = self else { return }
+            guard task.state == .completed || task.state == .running else {
+                self.pendingTasks.remove(task)
+                return
+            }
+            
+            self.pendingTasks.insert(task)
+            let completedTasks = self.pendingTasks.completed
+            let progress = Float(completedTasks.count) / Float(self.sampleCount)
             print("PROGRESS: \(progress)")
-            self?.progressView.progress = Float(progress)
-        }).response({ [weak self] values in
+            self.progressView.progress = progress
+            
+        }
+        .response { [weak self] values in
             self?.textView.text = values.joined(separator: "\n\n")
-        }).error({ [weak self] error in
+        }
+        .error { [weak self] error in
             self?.textView.text = error.localizedDescription
-        }).send()
+        }
+        .completion { [weak self] in
+            self?.progressView.progress = 1
+            self?.pendingTasks = []
+        }
+        .send()
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<String> {

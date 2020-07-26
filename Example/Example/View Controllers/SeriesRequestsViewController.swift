@@ -27,7 +27,9 @@ class SeriesRequestsViewController: UIViewController {
         return progressView
     }()
     
-    let dispatcher = URLRequestDispatcher()
+    private let sampleCount = 100
+    private let dispatcher = URLRequestDispatcher()
+    private var pendingTasks: Set<URLSessionTask> = []
     
     deinit {
         dispatcher.invalidateAndCancel()
@@ -41,42 +43,61 @@ class SeriesRequestsViewController: UIViewController {
     }
     
     @objc private func tappedSendButton() {
+        pendingTasks.forEach({ $0.cancel() })
+        pendingTasks = []
         progressView.progress = 0
         
         var future = ResponseFuture<[String]>(result: [])
         
         // Make more requests
-        for id in 1...100 {
+        for id in 1...sampleCount {
             future = future.replace({ [weak self] values -> ResponseFuture<[String]>? in
                 guard let self = self else {
                     return nil
                 }
                 
-                return self.fetchPost(forId: id).then({ value -> [String] in
+                return self.fetchPost(forId: id).then({ safeResponse -> [String] in
                     var values = values
-                    values.append(value)
+                    
+                    switch safeResponse {
+                    case .response(let value):
+                        values.append(value)
+                    case .error(let error):
+                        values.append(error.localizedDescription)
+                    }
+                    
                     return values
                 })
             })
         }
         
-        future.progress({ [weak self] progress in
+        future.updated { [weak self] task in
+            guard let self = self else { return }
+            guard task.state == .completed || task.state == .running else {
+                self.pendingTasks.remove(task)
+                return
+            }
+            
+            self.pendingTasks.insert(task)
+            let progress = Float(self.pendingTasks.completed.count) / Float(self.sampleCount)
             print("PROGRESS: \(progress)")
-            self?.progressView.progress = Float(progress)
-        }).response({ [weak self] values in
+            self.progressView.progress = progress
+        }.response { [weak self] values in
             self?.textView.text = values.joined(separator: "\n\n")
-        }).error({ [weak self] error in
+        }.error { [weak self] error in
             self?.textView.text = error.localizedDescription
-        }).send()
+        }.send()
     }
     
-    private func fetchPost(forId id: Int) -> ResponseFuture<String> {
-        return dispatcher.dataFuture(from: {
+    private func fetchPost(forId id: Int) -> ResponseFuture<SafeResponse<String>> {
+        return dispatcher.dataFuture {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> String in
+        }.then { response -> String in
             return try response.decodeString(encoding: .utf8)
-        })
+        }.thenError { safeResponse -> SafeResponse<String> in
+            return safeResponse
+        }
     }
     
     private func setupLayout() {

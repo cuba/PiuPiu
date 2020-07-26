@@ -40,6 +40,7 @@ class UploadViewController: BaseViewController {
     }()
     
     private let apiManager: CloudinaryApiManager
+    private var pendingTasks: Set<URLSessionTask> = []
     
     init() {
         let dispatcher = URLRequestDispatcher()
@@ -156,34 +157,54 @@ class UploadViewController: BaseViewController {
     }
     
     private func upload(files: [(data: Data, type: FileType)]) {
+        pendingTasks.forEach { $0.cancel() }
+        self.progressView.progress = 0
+        
         apiManager.uploadToCloudinary(files: files, folderName: "test")
-            .progress({ [weak self] progress in
-                print("PROGRESS: \(progress)")
-                self?.progressView.progress = progress
-            })
-            .response({ [weak self] response in
+            .updated { [weak self] task in
+                guard task.state == .completed || task.state == .running else { return }
+                self?.pendingTasks.insert(task)
+                
+                if let percent = self?.pendingTasks.averagePercentTransferred {
+                    print("PROGRESS: \(percent)")
+                    self?.progressView.progress = percent
+                }
+            }
+            .response { [weak self] response in
                 let strings = try response.map({ try $0.decodeString(encoding: .utf8) })
                 self?.textView.text = strings.joined(separator: "\n")
-            })
-            .error({ [weak self] error in
+            }
+            .error { [weak self] error in
                 self?.showAlert(title: "Whoops!", message: error.localizedDescription)
-            })
+            }
+            .completion { [weak self] in
+                self?.progressView.progress = 1
+                self?.pendingTasks = []
+            }
             .send()
     }
     
     private func upload(data: Data, type: FileType) {
+        pendingTasks.forEach { $0.cancel() }
+        self.progressView.progress = 0
+        
         apiManager.uploadToCloudinary(file: data, type: type, folderName: "test")
-            .progress({ [weak self] progress in
-                print("PROGRESS: \(progress)")
-                self?.progressView.progress = progress
-            })
-            .response({ [weak self] response in
+            .updated { [weak self] task in
+                guard task.state == .completed || task.state == .running else { return }
+                self?.pendingTasks.insert(task)
+                
+                if let percent = self?.pendingTasks.averagePercentTransferred {
+                    print("PROGRESS: \(percent)")
+                    self?.progressView.progress = percent
+                }
+            }
+            .response { [weak self] response in
                 let string = try response.decodeString(encoding: .utf8)
                 self?.textView.text = string
-            })
-            .error({ [weak self] error in
+            }
+            .error { [weak self] error in
                 self?.showAlert(title: "Whoops!", message: error.localizedDescription)
-            })
+            }
             .send()
     }
 }

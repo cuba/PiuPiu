@@ -63,6 +63,7 @@ open class ResponseFutureSession: NSObject {
     open func dataFuture(from task: URLSessionDataTask) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
+            future.update(with: task)
             
             // Create the request and store it internally
             let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
@@ -94,6 +95,7 @@ open class ResponseFutureSession: NSObject {
     open func downloadFuture(from task: URLSessionDownloadTask, to destination: URL) -> ResponseFuture<Response<URL>> {
         return ResponseFuture<Response<URL>>() { [weak self] future in
             guard let self = self else { return }
+            future.update(with: task)
             
             // Create the request and store it internally
             let downloadTask = ResponseFutureTask<URL>(taskIdentifier: task.taskIdentifier, future: future, destination: destination)
@@ -135,6 +137,7 @@ open class ResponseFutureSession: NSObject {
     open func uploadFuture(from task: URLSessionUploadTask) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
+            future.update(with: task)
             
             // Create the request and store it internally
             let dataTask = ResponseFutureTask<Data?>(taskIdentifier: task.taskIdentifier, future: future)
@@ -212,7 +215,6 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
             
             let response = Response(data: responseFutureTask.data, urlRequest: urlRequest, urlResponse: urlResponse)
             
-            responseFutureTask.future.update(progress: 1)
             responseFutureTask.future.succeed(with: response)
         } else if let responseFutureTask = self.downloadTask(for: task, removeTask: true) {
             guard let error = error else {
@@ -226,12 +228,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         guard let responseFutureTask = self.dataTask(for: task, removeTask: false) else { return }
-
-        // When an error occurs this value is -1
-        guard totalBytesExpectedToSend > 0 else { return }
-        let progress = Float(integerLiteral: totalBytesSent) / Float(integerLiteral: totalBytesExpectedToSend)
-        
-        responseFutureTask.future.update(progress: progress)
+        responseFutureTask.future.update(with: task)
     }
 }
 
@@ -240,6 +237,7 @@ extension ResponseFutureSession: URLSessionTaskDelegate {
 extension ResponseFutureSession: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let responseFutureTask = self.dataTask(for: dataTask, removeTask: false)
+        responseFutureTask?.future.update(with: dataTask)
         
         // Data is not recieved all at once
         // So we create an empty data set and append the results
@@ -249,18 +247,15 @@ extension ResponseFutureSession: URLSessionDataDelegate {
         
         // Append data
         responseFutureTask?.data?.append(data)
-        
-        if let progress = dataTask.percentTransferred {
-            responseFutureTask?.future.update(progress: progress)
-        }
     }
     
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
-        guard self.dataTask(for: dataTask, removeTask: false) != nil else {
+        guard let responseFutureTask = self.dataTask(for: dataTask, removeTask: false) else {
             completionHandler(.cancel)
             return
         }
         
+        responseFutureTask.future.update(with: dataTask)
         completionHandler(.allow)
     }
 }
@@ -270,6 +265,7 @@ extension ResponseFutureSession: URLSessionDataDelegate {
 extension ResponseFutureSession: URLSessionDownloadDelegate {
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let responseFutureTask = self.downloadTask(for: downloadTask, removeTask: true) else { return }
+        responseFutureTask.future.update(with: downloadTask)
         
         // Ensure there is a http response
         guard let urlResponse = downloadTask.response else {
@@ -308,12 +304,6 @@ extension ResponseFutureSession: URLSessionDownloadDelegate {
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         guard let responseFutureTask = self.downloadTask(for: downloadTask, removeTask: false) else { return }
-        
-        // When an error occurs this value is -1
-        guard totalBytesExpectedToWrite > 0 else { return }
-        
-        let progress = Float(integerLiteral: totalBytesWritten) / Float(integerLiteral: totalBytesExpectedToWrite)
-        
-        responseFutureTask.future.update(progress: progress)
+        responseFutureTask.future.update(with: downloadTask)
     }
 }

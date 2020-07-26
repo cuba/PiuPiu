@@ -55,9 +55,7 @@ class ResponseFutureTests: XCTestCase {
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
-        errorExpectation.isInverted = true
-        progressExpectation.expectedFulfillmentCount = 1
+        progressExpectation.expectedFulfillmentCount = 4
         
         // Then
         
@@ -93,11 +91,8 @@ class ResponseFutureTests: XCTestCase {
             successExpectation.fulfill()
         }).error({ error in
             XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
-        }).progress({ progress in
-            if progress == 1 {
-                progressExpectation.fulfill()
-            }
+        }).updated({ task in
+            progressExpectation.fulfill()
         }).completion({
             calledCompletion = true
             completionExpectation.fulfill()
@@ -109,11 +104,9 @@ class ResponseFutureTests: XCTestCase {
     func testNonFailingFutureResponse() {
         // When
         let successExpectation = self.expectation(description: "Success response triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")
-        progressExpectation.expectedFulfillmentCount = 1
-        errorExpectation.isInverted = true
+        progressExpectation.expectedFulfillmentCount = 2
         
         // Then
         
@@ -123,15 +116,18 @@ class ResponseFutureTests: XCTestCase {
         }).then({ response -> Post in
             return try response.decode(Post.self)
         }).nonFailing().success({ response in
-            XCTAssertNil(response.success)
-            XCTAssertNotNil(response.failure)
+            switch response {
+            case .response:
+                XCTFail()
+            case .error:
+                break
+            }
+            
             successExpectation.fulfill()
         }).error({ error in
-            errorExpectation.fulfill()
-        }).progress({ progress in
-            if progress == 1 {
-                progressExpectation.fulfill()
-            }
+            XCTFail(error.localizedDescription)
+        }).updated({ task in
+            progressExpectation.fulfill()
         }).completion({
             completionExpectation.fulfill()
         }).send()
@@ -139,14 +135,12 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testProgressCallback() {
+    func testTaskCallback() {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")
-        errorExpectation.isInverted = true
-        progressExpectation.expectedFulfillmentCount = 1
+        progressExpectation.expectedFulfillmentCount = 2
         
         // Then
 
@@ -156,15 +150,18 @@ class ResponseFutureTests: XCTestCase {
         }).then({ response -> Post in
             return try response.decode(Post.self)
         }).nonFailing().success({ response in
-            XCTAssertNotNil(response.success)
-            XCTAssertNil(response.failure)
+            switch response {
+            case .response:
+                break
+            case .error:
+                XCTFail()
+            }
+            
             successExpectation.fulfill()
         }).error({ error in
-            errorExpectation.fulfill()
-        }).progress({ progress in
-            if progress == 1 {
-                progressExpectation.fulfill()
-            }
+            XCTFail(error.localizedDescription)
+        }).updated({ task in
+            progressExpectation.fulfill()
         }).completion({
             completionExpectation.fulfill()
         }).send()
@@ -191,10 +188,8 @@ class ResponseFutureTests: XCTestCase {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        errorExpectation.isInverted = true
-        progressExpectation.expectedFulfillmentCount = 1
+        progressExpectation.expectedFulfillmentCount = 2
         
         // When
         instantDispatcher.dataFuture(from: {
@@ -203,13 +198,10 @@ class ResponseFutureTests: XCTestCase {
         }).response({ posts in
             // Then
             successExpectation.fulfill()
-        }).progress({ progress in
-            if progress == 1 {
-                progressExpectation.fulfill()
-            }
+        }).updated({ task in
+            progressExpectation.fulfill()
         }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
+            XCTFail(error.localizedDescription)
         }).completion({
             completionExpectation.fulfill()
         }).send()
@@ -263,12 +255,8 @@ class ResponseFutureTests: XCTestCase {
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
-        let successExpectation = self.expectation(description: "Success response triggered")
         let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        errorExpectation.isInverted = true
-        successExpectation.isInverted = true
         
         instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
@@ -276,10 +264,9 @@ class ResponseFutureTests: XCTestCase {
         }).join({ response -> ResponseFuture<Response<Data>>? in
             return nil
         }).success({ response in
-            successExpectation.fulfill()
+            XCTFail("Should not be triggered")
         }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
+            XCTFail(error.localizedDescription)
         }).cancellation({
             cancellationExpectation.fulfill()
         }).completion({
@@ -290,12 +277,8 @@ class ResponseFutureTests: XCTestCase {
     }
     
     func testFutureIsCancelledWhenNilIsReturnedInReplace() {
-        let successExpectation = self.expectation(description: "Success triggered")
         let cancellationExpectation = self.expectation(description: "Cancellation triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        errorExpectation.isInverted = true
-        successExpectation.isInverted = true
         
         instantDispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
@@ -303,10 +286,9 @@ class ResponseFutureTests: XCTestCase {
         }).replace({ response -> ResponseFuture<Response<Data>>? in
             return nil
         }).success({ response in
-            successExpectation.fulfill()
+            XCTFail("Should not be triggered")
         }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
+            XCTFail(error.localizedDescription)
         }).cancellation({
             cancellationExpectation.fulfill()
         }).completion({
@@ -318,14 +300,11 @@ class ResponseFutureTests: XCTestCase {
     
     func testFutureWithParallelJoins() {
         // Expectations
+        let count = 1000
         let successExpectation = self.expectation(description: "Success response triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let cancellationExpectation = self.expectation(description: "Cancellation triggered")
-        errorExpectation.isInverted = true
-        cancellationExpectation.isInverted = true
-        progressExpectation.expectedFulfillmentCount = 1
+        progressExpectation.expectedFulfillmentCount = count * 2
         
         // Given
         
@@ -333,7 +312,6 @@ class ResponseFutureTests: XCTestCase {
             future.succeed(with: [])
         }
         
-        let count = 1000
         weak var weakFuture: ResponseFuture<[Post]>? = future
         
         for id in 1...count {
@@ -353,10 +331,8 @@ class ResponseFutureTests: XCTestCase {
         
         // When
         
-        future.progress({ progress in
-            if progress == 1 {
-                progressExpectation.fulfill()
-            }
+        future.updated({ task in
+            progressExpectation.fulfill()
         }).success({ posts in
             successExpectation.fulfill()
             XCTAssertEqual(count, posts.count)
@@ -365,12 +341,11 @@ class ResponseFutureTests: XCTestCase {
                 XCTAssertEqual(posts[id - 1].id, id)
             }
         }).error({ error in
-            XCTFail("Should not trigger the failure")
-            errorExpectation.fulfill()
+            XCTFail(error.localizedDescription)
         }).completion({
             completionExpectation.fulfill()
         }).cancellation({
-            cancellationExpectation.fulfill()
+            XCTFail("Should not be triggered")
         }).send()
         
         // Then
@@ -378,7 +353,6 @@ class ResponseFutureTests: XCTestCase {
         XCTAssertNotNil(weakFuture)
         
         waitForExpectations(timeout: 10) { error in
-            XCTAssertNil(error)
             XCTAssertNil(weakFuture)
         }
     }

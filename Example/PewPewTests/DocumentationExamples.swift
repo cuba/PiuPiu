@@ -478,7 +478,6 @@ class DocumentationExamples: XCTestCase {
                     // If possible, we can send smaller progress updates
                     // Otherwise it's a good idea to send 1 to indicate this task is all finished.
                     // Not sending this won't cause any harm but your progress callback will not be triggered as a result of this future.
-                    future.update(progress: 1)
                     future.succeed(with: resizedImage)
                 } catch {
                     future.fail(with: error)

@@ -36,7 +36,7 @@ public extension UploadDispatcher {
             }
             
             let nestedFuture = self.uploadFuture(from: urlRequest, with: data)
-            future.fulfill(with: nestedFuture)
+            future.fulfill(by: nestedFuture)
         }
     }
 }

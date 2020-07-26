@@ -31,18 +31,7 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     ///   - urlRequest: The request to send
     /// - Returns: The promise that will send the request.
     open func dataFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { [weak self] future in
-            guard let self = self else { return }
-            
-            guard let response = try self.callback?(urlRequest) else {
-                throw MockDispatcherError.callbackNotSet
-            }
-            
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                future.update(progress: 1)
-                future.succeed(with: response)
-            }
-        }
+        return makeFuture(from: urlRequest)
     }
     
     /// Create a future to make a upload request.
@@ -51,18 +40,7 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     ///   - request: The request to send
     /// - Returns: The promise that will send the request.
     open func uploadFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
-        return ResponseFuture<Response<Data?>>() { [weak self] future in
-            guard let self = self else { return }
-            
-            guard let response = try self.callback?(urlRequest) else {
-                throw MockDispatcherError.callbackNotSet
-            }
-            
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                future.update(progress: 1)
-                future.succeed(with: response)
-            }
-        }
+        return makeFuture(from: urlRequest)
     }
     
     /// Create a future to make a data request.
@@ -72,15 +50,21 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     ///   - data: The data to send
     /// - Returns: The promise that will send the request.
     open func uploadFuture(from urlRequest: URLRequest, with data: Data) -> ResponseFuture<Response<Data?>> {
+        return makeFuture(from: urlRequest)
+    }
+    
+    private func makeFuture(from urlRequest: URLRequest) -> ResponseFuture<Response<Data?>> {
         return ResponseFuture<Response<Data?>>() { [weak self] future in
             guard let self = self else { return }
+            let task = URLSessionDataTask()
+            future.update(with: task)
             
             guard let response = try self.callback?(urlRequest) else {
                 throw MockDispatcherError.callbackNotSet
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
-                future.update(progress: 1)
+                future.update(with: task)
                 future.succeed(with: response)
             }
         }
