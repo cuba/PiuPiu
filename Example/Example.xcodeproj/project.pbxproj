@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,8 +27,8 @@
 		DA28330422D867F800027DBA /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28330322D867F800027DBA /* Endpoint.swift */; };
 		DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28351422D8780600027DBA /* PerformanceTests.swift */; };
 		DA28355622DE243E00027DBA /* RequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28355522DE243E00027DBA /* RequestSerializerTests.swift */; };
-		DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; };
-		DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DA55DB7324D0096900CB5983 /* PiuPiu.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA55DB7024D0096900CB5983 /* PiuPiu.framework */; platformFilter = ios; };
+		DA55DB7424D0096900CB5983 /* PiuPiu.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA55DB7024D0096900CB5983 /* PiuPiu.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
 		DA80072724CC930D00FAB3F9 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */; };
@@ -46,40 +46,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DA53DA9E2289DD8400722CD8 /* PBXContainerItemProxy */ = {
+		DA55DB6F24D0096900CB5983 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8CC507E41ED35A8D00C19524;
-			remoteInfo = "PiuPiu iOS";
+			remoteGlobalIDString = "PiuPiu::PiuPiu::Product";
+			remoteInfo = PiuPiu;
 		};
-		DA53DAA02289DD8400722CD8 /* PBXContainerItemProxy */ = {
+		DA55DB7124D0096900CB5983 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = DA1ED79F226A86760058EE26;
-			remoteInfo = "PiuPiu tvOS";
-		};
-		DA53DAA22289DD8400722CD8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DA1ED7BB226A87160058EE26;
-			remoteInfo = "PiuPiu macOS";
-		};
-		DA53DAA42289DD8400722CD8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DA1ED7C8226A878C0058EE26;
-			remoteInfo = "PiuPiu watchOS";
-		};
-		DA53DAA82289DDA700722CD8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DAA9F58822630365002CDAAF /* PiuPiu.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8CC507E31ED35A8D00C19524;
-			remoteInfo = "PiuPiu iOS";
+			remoteGlobalIDString = "PiuPiu::PiuPiuTests::Product";
+			remoteInfo = PiuPiuTests;
 		};
 		DAE5EF6A22190A0200D1990B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -97,7 +76,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DA53DAA72289DDA700722CD8 /* PiuPiu.framework in Embed Frameworks */,
+				DA55DB7424D0096900CB5983 /* PiuPiu.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,7 +133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA53DAA62289DDA700722CD8 /* PiuPiu.framework in Frameworks */,
+				DA55DB7324D0096900CB5983 /* PiuPiu.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -217,10 +196,8 @@
 		DA53DA982289DD8400722CD8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */,
-				DA53DAA12289DD8400722CD8 /* PiuPiu.framework */,
-				DA53DAA32289DD8400722CD8 /* PiuPiu.framework */,
-				DA53DAA52289DD8400722CD8 /* PiuPiu.framework */,
+				DA55DB7024D0096900CB5983 /* PiuPiu.framework */,
+				DA55DB7224D0096900CB5983 /* PiuPiuTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -323,7 +300,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				DA53DAA92289DDA700722CD8 /* PBXTargetDependency */,
 			);
 			name = Example;
 			productName = Example;
@@ -397,32 +373,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DA53DA9F2289DD8400722CD8 /* PiuPiu.framework */ = {
+		DA55DB7024D0096900CB5983 /* PiuPiu.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = PiuPiu.framework;
-			remoteRef = DA53DA9E2289DD8400722CD8 /* PBXContainerItemProxy */;
+			remoteRef = DA55DB6F24D0096900CB5983 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DA53DAA12289DD8400722CD8 /* PiuPiu.framework */ = {
+		DA55DB7224D0096900CB5983 /* PiuPiuTests.xctest */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = PiuPiu.framework;
-			remoteRef = DA53DAA02289DD8400722CD8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DA53DAA32289DD8400722CD8 /* PiuPiu.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = PiuPiu.framework;
-			remoteRef = DA53DAA22289DD8400722CD8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DA53DAA52289DD8400722CD8 /* PiuPiu.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = PiuPiu.framework;
-			remoteRef = DA53DAA42289DD8400722CD8 /* PBXContainerItemProxy */;
+			fileType = file;
+			path = PiuPiuTests.xctest;
+			remoteRef = DA55DB7124D0096900CB5983 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -496,11 +458,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DA53DAA92289DDA700722CD8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "PiuPiu iOS";
-			targetProxy = DA53DAA82289DDA700722CD8 /* PBXContainerItemProxy */;
-		};
 		DAE5EF6B22190A0200D1990B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8CC5080F1ED35E7D00C19524 /* Example */;
@@ -629,7 +586,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -649,7 +607,10 @@
 				);
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -673,7 +634,10 @@
 				);
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -704,7 +668,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PewPewTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPewTests;
@@ -736,7 +704,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = PewPewTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PewPewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
