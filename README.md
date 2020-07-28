@@ -8,7 +8,6 @@
 PiuPiu
 ============
 
-Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
 PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
 
 **Q**: Why should I use this framework?
