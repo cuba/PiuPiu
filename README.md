@@ -36,6 +36,10 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.6.0
+* Removed `progress` callback. This is now replaced with the `updated` callback which returns a `task`.
+* Add helper methods for computing progress
+
 ### 1.5.0
 * Download requests returns `Response` with temporary `URL` instead of `Data`
 * Added `localizedDescription` to `StatusCode` which returns Apple's translated error message 
@@ -221,7 +225,11 @@ let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
 let request = URLRequest(url: url, method: .get)
 
 dispatcher.dataFuture(from: request)
-    .then() { response -> HTTPResponse<Data?> in
+    .updated { task in 
+        // Returns an updated task. The same task may be ruturned multiple times.
+        // Can be used to cacluculate percentages or cancel tasks.
+    }
+    .then { response -> HTTPResponse<Data?> in
         // In this callback we handle common HTTP errors
         
         // Here we check if we have an HTTP response.
@@ -657,17 +665,13 @@ return ResponseFuture<UIImage>(action: { future in
     // This is an example of how a future is executed and fulfilled.
     DispatchQueue.global(qos: .background).async {
         // lets make an expensive operation on a background thread.
-        // The success and progress and error callbacks will be synced on the main thread
+        // The success, updated and error callbacks will be synced on the main thread
         // So no need to sync back to the main thread.
 
         do {
             // Do an expensive operation here ....
             let resizedImage = try image.resize(ratio: 16/9)
 
-            // If possible, we can send smaller progress updates
-            // Otherwise it's a good idea to send 1 to indicate this task is all finished.
-            // Not sending this won't cause any harm but your progress callback will not be triggered as a result of this future.
-            future.update(progress: 1)
             future.succeed(with: resizedImage)
         } catch {
             future.fail(with: error)

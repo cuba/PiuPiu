@@ -33,7 +33,7 @@ public extension DownloadDispatcher {
             }
             
             let nestedFuture = self.downloadFuture(from: urlRequest, to: destination)
-            future.fulfill(with: nestedFuture)
+            future.fulfill(by: nestedFuture)
         }
     }
 }

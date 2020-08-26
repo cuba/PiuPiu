@@ -10,12 +10,11 @@ import Foundation
 
 /// A ResponseFuture is a delayed action that is performed after calling `start()`.
 public class ResponseFuture<T> {
-    public typealias NonFailingResult<T, U> = (success: T?, failure: U?)
     public typealias ActionCallback = (ResponseFuture<T>) throws -> Void
     public typealias SuccessHandler = (T) throws -> Void
     public typealias ErrorHandler = (Error) -> Void
     public typealias CompletionHandler = () -> Void
-    public typealias ProgressCallback = (Float) -> Void
+    public typealias TaskCallback = (URLSessionTask) -> Void
     public typealias CancellationHandler = () -> Void
     
     public enum Status {
@@ -40,28 +39,25 @@ public class ResponseFuture<T> {
     private var successHandler: SuccessHandler?
     private var errorHandler: ErrorHandler?
     private var completionHandler: CompletionHandler?
-    private var progressCallback: ProgressCallback?
+    private var taskCallback: TaskCallback?
     private var cancellationHandler: CancellationHandler?
     
     /// The status of the future.
     private(set) public var status: Status
-    private(set) public var progress: Float = 0
-    public let order: UInt
     
     /// Initialize the future with an action that is triggered when calling the start() method.
     ///
     /// - Parameter action: The action that is performed. The action returns this future when triggered.
-    public init(order: UInt = 1, action: @escaping ActionCallback) {
+    public init(action: @escaping ActionCallback) {
         self.action = action
         self.status = .created
-        self.order = order
     }
     
     /// Initialize the future with an result that triggers the success callback as soon as `send` or `start` is called.
     ///
     /// - Parameter result: The result that is returned right away.
-    public convenience init(order: UInt = 1, result: T) {
-        self.init(order: order) { future in
+    public convenience init(result: T) {
+        self.init { future in
             future.succeed(with: result)
         }
     }
@@ -69,11 +65,11 @@ public class ResponseFuture<T> {
     /// Fulfills the given future with the results of this future. Both futures have to be of the same type.
     ///
     /// - Parameter future: The future to be fulfilled.
-    public func fulfill(_ future: ResponseFuture<T>) {
+    private func fulfill(_ future: ResponseFuture<T>) {
         self.success({ result in
             future.succeed(with: result)
-        }).progress({ progress in
-            future.update(progress: progress)
+        }).updated({ task in
+            future.update(with: task)
         }).error({ error in
             future.fail(with: error)
         }).send()
@@ -82,6 +78,14 @@ public class ResponseFuture<T> {
     /// Fulfills this future with the results of the given future. Both futures have to be of the same type.
     ///
     /// - Parameter future: The future to be fulfilled.
+    public func fulfill(by future: ResponseFuture<T>) {
+        future.fulfill(self)
+    }
+    
+    /// Fulfills this future with the results of the given future. Both futures have to be of the same type.
+    ///
+    /// - Parameter future: The future to be fulfilled.
+    @available(*, deprecated, renamed: "fulfill(by:)")
     public func fulfill(with future: ResponseFuture<T>) {
         future.fulfill(self)
     }
@@ -90,10 +94,6 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter object: The succeeded object required by the future success callback.
     public func succeed(with object: T) {
-        if self.progress < 1 {
-            self.update(progress: 1)
-        }
-        
         DispatchQueue.main.async {
             do {
                 try self.successHandler?(object)
@@ -133,19 +133,16 @@ public class ResponseFuture<T> {
         action = nil
         successHandler = nil
         errorHandler = nil
-        progressCallback = nil
+        taskCallback = nil
         cancellationHandler = nil
     }
     
     /// Update the progress of this future.
     ///
     /// - Parameter progress: The progress of this future between 0 and 1 where 0 is 0% and 1 being 100%
-    public func update(progress: Float) {
-        guard self.progress != progress else { return }
-        self.progress = progress
-        
+    public func update(with task: URLSessionTask) {
         DispatchQueue.main.async {
-            self.progressCallback?(progress)
+            self.taskCallback?(task)
         }
     }
     
@@ -153,8 +150,8 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This future for chaining.
-    public func progress(_ callback: @escaping ProgressCallback) -> ResponseFuture<T> {
-        self.progressCallback = callback
+    public func updated(_ callback: @escaping TaskCallback) -> ResponseFuture<T> {
+        self.taskCallback = callback
         return self
     }
     
@@ -211,7 +208,7 @@ public class ResponseFuture<T> {
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
     public func then<U>(on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
-        return ResponseFuture<U>(order: order + 1) { future in
+        return ResponseFuture<U> { future in
             self.success({ result in
                 queue.async {
                     do {
@@ -221,8 +218,8 @@ public class ResponseFuture<T> {
                         future.fail(with: error)
                     }
                 }
-            }).progress({ progress in
-                future.update(progress: progress)
+            }).updated({ task in
+                future.update(with: task)
             }).error({ error in
                 future.fail(with: error)
             }).cancellation({
@@ -237,10 +234,7 @@ public class ResponseFuture<T> {
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
     public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
-        return ResponseFuture<(T, U)>(order: order + 1) { future in
-            let secondWeight = Float(1)/Float(future.order)
-            let firstWeight = 1 - secondWeight
-            
+        return ResponseFuture<(T, U)> { future in
             self.success({ response in
                 guard let newFuture = try callback(response) else {
                     future.cancel()
@@ -251,43 +245,40 @@ public class ResponseFuture<T> {
                     future.succeed(with: (response, newResponse))
                 }).error({ error in
                     future.fail(with: error)
-                }).progress({ progress in
-                    let newProgress = firstWeight + (progress * secondWeight)
-                    future.update(progress: newProgress)
+                }).updated({ task in
+                    future.update(with: task)
                 }).cancellation({
                     future.cancel()
                 }).send()
             }).error({ error in
                 future.fail(with: error)
-            }).progress({ progress in
-                let newProgress = progress * firstWeight
-                future.update(progress: newProgress)
+            }).updated({ task in
+                future.update(with: task)
             }).cancellation({
                 future.cancel()
             }).send()
         }
     }
     
-    
     /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
     /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
     /// - Returns: A new response future with a success response with either the object or the error.
-    public func thenError<U>(_ callback: @escaping (T?, Error?) throws -> U) -> ResponseFuture<U> {
-        return ResponseFuture<U>(order: order + 1) { future in
+    public func thenError<U>(_ callback: @escaping (SafeResponse<T>) throws -> U) -> ResponseFuture<U> {
+        return ResponseFuture<U> { future in
             self.success({ response in
-                let callbackResult = try callback(response, nil)
+                let callbackResult = try callback(.response(response))
                 future.succeed(with: callbackResult)
             }).error({ error in
                 do {
-                    let callbackResult = try callback(nil, error)
+                    let callbackResult = try callback(.error(error))
                     future.succeed(with: callbackResult)
                 } catch let newError {
                     future.fail(with: newError)
                 }
-            }).progress({ progress in
-                future.update(progress: progress)
+            }).updated({ task in
+                future.update(with: task)
             }).cancellation({
                 future.cancel()
             }).send()
@@ -297,9 +288,9 @@ public class ResponseFuture<T> {
     /// Allows the error to fail by returning a success response with either the original response or the error
     ///
     /// - Returns: A new future containing the original response or an error object.
-    public func nonFailing() -> ResponseFuture<NonFailingResult<T, Error>> {
-        return self.thenError({ (response, error) -> NonFailingResult<T, Error> in
-            return (response, error)
+    public func nonFailing() -> ResponseFuture<SafeResponse<T>> {
+        return self.thenError({ response -> SafeResponse<T> in
+            return response
         })
     }
     
@@ -309,10 +300,7 @@ public class ResponseFuture<T> {
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
     public func replace<U>(_ successCallback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
-        return ResponseFuture<U>(order: order + 1) { future in
-            let secondWeight = Float(1)/Float(future.order)
-            let firstWeight = 1 - secondWeight
-            
+        return ResponseFuture<U> { future in
             self.success({ response in
                 guard let newPromise = try successCallback(response) else {
                     future.cancel()
@@ -321,9 +309,8 @@ public class ResponseFuture<T> {
                 
                 newPromise.success({ newResponse in
                     future.succeed(with: newResponse)
-                }).progress({ progress in
-                    let newProgress = firstWeight + (progress * secondWeight)
-                    future.update(progress: newProgress)
+                }).updated({ task in
+                    future.update(with: task)
                 }).error({ error in
                     future.fail(with: error)
                 }).cancellation({
@@ -331,9 +318,8 @@ public class ResponseFuture<T> {
                 }).send()
             }).error({ error in
                 future.fail(with: error)
-            }).progress({ progress in
-                let newProgress = progress * firstWeight
-                future.update(progress: newProgress)
+            }).updated({ task in
+                future.update(with: task)
             }).cancellation({
                 future.cancel()
             }).send()
@@ -348,16 +334,11 @@ public class ResponseFuture<T> {
     public func join<U>(_ callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
         let newFuture = callback()
         
-        return ResponseFuture<(T, U)>(order: order + 1) { future in
-            let secondWeight = Float(1)/Float(future.order)
-            let firstWeight = 1 - secondWeight
-            
+        return ResponseFuture<(T, U)> { future in
             var firstRequestFinished = false
             var secondRequestFinished = false
             var firstObject: T?
             var secondObject: U?
-            var firstProgress: Float = 0.0
-            var secondProgress: Float = 0.0
             var firstError: Error?
             var secondError: Error?
             
@@ -365,11 +346,8 @@ public class ResponseFuture<T> {
                 firstObject = response
             }).error({ error in
                 firstError = error
-            }).progress({ progress in
-                firstProgress = progress
-                
-                let newProgress = (firstProgress * firstWeight) + (secondProgress * secondWeight)
-                future.update(progress: newProgress)
+            }).updated({ task in
+                future.update(with: task)
             }).completion({
                 firstRequestFinished = true
                 guard secondRequestFinished else { return }
@@ -385,11 +363,8 @@ public class ResponseFuture<T> {
             
             newFuture.success({ response in
                 secondObject = response
-            }).progress({ progress in
-                secondProgress = progress
-                
-                let newProgress = (firstProgress * firstWeight) + (secondProgress * secondWeight)
-                future.update(progress: newProgress)
+            }).updated({ task in
+                future.update(with: task)
             }).error({ error in
                 secondError = error
             }).completion({

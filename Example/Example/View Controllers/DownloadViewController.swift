@@ -42,6 +42,7 @@ class DownloadViewController: BaseViewController {
     
     private var currentTextField: UITextField?
     private let dispatcher = URLRequestDispatcher()
+    private var pendingTasks: Set<URLSessionTask> = []
     
     deinit {
         dispatcher.invalidateAndCancel()
@@ -64,26 +65,33 @@ class DownloadViewController: BaseViewController {
     
     @objc private func tappedSendButton() {
         currentTextField?.resignFirstResponder()
+        pendingTasks.forEach({ $0.cancel() })
         progressView.progress = 0
         
         guard let urlString = fileUrlTextField.text, let url = URL(string: urlString) else { return }
         let destination = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("tmp")
         
-        dispatcher.downloadFuture(destination: destination, from: {
+        dispatcher.downloadFuture(destination: destination) {
             return URLRequest(url: url, method: .get)
-        }).progress({ [weak self] progress in
-            print("PROGRESS: \(progress)")
-            self?.progressView.progress = Float(progress)
-        }).success({ [weak self] response in
+        }.updated { [weak self] task in
+            guard task.state == .completed || task.state == .running else { return }
+            self?.pendingTasks.insert(task)
+            
+            if let percent = self?.pendingTasks.averagePercentTransferred {
+                print("PROGRESS: \(percent)")
+                self?.progressView.progress = percent
+            }
+        }.success { [weak self] response in
             let url = response.data
             let data = try Data(contentsOf: url)
             let image = UIImage(data: data)
             self?.imageView.image = image
-        }).error({ [weak self] error in
+        }.error { [weak self] error in
             self?.showAlert(title: "Whoops!", message: error.localizedDescription)
-        }).completion({
-            print("COMPLETED")
-        }).send()
+        }.completion { [weak self] in
+            self?.progressView.progress = 1
+            self?.pendingTasks = []
+        }.send()
     }
     
     private func setupLayout() {
