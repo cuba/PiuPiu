@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1200"
+   LastUpgradeVersion = "9999"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DA1ED7C7226A878C0058EE26"
+               BlueprintIdentifier = "PiuPiu::PiuPiu"
                BuildableName = "PiuPiu.framework"
-               BlueprintName = "PiuPiu watchOS"
+               BlueprintName = "PiuPiu"
                ReferencedContainer = "container:PiuPiu.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,6 +28,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "PiuPiu::PiuPiuTests"
+               BuildableName = "PiuPiuTests.xctest"
+               BlueprintName = "PiuPiuTests"
+               ReferencedContainer = "container:PiuPiu.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -47,15 +57,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DA1ED7C7226A878C0058EE26"
-            BuildableName = "PiuPiu.framework"
-            BlueprintName = "PiuPiu watchOS"
-            ReferencedContainer = "container:PiuPiu.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

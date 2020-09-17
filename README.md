@@ -1,14 +1,13 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
 ![iOS 9+](https://img.shields.io/badge/iOS-9-lightgrey.svg?style=for-the-badge)
+[![SPM](https://img.shields.io/badge/SPM-compatible-green.svg?style=for-the-badge)](https://swift.org/package-manager)
 [![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)](https://github.com/Carthage/Carthage)
-[![CocoaPods](https://img.shields.io/badge/cocoapods-compatible-green.svg?style=for-the-badge)](https://cocoapods.org/pods/PiuPiu)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
 [![Build](https://img.shields.io/travis/cuba/PiuPiu/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PiuPiu)
 
 PiuPiu
 ============
 
-Formerly known as [NetworkKit](https://github.com/cuba/NetworkKit), the project was renamed to support CocoaPods.
 PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
 
 **Q**: Why should I use this framework?
@@ -35,6 +34,9 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 - [License](#license)
 
 ## Updates
+
+### 1.7.0
+* Added support for swift package manager
 
 ### 1.6.0
 * Removed `progress` callback. This is now replaced with the `updated` callback which returns a `task`.

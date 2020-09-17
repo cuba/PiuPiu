@@ -35,7 +35,11 @@ class UploadViewController: BaseViewController {
     lazy var filePicker: UIDocumentPickerViewController = {
         let filePicker = UIDocumentPickerViewController(documentTypes: ["public.image"], in: .import)
         filePicker.delegate = self
-        filePicker.allowsMultipleSelection = true
+        
+        if #available(iOS 11.0, *) {
+            filePicker.allowsMultipleSelection = true
+        }
+        
         return filePicker
     }()
     
@@ -213,9 +217,17 @@ class UploadViewController: BaseViewController {
 
 extension UploadViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let mediaUrl = info[.imageURL] as? URL ?? info[.mediaURL] as? URL {
-            guard let data = try? Data(contentsOf: mediaUrl) else { return }
-            guard let type = fileType(forURL: mediaUrl) else {
+        let mediaURL: URL?
+        
+        if #available(iOS 11.0, *) {
+            mediaURL = info[.imageURL] as? URL ?? info[.mediaURL] as? URL
+        } else {
+            mediaURL = info[.mediaURL] as? URL
+        }
+        
+        if let mediaURL = mediaURL {
+            guard let data = try? Data(contentsOf: mediaURL) else { return }
+            guard let type = fileType(forURL: mediaURL) else {
                 assertionFailure("Unsupported type")
                 return
             }
