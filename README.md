@@ -808,14 +808,14 @@ public protocol EncodingTransform {
     associatedtype ValueSource
     associatedtype JSONDestination: Encodable
     
-    func transform(value: Self.ValueSource) throws -> Self.JSONDestination
+    func toJSON(Self.ValueSource) throws -> Self.JSONDestination
 }
 
 public protocol DecodingTransform {
     associatedtype JSONSource: Decodable
     associatedtype ValueDestination
     
-    func transform(json: Self.JSONSource) throws -> Self.ValueDestination
+    func from(json: Self.JSONSource) throws -> Self.ValueDestination
 }
 ```
 
@@ -841,7 +841,7 @@ public class DateTransform: Transform {
         case invalidDateFormat(expectedFormat: String, received: String)
     }
     
-    public func transform(json: String) throws -> Date {
+    public func from(json: String) throws -> Date {
         guard let date = formatter.date(from: json) else {
             throw TransformError.invalidDateFormat(expectedFormat: formatter.dateFormat, received: json)
         }
@@ -849,7 +849,7 @@ public class DateTransform: Transform {
         return date
     }
     
-    public func transform(value: Date) throws -> String {
+    public func toJSON(Date) throws -> String {
         return formatter.string(from: value)
     }
 }

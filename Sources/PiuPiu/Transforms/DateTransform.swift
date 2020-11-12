@@ -12,25 +12,21 @@ import Foundation
 public class DateTransform: Transform {
     public let formatter: DateFormatter
     
-    public init(formatter: DateFormatter) {
+    public init(formatter: DateFormatter, codingPath: [CodingKey]) {
         self.formatter = formatter
     }
     
-    public enum TransformError: Error {
-        case invalidDateFormat(expectedFormat: String, received: String)
-    }
-    
     /// Decodes a  `String` represented date to a `Date` object using the specified `DateFormatter`.  If the value cannot be decoded, `DateTransform.TransformError` will be thrown.
-    public func transform(json: String) throws -> Date {
+    public func from(json: String, codingPath: [CodingKey]) throws -> Date {
         guard let date = formatter.date(from: json) else {
-            throw TransformError.invalidDateFormat(expectedFormat: formatter.dateFormat, received: json)
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not convert `\(json)` to `Date` using formatter `\(String(describing: formatter))`"))
         }
         
         return date
     }
     
     /// Encodes a `Date` into its `String` representation using the specified `DateFormater`. No error is ever thrown because a `Date` can always be converted to string.
-    public func transform(value: Date) throws -> String {
+    public func toJSON(_ value: Date, codingPath: [CodingKey]) throws -> String {
         return formatter.string(from: value)
     }
 }

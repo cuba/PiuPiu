@@ -19,7 +19,7 @@ public class TimeZoneTransform: Transform {
     }
     
     /// Decodes a  time zone identifier represented as a `String` into a `TimeZone`.  If the value cannot be decoded, a `TimeZoneTransform.TransformError` will be thrown.
-    public func transform(json: String) throws -> TimeZone {
+    public func from(json: String, codingPath: [CodingKey]) throws -> TimeZone {
         guard let url = TimeZone(identifier: json) else {
             throw TransformError.invalidIdentifier
         }
@@ -28,7 +28,7 @@ public class TimeZoneTransform: Transform {
     }
     
     /// Encodes a `TimeZone` into its identifier `String` representation. No error is ever thrown because a `TimeZone` can always be converted to an identifier.
-    public func transform(value: TimeZone) throws -> String {
+    public func toJSON(_ value: TimeZone, codingPath: [CodingKey]) throws -> String {
         return value.identifier
     }
 }

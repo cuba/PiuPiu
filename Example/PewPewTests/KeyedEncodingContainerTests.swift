@@ -11,7 +11,7 @@ import PiuPiu
 
 class KeyedEncodingContainerTests: XCTestCase {
     class FakeEncodingTransform: EncodingTransform {
-        func transform(value: Int) throws -> String {
+        func toJSON(_ value: Int, codingPath: [CodingKey]) throws -> String {
             return "\(value)"
         }
     }

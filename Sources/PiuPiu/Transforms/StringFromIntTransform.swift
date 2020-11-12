@@ -13,12 +13,12 @@ public class StringFromIntTransform: Transform {
     public init() {}
     
     /// Converts an `Int64` into a `String`. No error is ever thrown.
-    public func transform(json: Int64) throws -> String {
+    public func from(json: Int64, codingPath: [CodingKey]) throws -> String {
         return "\(json)"
     }
     
     /// Converts an `Int64` into a `String`. No error is ever thrown.
-    public func transform(value: Int64) throws -> String {
+    public func toJSON(_ value: Int64, codingPath: [CodingKey]) throws -> String {
         return "\(value)"
     }
 }

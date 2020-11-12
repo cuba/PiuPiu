@@ -36,7 +36,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(json: "")
+            let value = try transform.from(json: "", codingPath: [])
             XCTAssertNil(value)
         } catch {
             XCTFail(error.localizedDescription)
@@ -48,7 +48,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(json: "test")
+            let value = try transform.from(json: "test", codingPath: [])
             XCTAssertEqual(value, "test")
         } catch {
             XCTFail(error.localizedDescription)
@@ -60,7 +60,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(value: "")
+            let value = try transform.toJSON("", codingPath: [])
             XCTAssertNil(value)
         } catch {
             XCTFail(error.localizedDescription)
@@ -72,7 +72,7 @@ class EmptyStringTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(value: "test")
+            let value = try transform.toJSON("test", codingPath: [])
             XCTAssertEqual(value, "test")
         } catch {
             XCTFail(error.localizedDescription)
