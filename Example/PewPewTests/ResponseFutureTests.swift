@@ -59,10 +59,10 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
         
-        dispatcher.dataFuture(from: {
+        dispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
+        }.then { response -> Post in
             // Attempt to get a http response
             let httpResponse = try response.makeHTTPResponse()
             
@@ -75,28 +75,28 @@ class ResponseFutureTests: XCTestCase {
             
             XCTAssertFalse(calledCompletion)
             return try response.decode(Post.self)
-        }).replace({ post -> ResponseFuture<EnrichedPost> in
+        }.replace { post -> ResponseFuture<EnrichedPost> in
             // Perform some operation operation that itself requires a future
             // such as something heavy like markdown parsing.
             XCTAssertFalse(calledCompletion)
             return self.enrich(post: post)
-        }).join({ enrichedPost -> ResponseFuture<User> in
+        }.seriesJoin(User.self) { [weak self] enrichedPost in
             // Joins a future with another one
             XCTAssertFalse(calledCompletion)
-            return self.fetchUser(forId: enrichedPost.post.userId)
-        }).response({ enrichedPost, user in
+            return self?.fetchUser(forId: enrichedPost.post.userId)
+        }.response { enrichedPost, user in
             // The final response callback includes all the transformations and
             // Joins we had previously performed.
             XCTAssertFalse(calledCompletion)
             successExpectation.fulfill()
-        }).error({ error in
+        }.error { error in
             XCTFail("Should not trigger the failure")
-        }).updated({ task in
+        }.updated { task in
             progressExpectation.fulfill()
-        }).completion({
+        }.completion {
             calledCompletion = true
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -110,27 +110,27 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
         
-        instantDispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/unknown/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
+        }.then { response -> Post in
             return try response.decode(Post.self)
-        }).nonFailing().success({ response in
+        }.safeResult().success { response in
             switch response {
-            case .response:
+            case .success:
                 XCTFail()
-            case .error:
+            case .failure:
                 break
             }
             
             successExpectation.fulfill()
-        }).error({ error in
+        }.error { error in
             XCTFail(error.localizedDescription)
-        }).updated({ task in
+        }.updated { task in
             progressExpectation.fulfill()
-        }).completion({
+        }.completion {
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -144,27 +144,27 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
 
-        instantDispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
+        }.then { response -> Post in
             return try response.decode(Post.self)
-        }).nonFailing().success({ response in
+        }.safeResult().success { response in
             switch response {
-            case .response:
+            case .success:
                 break
-            case .error:
+            case .failure:
                 XCTFail()
             }
             
             successExpectation.fulfill()
-        }).error({ error in
+        }.error { error in
             XCTFail(error.localizedDescription)
-        }).updated({ task in
+        }.updated { task in
             progressExpectation.fulfill()
-        }).completion({
+        }.completion {
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -176,12 +176,12 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<User> {
-        return instantDispatcher.dataFuture(from: {
+        return instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> User in
+        }.map(User.self) { response in
             return try response.decode(User.self)
-        })
+        }
     }
     
     func testFuture() {
@@ -225,23 +225,23 @@ class ResponseFutureTests: XCTestCase {
         
         // When
         
-        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.dataFuture(from: {
+        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
+        }.then { response -> Post in
             return try response.decode(Post.self)
-        }).replace({ post -> ResponseFuture<EnrichedPost> in
+        }.replace { post -> ResponseFuture<EnrichedPost> in
             return self.enrich(post: post)
-        }).join({ enrichedPost -> ResponseFuture<User> in
+        }.seriesJoin(User.self) { enrichedPost in
             // Joins a future with another one
             return self.fetchUser(forId: enrichedPost.post.userId)
-        }).success({ response in
+        }.success { response in
             successExpectation.fulfill()
-        }).error({ error in
+        }.error { error in
             errorExpectation.fulfill()
-        }).completion({
+        }.completion {
             completionExpectation.fulfill()
-        }).cancellation {
+        }.cancellation {
             cancellationExpectation.fulfill()
         }
         
@@ -258,20 +258,20 @@ class ResponseFutureTests: XCTestCase {
         let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        instantDispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).join({ response -> ResponseFuture<Response<Data>>? in
+        }.seriesJoin(Response<Data>.self) { result in
             return nil
-        }).success({ response in
+        }.success { response in
             XCTFail("Should not be triggered")
-        }).error({ error in
+        }.error { error in
             XCTFail(error.localizedDescription)
-        }).cancellation({
+        }.cancellation {
             cancellationExpectation.fulfill()
-        }).completion({
+        }.completion {
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -280,20 +280,20 @@ class ResponseFutureTests: XCTestCase {
         let cancellationExpectation = self.expectation(description: "Cancellation triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
-        instantDispatcher.dataFuture(from: {
+        instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).replace({ response -> ResponseFuture<Response<Data>>? in
+        }.replace { response -> ResponseFuture<Response<Data>>? in
             return nil
-        }).success({ response in
+        }.success { response in
             XCTFail("Should not be triggered")
-        }).error({ error in
+        }.error { error in
             XCTFail(error.localizedDescription)
-        }).cancellation({
+        }.cancellation {
             cancellationExpectation.fulfill()
-        }).completion({
+        }.completion {
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -315,18 +315,19 @@ class ResponseFutureTests: XCTestCase {
         weak var weakFuture: ResponseFuture<[Post]>? = future
         
         for id in 1...count {
-            future = future.join({ posts -> ResponseFuture<Post> in
-                self.instantDispatcher.dataFuture(from: {
-                    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                    return URLRequest(url: url, method: .get)
-                }).then({ response in
-                    return try response.decode(Post.self)
-                })
-            }).then({ posts, addedPost -> [Post] in
-                var posts = posts
-                posts.append(addedPost)
-                return posts
-            })
+            future = future
+                .parallelJoin(Post.self) {
+                    self.instantDispatcher.dataFuture() {
+                        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+                        return URLRequest(url: url, method: .get)
+                    }.then { response in
+                        return try response.decode(Post.self)
+                    }
+                }.map([Post].self) { posts, addedPost in
+                    var posts = posts
+                    posts.append(addedPost)
+                    return posts
+                }
         }
         
         // When

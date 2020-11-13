@@ -32,18 +32,19 @@ class PerformanceTests: XCTestCase {
         
         self.measure {
             for id in 1...100 {
-                future = future.join({ posts -> ResponseFuture<Post> in
-                    self.dispatcher.dataFuture(from: {
-                        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                        return URLRequest(url: url, method: .get)
-                    }).then({ response in
-                        return try response.decode(Post.self)
-                    })
-                }).then({ posts, addedPost -> [Post] in
-                    var posts = posts
-                    posts.append(addedPost)
-                    return posts
-                })
+                future = future
+                    .seriesJoin(Post.self) { posts in
+                        self.dispatcher.dataFuture() {
+                            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+                            return URLRequest(url: url, method: .get)
+                        }.then { response in
+                            return try response.decode(Post.self)
+                        }
+                    }.then { posts, addedPost -> [Post] in
+                        var posts = posts
+                        posts.append(addedPost)
+                        return posts
+                    }
             }
             
             future.response({ posts in

@@ -51,7 +51,7 @@ open class CloudinaryApiManager {
         
         for file in files {
             future = future
-                .join {
+                .parallelJoin(Response<Data?>.self) {
                     return self.upload(file: file.data, type: file.type, path: path, parameters: parameters)
                 }
                 .then { response -> [Response<Data?>] in

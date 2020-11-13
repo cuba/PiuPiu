@@ -60,9 +60,9 @@ class SeriesRequestsViewController: UIViewController {
                     var values = values
                     
                     switch safeResponse {
-                    case .response(let value):
+                    case .success(let value):
                         values.append(value)
-                    case .error(let error):
+                    case .failure(let error):
                         values.append(error.localizedDescription)
                     }
                     
@@ -89,15 +89,13 @@ class SeriesRequestsViewController: UIViewController {
         }.send()
     }
     
-    private func fetchPost(forId id: Int) -> ResponseFuture<SafeResponse<String>> {
+    private func fetchPost(forId id: Int) -> ResponseFuture<Result<String, Error>> {
         return dispatcher.dataFuture {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return URLRequest(url: url, method: .get)
         }.then { response -> String in
             return try response.decodeString(encoding: .utf8)
-        }.thenError { safeResponse -> SafeResponse<String> in
-            return safeResponse
-        }
+        }.safeResult()
     }
     
     private func setupLayout() {
