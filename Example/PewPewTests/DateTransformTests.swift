@@ -21,14 +21,14 @@ class DateTransformTests: XCTestCase {
     
     func testFromJSONTransform() {
         // Given
-        let transform = DateTransform(formatter: formatter)
+        let transform = DateTransform(formatter: formatter, codingPath: [])
         let timeZone = TimeZone(identifier: "America/Montreal")!
         let components = DateComponents(calendar: .current, timeZone: timeZone, year: 2019, month: 03, day: 10, hour: 9, minute: 10, second: 11)
         let testDate = components.date!
         
         do {
             // When
-            let date = try transform.transform(json: "2019-03-10T13:10:11Z")
+            let date = try transform.from(json: "2019-03-10T13:10:11Z", codingPath: [])
             XCTAssertEqual(date, testDate)
         } catch {
             XCTFail(error.localizedDescription)
@@ -37,14 +37,14 @@ class DateTransformTests: XCTestCase {
     
     func testToJSONTransform() {
         // Given
-        let transform = DateTransform(formatter: formatter)
+        let transform = DateTransform(formatter: formatter, codingPath: [])
         let timeZone = TimeZone(identifier: "America/Montreal")!
         let components = DateComponents(calendar: .current, timeZone: timeZone, year: 2019, month: 03, day: 10, hour: 9, minute: 10, second: 11)
         let date = components.date!
         
         do {
             // When
-            let value = try transform.transform(value: date)
+            let value = try transform.toJSON(date, codingPath: [])
             XCTAssertEqual(value, "2019-03-10T13:10:11Z")
         } catch {
             XCTFail(error.localizedDescription)

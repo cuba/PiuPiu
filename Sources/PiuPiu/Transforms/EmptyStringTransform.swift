@@ -13,7 +13,7 @@ public class EmptyStringTransform: Transform {
     public init() {}
 
     /// Filters out empty strings and returns a nil value.
-    public func transform(json: String) throws -> String? {
+    public func from(json: String, codingPath: [CodingKey]) throws -> String? {
         if !json.isEmpty {
             return json
         } else {
@@ -22,7 +22,7 @@ public class EmptyStringTransform: Transform {
     }
     
     /// Filters out empty strings and returns a nil value.
-    public func transform(value: String) throws -> String? {
+    public func toJSON(_ value: String, codingPath: [CodingKey]) throws -> String? {
         if !value.isEmpty {
             return value
         } else {

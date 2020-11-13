@@ -47,28 +47,13 @@ class SeriesRequestsViewController: UIViewController {
         pendingTasks = []
         progressView.progress = 0
         
-        var future = ResponseFuture<[String]>(result: [])
+        var future = ResponseFuture<[Result<String, Error>]>(result: [])
         
         // Make more requests
         for id in 1...sampleCount {
-            future = future.replace({ [weak self] values -> ResponseFuture<[String]>? in
-                guard let self = self else {
-                    return nil
-                }
-                
-                return self.fetchPost(forId: id).then({ safeResponse -> [String] in
-                    var values = values
-                    
-                    switch safeResponse {
-                    case .response(let value):
-                        values.append(value)
-                    case .error(let error):
-                        values.append(error.localizedDescription)
-                    }
-                    
-                    return values
-                })
-            })
+            future = future.addingSeriesResult() { [weak self] values in
+                return self?.fetchPost(forId: id)
+            }
         }
         
         future.updated { [weak self] task in
@@ -83,21 +68,26 @@ class SeriesRequestsViewController: UIViewController {
             print("PROGRESS: \(progress)")
             self.progressView.progress = progress
         }.response { [weak self] values in
-            self?.textView.text = values.joined(separator: "\n\n")
+            self?.textView.text = values.map({ result in
+                switch result {
+                case .success(let value):
+                    return value
+                case .failure(let error):
+                    return error.localizedDescription
+                }
+            }).joined(separator: "\n\n")
         }.error { [weak self] error in
             self?.textView.text = error.localizedDescription
         }.send()
     }
     
-    private func fetchPost(forId id: Int) -> ResponseFuture<SafeResponse<String>> {
+    private func fetchPost(forId id: Int) -> ResponseFuture<Result<String, Error>> {
         return dispatcher.dataFuture {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return URLRequest(url: url, method: .get)
         }.then { response -> String in
             return try response.decodeString(encoding: .utf8)
-        }.thenError { safeResponse -> SafeResponse<String> in
-            return safeResponse
-        }
+        }.safeResult()
     }
     
     private func setupLayout() {

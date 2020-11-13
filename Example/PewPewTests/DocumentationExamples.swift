@@ -388,13 +388,13 @@ class DocumentationExamples: XCTestCase {
     func testSeriesJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         
-        dispatcher.dataFuture(from: {
+        dispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }).then({ response in
+        }.then { response in
             // Transform this response so that we can reference it in the join callback.
             return try response.decode(Post.self)
-        }).join({ [weak self] post -> ResponseFuture<User>? in
+        }.seriesJoin(User.self) { [weak self] post in
             guard let self = self else {
                 // We used [weak self] because our dispatcher is referenced on self.
                 // Returning nil will cancel execution of this promise
@@ -412,10 +412,10 @@ class DocumentationExamples: XCTestCase {
             return self.dispatcher.dataFuture(from: request).then({ response -> User in
                 return try response.decode(User.self)
             })
-        }).success({ post, user in
+        }.success { post, user in
             // The final response callback includes both results.
             expectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 4, handler: nil)
     }
@@ -423,12 +423,12 @@ class DocumentationExamples: XCTestCase {
     func testParallelJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         
-        dispatcher.dataFuture(from: {
+        dispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
-        }).then({ response in
+        }.then { response in
             return try response.decode([Post].self)
-        }).join({ () -> ResponseFuture<[User]> in
+        }.parallelJoin([User].self) {
             // Joins a future with another one returning both results.
             // Since this callback is non-escaping, you don't have to use [weak self]
             let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
@@ -437,10 +437,10 @@ class DocumentationExamples: XCTestCase {
             return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
                 return try response.decode([User].self)
             })
-        }).success({ posts, users in
+        }.success { posts, users in
             // The final response callback includes both results.
             expectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 4, handler: nil)
     }
@@ -451,14 +451,18 @@ class DocumentationExamples: XCTestCase {
         
         let image = UIImage()
         
-        resize(image: image).success({ resizedImage in
-            // Handle success
-        }).error({ error in
-            // Handle error
-        }).completion({
-            // Handle completion
-            completionExpectation.fulfill()
-        }).start()
+        resize(image: image)
+            .success { resizedImage in
+                // Handle success
+            }
+            .error { error in
+                // Handle error
+            }
+            .completion {
+                // Handle completion
+                completionExpectation.fulfill()
+            }
+            .start()
         
         waitForExpectations(timeout: 4, handler: nil)
     }

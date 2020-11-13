@@ -34,7 +34,7 @@ class TimeZoneTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(json: identifier)
+            let value = try transform.from(json: identifier, codingPath: [])
             XCTAssertEqual(value, TimeZone(identifier: "America/Montreal")!)
         } catch {
             XCTFail(error.localizedDescription)
@@ -48,7 +48,7 @@ class TimeZoneTransformTests: XCTestCase {
         
         do {
             // When
-            let identifier = try transform.transform(value: timeZone)
+            let identifier = try transform.toJSON(timeZone, codingPath: [])
             XCTAssertEqual(identifier, "America/Montreal")
         } catch {
             XCTFail(error.localizedDescription)

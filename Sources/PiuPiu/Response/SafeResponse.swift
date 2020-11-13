@@ -8,6 +8,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Apple's `Result<Success, Failure>` object")
 public enum SafeResponse<T> {
     case response(T)
     case error(Error)

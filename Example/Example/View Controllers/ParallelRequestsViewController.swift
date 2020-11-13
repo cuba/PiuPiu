@@ -48,13 +48,9 @@ class ParallelRequestsViewController: UIViewController {
         var future = ResponseFuture<[String]>(result: [])
         
         for id in 1...sampleCount {
-            future = future.join({ () -> ResponseFuture<String> in
-                return self.fetchUser(forId: id)
-            }).then({ response in
-                var values = response.0
-                values.append(response.1)
-                return values
-            })
+            future = future.addingParallelResult() {
+                self.fetchUser(forId: id)
+            }
         }
         
         future.updated { [weak self] task in

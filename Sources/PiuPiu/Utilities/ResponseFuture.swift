@@ -8,6 +8,12 @@
 
 import Foundation
 
+enum GroupedFailure<T, U>: Error {
+    case failedBoth(Error, Error)
+    case failedFirst(Error, U)
+    case failedSecond(T, Error)
+}
+
 /// A ResponseFuture is a delayed action that is performed after calling `start()`.
 public class ResponseFuture<T> {
     public typealias ActionCallback = (ResponseFuture<T>) throws -> Void
@@ -156,6 +162,7 @@ public class ResponseFuture<T> {
     }
     
     /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
+    /// **DO NOT** use `result` callback in conjunction with this callback.
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This future for chaining.
@@ -165,6 +172,7 @@ public class ResponseFuture<T> {
     }
     
     /// Attach a success handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
+    /// **DO NOT** use `success` or `result` callbacks in conjunction with this callback.
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This future for chaining.
@@ -172,7 +180,8 @@ public class ResponseFuture<T> {
         return success(handler)
     }
     
-    /// Attach a error handler to this future that handles . Should be called before the `start()` method in case the future is fulfilled synchronously.
+    /// Attach an error handler to this future that handles . Should be called before the `start()` method in case the future is fulfilled synchronously.
+    /// **DO NOT** use `result` callback in conjunction with this callback.
     ///
     /// - Parameter handler: The error handler that will be triggered if anything is thrown inside the success callback.
     /// - Returns: This future for chaining.
@@ -199,6 +208,19 @@ public class ResponseFuture<T> {
         return self
     }
     
+    /// Attach a result handler to this future. Should be called before the `start()` method in case the future is fulfilled synchronously.
+    /// **DO NOT** use `success` or `error` callbacks in conjunction with this callback.
+    ///
+    /// - Parameter handler: The completion handler that will be triggered after the `succeed()` or `fail()` methods are triggered.
+    /// - Returns: This future for chaining.
+    public func result(_ handler: @escaping (Result<T, Error>) -> Void) -> ResponseFuture<T> {
+        self.success { response in
+            handler(.success(response))
+        }.error { error in
+            handler(.failure(error))
+        }
+    }
+    
     /// Convert the success callback to another type.
     /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
@@ -207,7 +229,7 @@ public class ResponseFuture<T> {
     ///   - queue: The queue to run the callback on. The default is the main thread.
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
-    public func then<U>(on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
+    public func map<U>(_ type: U.Type, on queue: DispatchQueue = DispatchQueue.main, successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
             self.success({ result in
                 queue.async {
@@ -226,6 +248,19 @@ public class ResponseFuture<T> {
                 future.cancel()
             }).send()
         }
+        
+    }
+    
+    /// Convert the success callback to another type.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
+    ///
+    /// - Parameters:
+    ///   - queue: The queue to run the callback on. The default is the main thread.
+    ///   - callback: The callback to perform the transformation
+    /// - Returns: The transformed future
+    public func then<U>(on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
+        return map(U.self, on: queue, successCallback: successCallback)
     }
     
     /// Return a new future with the results of both futures.
@@ -233,7 +268,17 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
+    @available(*, deprecated, renamed: "seriesJoin")
     public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
+        return seriesJoin(U.self, callback: callback)
+    }
+    
+    /// Return a new future with the results of both futures.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func seriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
         return ResponseFuture<(T, U)> { future in
             self.success({ response in
                 guard let newFuture = try callback(response) else {
@@ -260,19 +305,59 @@ public class ResponseFuture<T> {
         }
     }
     
+    /// Return a new future with the results of both futures making both calls in parallel
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
+        return seriesJoin(Result<U, Error>.self) { result in
+            return try callback(result).safeResult()
+        }
+    }
+    
     /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
     /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
     /// - Returns: A new response future with a success response with either the object or the error.
+    @available(*, deprecated, renamed: "thenResult")
     public func thenError<U>(_ callback: @escaping (SafeResponse<T>) throws -> U) -> ResponseFuture<U> {
+        return thenResult(U.self) { result in
+            switch result {
+            case .success(let value):
+                return try callback(.response(value))
+            case .failure(let error):
+                return try callback(.error(error))
+            }
+        }
+    }
+    
+    /// Allows the error to fail by returning a success response with either the original response or the error
+    ///
+    /// - Returns: A new future containing the original response or an error object.
+    @available(*, deprecated, renamed: "safeResult")
+    public func nonFailing() -> ResponseFuture<SafeResponse<T>> {
+        return self.thenResult(SafeResponse<T>.self) { result in
+            switch result {
+            case .success(let value):
+                return SafeResponse.response(value)
+            case .failure(let error):
+                return SafeResponse.error(error)
+            }
+        }
+    }
+    
+    /// Allows the error to fail by returning a success response with either the original response or the error
+    ///
+    /// - Returns: A new future containing the original response or an error object.
+    public func thenResult<U>(_ type: U.Type, callback: @escaping (Result<T, Error>) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
             self.success({ response in
-                let callbackResult = try callback(.response(response))
+                let callbackResult = try callback(.success(response))
                 future.succeed(with: callbackResult)
             }).error({ error in
                 do {
-                    let callbackResult = try callback(.error(error))
+                    let callbackResult = try callback(.failure(error))
                     future.succeed(with: callbackResult)
                 } catch let newError {
                     future.fail(with: newError)
@@ -288,10 +373,19 @@ public class ResponseFuture<T> {
     /// Allows the error to fail by returning a success response with either the original response or the error
     ///
     /// - Returns: A new future containing the original response or an error object.
-    public func nonFailing() -> ResponseFuture<SafeResponse<T>> {
-        return self.thenError({ response -> SafeResponse<T> in
-            return response
-        })
+    public func safeResult() -> ResponseFuture<Result<T, Error>> {
+        return ResponseFuture<Result<T, Error>>() { future in
+            self.success { response in
+                future.succeed(with: .success(response))
+            }
+            .error { error in
+                future.succeed(with: .failure(error))
+            }
+            .updated{ task in
+                future.update(with: task)
+            }
+            .send()
+        }
     }
     
     /// Return a new future with the results of the future retuned in the callback.
@@ -300,9 +394,18 @@ public class ResponseFuture<T> {
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
     public func replace<U>(_ successCallback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
+        return replace(U.self, callback: successCallback)
+    }
+    
+    /// Return a new future with the results of the future retuned in the callback.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    ///
+    /// - Parameter callback: The future that returns the results we want to return.
+    /// - Returns: A new response future that will contain the results
+    public func replace<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
             self.success({ response in
-                guard let newPromise = try successCallback(response) else {
+                guard let newPromise = try callback(response) else {
                     future.cancel()
                     return
                 }
@@ -331,55 +434,78 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
+    @available(*, deprecated, renamed: "parallelJoin")
     public func join<U>(_ callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+        return parallelJoin(U.self, callback: callback)
+    }
+    
+    /// Return a new future with the results of the future retuned in the callback.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    ///
+    /// - Parameter callback: The future that returns the results we want to return.
+    /// - Returns: The new future with both responses
+    public func parallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
         let newFuture = callback()
         
         return ResponseFuture<(T, U)> { future in
-            var firstRequestFinished = false
-            var secondRequestFinished = false
-            var firstObject: T?
-            var secondObject: U?
-            var firstError: Error?
-            var secondError: Error?
+            var firstResult: Result<T, Error>?
+            var secondResult: Result<U, Error>?
             
-            self.success({ response in
-                firstObject = response
-            }).error({ error in
-                firstError = error
+            func resultCallback(firstResult: Result<T, Error>, secondResult: Result<U, Error>) {
+                switch firstResult {
+                case .success(let firstResponse):
+                    switch secondResult {
+                    case .success(let secondResponse):
+                        future.succeed(with: (firstResponse, secondResponse))
+                    case .failure(let secondError):
+                        future.fail(with: GroupedFailure<T, U>.failedSecond(firstResponse, secondError))
+                    }
+                case .failure(let firstError):
+                    switch secondResult {
+                    case .success(let secondResponse):
+                        future.fail(with: GroupedFailure<T, U>.failedFirst(firstError, secondResponse))
+                    case .failure(let secondError):
+                        future.fail(with: GroupedFailure<T, U>.failedBoth(firstError, secondError))
+                    }
+                }
+            }
+            
+            self.result({ result in
+                guard let secondResult = secondResult else {
+                    firstResult = result
+                    return
+                }
+                
+                resultCallback(firstResult: result, secondResult: secondResult)
             }).updated({ task in
                 future.update(with: task)
-            }).completion({
-                firstRequestFinished = true
-                guard secondRequestFinished else { return }
-                
-                if let firstObject = firstObject, let secondObject = secondObject {
-                    future.succeed(with: (firstObject, secondObject))
-                } else if let error = firstError ?? secondError {
-                    future.fail(with: error)
-                }
             }).cancellation({
                 future.cancel()
             }).send()
             
-            newFuture.success({ response in
-                secondObject = response
+            newFuture.result({ result in
+                guard let firstResult = firstResult else {
+                    secondResult = result
+                    return
+                }
+                
+                resultCallback(firstResult: firstResult, secondResult: result)
             }).updated({ task in
                 future.update(with: task)
-            }).error({ error in
-                secondError = error
-            }).completion({
-                secondRequestFinished = true
-                guard firstRequestFinished else { return }
-                
-                if let firstObject = firstObject, let secondObject = secondObject {
-                    future.succeed(with: (firstObject, secondObject))
-                } else if let error = firstError ?? secondError {
-                    future.fail(with: error)
-                }
             }).cancellation({
                 future.cancel()
             }).send()
         }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in parallel
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    func safeParallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
+        return parallelJoin(Result<U, Error>.self, callback: {
+            return callback().safeResult()
+        })
     }
     
     /// This method triggers the action method defined on this future.
@@ -397,5 +523,25 @@ public class ResponseFuture<T> {
     /// This method triggers the action method defined on this future.
     public func send() {
         start()
+    }
+}
+
+public extension ResponseFuture where T: Sequence {
+    func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]> {
+        return parallelJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                result.append(element)
+                return result
+            }
+    }
+    
+    func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
+        return seriesJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                result.append(element)
+                return result
+            }
     }
 }

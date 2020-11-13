@@ -16,7 +16,7 @@ class URLTransformTests: XCTestCase {
         
         do {
             // When
-            let value = try transform.transform(json: json)
+            let value = try transform.from(json: json, codingPath: [])
             XCTAssertEqual(value, URL(string: "https://example.com")!)
         } catch {
             XCTFail(error.localizedDescription)
@@ -30,7 +30,7 @@ class URLTransformTests: XCTestCase {
         
         do {
             // When
-            let json = try transform.transform(value: value)
+            let json = try transform.toJSON(value, codingPath: [])
             XCTAssertEqual(json, "https://example.com")
         } catch {
             XCTFail(error.localizedDescription)
