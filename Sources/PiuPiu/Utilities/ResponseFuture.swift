@@ -229,7 +229,7 @@ public class ResponseFuture<T> {
     ///   - queue: The queue to run the callback on. The default is the main thread.
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
-    public func map<U>(_ type: U.Type, on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
+    public func map<U>(_ type: U.Type, on queue: DispatchQueue = DispatchQueue.main, successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
             self.success({ result in
                 queue.async {
@@ -260,7 +260,7 @@ public class ResponseFuture<T> {
     ///   - callback: The callback to perform the transformation
     /// - Returns: The transformed future
     public func then<U>(on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
-        return map(U.self, on: queue, successCallback)
+        return map(U.self, on: queue, successCallback: successCallback)
     }
     
     /// Return a new future with the results of both futures.
@@ -523,5 +523,25 @@ public class ResponseFuture<T> {
     /// This method triggers the action method defined on this future.
     public func send() {
         start()
+    }
+}
+
+public extension ResponseFuture where T: Sequence {
+    func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]> {
+        return parallelJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                result.append(element)
+                return result
+            }
+    }
+    
+    func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
+        return seriesJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                result.append(element)
+                return result
+            }
     }
 }
