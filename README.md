@@ -35,6 +35,16 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.8.0
+* Dropped `SafeResponse` in favor or `Result`
+* Require `[CodingKey]` to be passed in to the `EncodingTransform` and `DecodingTransform` methods
+* Replaced `func transform(value: Self.ValueSource)` with `func toJSON(_ value: Self.ValueSource, codingPath: [CodingKey])`
+* Replaced `func transform(json: Self.JSONSource)` with `func from(json: Self.JSONSource, codingPath: [CodingKey])`
+* Added `map`, `parallelJoin`, `seriesJoin`, `thenResult`, `safeResult`, `safeParallelJoin` and `safeSeriesJoin` callbacks to `ResponseFuture`
+* Added `result` callback
+* Added `addingParallelResult` and `addingSeriesResults` methods to `ResponseFutures` that encompass a `Sequence`
+* Deprecated the `SafeResponse` enum and `fulfill`, `join` (series and parallel), `thenError`, `nonFailing` methods on `ResponseFuture`
+
 ### 1.7.0
 * Added support for swift package manager
 
