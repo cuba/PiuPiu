@@ -1,5 +1,6 @@
 [![Swift 5](https://img.shields.io/badge/swift-5-lightgrey.svg?style=for-the-badge)](https://swift.org)
-![iOS 9+](https://img.shields.io/badge/iOS-9-lightgrey.svg?style=for-the-badge)
+![iOS 9](https://img.shields.io/badge/iOS-9-lightgrey.svg?style=for-the-badge)
+![MacOS 10.15](https://img.shields.io/badge/macos-10-lightgrey.svg?style=for-the-badge)
 [![SPM](https://img.shields.io/badge/SPM-compatible-green.svg?style=for-the-badge)](https://swift.org/package-manager)
 [![Carthage](https://img.shields.io/badge/carthage-compatible-green.svg?style=for-the-badge)](https://github.com/Carthage/Carthage)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
@@ -119,6 +120,8 @@ Fixed crash when translating caused by renaming the project.
 
 ### Carthage
 
+NOTE: Carthage support will die since it no longer works with Catalyst
+
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
 
 You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
@@ -131,18 +134,18 @@ $ brew install carthage
 To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "cuba/PiuPiu" ~> 1.4
+github "cuba/PiuPiu" ~> 1.8
 ```
 
 Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
 
-### Cocoapods
+### SPM
 
-To integrate PiuPiu into your project using Cocoapods, specify it in your `Podfile`:
+PiuPiu supports SPM
 
-```bash
-pod 'PiuPiu', '~> 1.4'
-```
+### ~~Cocoapods~~
+
+PiuPiu no longer supports cocoapods. Cocoapods is dying and is ugly to maintain. Use SPM. It's easy to use and maintain.
 
 ## Usage
 
