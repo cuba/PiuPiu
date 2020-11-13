@@ -309,7 +309,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
-    func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
+    public func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
         return seriesJoin(Result<U, Error>.self) { result in
             return try callback(result).safeResult()
         }
@@ -502,7 +502,7 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
-    func safeParallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
+    public func safeParallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
         return parallelJoin(Result<U, Error>.self, callback: {
             return callback().safeResult()
         })
