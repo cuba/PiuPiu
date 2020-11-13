@@ -309,9 +309,9 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
-    public func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
+    public func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, Result<U, Error>)> {
         return seriesJoin(Result<U, Error>.self) { result in
-            return try callback(result).safeResult()
+            return try callback(result)?.safeResult()
         }
     }
     
