@@ -8,13 +8,13 @@
 PiuPiu
 ============
 
-PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make netwoking calls cleaner and simpler and provides the developer with more customizability then any other networking framework.
+PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to make networking calls cleaner and simpler and provides the developer with more customizability than any other networking framework.
 
 **Q**: Why should I use this framework?
 **A**: Because, you like clean code.
 
 **Q**: Why the stupid name?
-**A**: Because "piu piu" is the sound of lazers. And lazers are from the future.
+**A**: Because "piu piu" is the sound of lasers. And lasers are from the future.
 
 **Q**: What sort of bear is best?
 **A**: False! A black bear!
@@ -72,10 +72,10 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Added `cancellation` callback to `ResponseFuture`. 
   * This may be manually triggered using `cancel` or is or is manually triggered when a nil is returned in any `join` (series only), `then` or `replace` or `action` (`init`) callback.
   * This callback does not cancel the actual requests but simply stops any further execution of the `ResponseFuture` after its final `cancellation` and `completion` callback.
-* Added a parallel `join` callback that does not pass a response object. This calback is non-escaping.
+* Added a parallel `join` callback that does not pass a response object. This callback is non-escaping.
 * Slightly better multi-threading support.
   * by default, `then` is triggered on a background thread.
-  * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always syncronized on the main thread.
+  * `success`, `response`, `error`, `completion`, and `cancellation` callbacks are always synchronized on the main thread.
 * Add progress updates via the `progress` callback.
 * Add better request mocking tools via the `MockURLRequestDispatcher`.
 
@@ -98,7 +98,7 @@ Fixed crash when translating caused by renaming the project.
 ## Features
 
 - [x] A wrapper around network requests
-- [x] Uses `Futures` (ie. `Promises`) to allow scalablity and dryness
+- [x] Uses `Futures` (ie. `Promises`) to allow scalability and dryness
 - [x] Convenience methods for deserializing Decodable and JSON
 - [x] Easy integration
 - [x] Handles common http errors
@@ -216,9 +216,9 @@ dispatcher.dataFuture(from: request)
 
 ## Advanced Usage
 
-### Seperating concerns
+### Separating concerns
 
-Often times we want to seperate our responses into different parts so we can handle them differently. We also want to decode on a background thread so that it doesn't make our UI choppy.  We can do this using the `then` callback. 
+Often times we want to separate our responses into different parts so we can handle them differently. We also want to decode on a background thread so that it doesn't make our UI choppy.  We can do this using the `then` callback. 
 
 Each `then` callback transforms the response and returns a new one.
 
@@ -229,7 +229,7 @@ let request = URLRequest(url: url, method: .get)
 dispatcher.dataFuture(from: request)
     .updated { task in 
         // Returns an updated task. The same task may be ruturned multiple times.
-        // Can be used to cacluculate percentages or cancel tasks.
+        // Can be used to calculate percentages or cancel tasks.
     }
     .then { response -> HTTPResponse<Data?> in
         // In this callback we handle common HTTP errors
@@ -470,10 +470,10 @@ You've already seen that a `ResponseFuture` allows you to chain your callbacks, 
 Here is an example of some of the built in callbacks available to a `ResponseFuture`. Below you will see a description of what each one does.
 
 ```swift
-dispatcher.dataFuture(from: {
+dispatcher.dataFuture() {
     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
     return URLRequest(url: url, method: .get)
-}).then({ response -> Post in
+}.map(Post.self) { response in
     // Handles any responses and transforms them to another type
     // This includes negative responses such as 4xx and 5xx
 
@@ -486,35 +486,35 @@ dispatcher.dataFuture(from: {
     }
     
     return try response.decode(Post.self)
-}).replace({ post -> ResponseFuture<EnrichedPost> in
+}.replace { post -> ResponseFuture<EnrichedPost> in
     // Perform some operation that itself uses a future
     // such as something heavy like markdown parsing.
     // Any callback can be transformed to a future.
     return self.enrich(post: post)
-}).join({ enrichedPost -> ResponseFuture<User> in
+}.seriesJoin(User.self) { enrichedPost -> ResponseFuture<User> in
     // Joins a future with another one returning both results
     return self.fetchUser(forId: post.userId)
-}).response({ enrichedPost, user in
+}.response { enrichedPost, user in
     // The final response callback includes all the transformations and
     // Joins we had previously performed.
-}).error({ error in
+}.error { error in
     // Handles any errors throw in any callbacks
-}).completion({
+}.completion {
     // At the end of all the callbacks, this is triggered once. Error or no error.
-}).send()
+}.send()
 ```
 
 ### Callbacks
 
 #### `response` or `success` callback
 
-The `response` callback is triggered when the request is recieved and no errors are thrown in any chained callbacks (such as `then` or `join`).
+The `response` callback is triggered when the request is received and no errors are thrown in any chained callbacks (such as `then` or `join`).
 At the end of the callback sequences, this gives you exactly what your transforms "promised" to return.
 
 ```swift
-dispatcher.dataFuture(from: request).response({ response in
-    // Triggered when a response is recieved and all callbacks succeed.
-})
+dispatcher.dataFuture(from: request).response { response in
+    // Triggered when a response is received and all callbacks succeed.
+}
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
@@ -524,10 +524,10 @@ dispatcher.dataFuture(from: request).response({ response in
 Think of this as a `catch` on a `do` block. From the moment you trigger `send()`, the error callback is triggered whenever something is thrown during the callback sequence. This includes errors thrown in any other callback.
 
 ```swift
-dispatcher.dataFuture(from: request).error({ error in
+dispatcher.dataFuture(from: request).error { error in
     // Any errors thrown in any other callback will be triggered here.
     // Think of this as the `catch` on a `do` block.
-})
+}
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
@@ -537,70 +537,73 @@ dispatcher.dataFuture(from: request).error({ error in
 The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()` is triggered.
 
 ```swift
-dispatcher.dataFuture(from: request).completion({
+dispatcher.dataFuture(from: request).completion {
     // The completion callback guaranteed to be called once
     // for every time the `send` or `start` method is triggered on the callback.
-})
+}
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
 
-#### `then` callback
+#### `then` or `map` callback
 
 This callback transforms the `response` type to another type. This operation is done on a background queue so heavy operations won't lock your main queue. 
+
+You may use then or `map` which are equivalent however `map` may be easier on your compiler as you have to specify the returned type.
 
 **WARNING**: You should avoid calling self in this callback . Use it solely for transforming the future.
 
 ```swift
-dispatcher.dataFuture(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: request).then { response -> Post in
     // The `then` callback transforms a successful response to another object
     // You can return any object here and this will be reflected on the `success` callback.
     return try response.decode(Post.self)
-}).response({ post in
+}.response { post in
     // Handles any success responses.
     // In this case the object returned in the `then` method.
-})
+}
 ```
 
 #### `replace` callback
 
-This callback transforms the future to another type using another callback.  This allows us to make asyncronous calls inside our callbacks.
+This callback transforms the future to another type using another callback.  This allows us to make asynchronous calls inside our callbacks.
 
 ```swift
-dispatcher.dataFuture(from: request).then({ response -> Post in
+dispatcher.dataFuture(from: request).then { response -> Post in
     return try response.decode(Post.self)
-}).replace({ [weak self] post -> ResponseFuture<EnrichedPost> in
+}.replace { [weak self] post -> ResponseFuture<EnrichedPost> in
     // Perform some operation operation that itself requires a future
     // such as something heavy like markdown parsing.
     return self?.enrich(post: post)
-}).response({ enrichedPost in
+}.response { enrichedPost in
     // The final response callback has the enriched post.
-})
+}
 ```
 
 **NOTE**: You can return nil to stop the request process.  Useful when you want a weak self. 
 
-#### `join` callback
+#### `join` callbacks
 
 This callback transforms the future to another type containing its original results plus the results of the returned callback.
-This callback comes with 2 flavors: parallel and series.
+This callback comes with 2 flavours: parallel and series. You may also use `parallelJoin` and `seriesJoin` which do the same thing
 
 ##### Series `join`
 
-The series join waits for the first respons and passes it to the callback so you can make requests that depend on that response.
+You can use `join` with the escaping callback or explicitly the `seriesJoin` callback. They are equivalent but the second one may be a little easier on your compiler.
+The series join waits for the first response and passes it to the callback so you can make requests that depend on that response but is obviously much slower than making parallel calls.
 
 ```swift
-dispatcher.dataFuture(from: {
+dispatcher.dataFuture() {
     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
     return URLRequest(url: url, method: .get)
-}).then({ response in
+}.then { response in
     // Transform this response so that we can reference it in the join callback.
     return try response.decode(Post.self)
-}).join({ [weak self] post -> ResponseFuture<User>? in
+}.seriesJoin(User.self) { [weak self] post in
     guard let self = self else {
         // We used [weak self] because our dispatcher is referenced on self.
         // Returning nil will cancel execution of this promise
-        // and triger the `cancellation` and `completion` callbacks.
+        // and trigger the `cancellation` and `completion` callbacks.
         // Do this check to prevent memory leaks.
         return nil
     }
@@ -611,43 +614,48 @@ dispatcher.dataFuture(from: {
     let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
     let request = URLRequest(url: url, method: .get)
 
-    return self.dispatcher.dataFuture(from: request).then({ response -> User in
+    return self.dispatcher.dataFuture(from: request).then { response -> User in
         return try response.decode(User.self)
-    })
-}).success({ post, user in
+    }
+}.success { post, user in
     // The final response callback includes both results.
     expectation.fulfill()
-}).send()
+}.send()
 ```
 
 **NOTE**: You can return nil to stop the request process.  Useful when you want a weak self.
 
 ##### Parallel `join` callback
 
-This callback does not wait for the original request to complete, and executes right away. It is useful to series calls.
+You can use `join` with the non-escaping callback or explicitly the `parallelJoin` callback. They are equivalent but the second one may be a little easier on your compiler.
+This callback does not wait for the original request to complete, and executes right away. It is useful when you don't need to wait for some other data to comeback before making a request.
 
 ```swift
-dispatcher.dataFuture(from: {
+dispatcher.dataFuture() {
     let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
     return URLRequest(url: url, method: .get)
-}).then({ response in
+}.then { response in
     return try response.decode([Post].self)
-}).join({ () -> ResponseFuture<[User]> in
+}.parallelJoin([User].self) {
     // Joins a future with another one returning both results.
     // Since this callback is non-escaping, you don't have to use [weak self]
     let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
     let request = URLRequest(url: url, method: .get)
 
-    return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
+    return self.dispatcher.dataFuture(from: request).then { response -> [User] in
         return try response.decode([User].self)
-    })
-}).success({ posts, users in
+    }
+}.success { posts, users in
     // The final response callback includes both results.
     expectation.fulfill()
-}).send()
+}.send()
 ```
 
 **NOTE**: This callback will execute right away (it is non-escaping). `[weak self]` is therefore not necessary.
+
+#### `result`
+
+This is a callback that groups both the `success` and `failure` callbacks into one callback using `Result<Success, Failure>`. This is useful when you want to treat the success and failure under similar conditions.
 
 #### `send` or `start`
 
@@ -660,13 +668,13 @@ This will start the `ResponseFuture`. In other words, the `action` callback will
 
 You can create your own ResponseFuture for a variety of reasons. This can be used on another future's `join` or `replace` callback for some nice chaining.
 
-Here is an example of a response future that does an expesive operation in another thread.
+Here is an example of a response future that does an expensive operation in another thread.
 
 ```
-return ResponseFuture<UIImage>(action: { future in
+return ResponseFuture<UIImage>() { future in
     // This is an example of how a future is executed and fulfilled.
     DispatchQueue.global(qos: .background).async {
-        // lets make an expensive operation on a background thread.
+        // let's make an expensive operation on a background thread.
         // The success, updated and error callbacks will be synced on the main thread
         // So no need to sync back to the main thread.
 
@@ -679,7 +687,7 @@ return ResponseFuture<UIImage>(action: { future in
             future.fail(with: error)
         }
     }
-})
+}
 ```
 
 **NOTE** You can also use the `then` callback of an existing future which is performed on a background thread.
@@ -718,57 +726,57 @@ It might be beneficial to wrap the Request creation in a ResponseFuture. This wi
 2. Combine any errors thrown while creating the request in the error callback.
 
 ```swift
-dispatcher.dataFuture(from: {
+dispatcher.dataFuture() {
     let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
     var request = URLRequest(url: url, method: .post)
     try request.setJSONBody(post)
     return request
-}).error({ error in
+}.error { error in
     // Any error thrown while creating the request will trigger this callback.
-}).send()
+}.send()
 ```
 
 ## Decoding
 
 ### Unwrapping `Data`
 
-This will unwrap the data object for you or throw a ResponseError if it not there. This is convenent so that you don't have to deal with those pesky optionals. 
+This will unwrap the data object for you or throw a ResponseError if it not there. This is convenient so that you don't have to deal with those pesky optionals. 
 
 ```swift
-dispatcher.dataFuture(from: request).response({ response in
+dispatcher.dataFuture(from: request).response { response in
     let data = try response.unwrapData()
 
     // do something with data.
     print(data)
-}).error({ error in 
+}.error { error in 
     // Triggered when the data object is not there.
-}).send()
+}.send()
 ```
 
 ### Decode `String`
 
 ```swift
-dispatcher.dataFuture(from: request).response({ response in
+dispatcher.dataFuture(from: request).response { response in
     let string = try response.decodeString(encoding: .utf8)
 
     // do something with string.
     print(string)
-}).error({ error in
+}.error { error in
     // Triggered when decoding fails.
-}).send()
+}.send()
 ```
 
 ### Decode `Decodable`
 
 ```swift
-dispatcher.dataFuture(from: request).response({ response in
+dispatcher.dataFuture(from: request).response { response in
     let posts = try response.decode([Post].self)
 
     // do something with the decodable object.
     print(posts)
-}).error({ error in
+}.error { error in
     // Triggered when decoding fails.
-}).send()
+}.send()
 ```
 
 ## Transforms
@@ -797,7 +805,7 @@ struct ExampleModel: Codable {
 }
 ```
 
-In the above example, we are passing the `TimeZoneTransform()` to the `decode` and `encode` methods becuse it conforms to both the `EncodingTransform` and `DecodingTransform` protocols. We can use the `EncodingTransform` and  `DecodingTransform` individually if we don't need to conform to both. If we want both, we can also use the `Transform` protocol which encompases both. They are synonymous with `Encodable`, `Decodable` and `Codable`.
+In the above example, we are passing the `TimeZoneTransform()` to the `decode` and `encode` methods because it conforms to both the `EncodingTransform` and `DecodingTransform` protocols. We can use the `EncodingTransform` and  `DecodingTransform` individually if we don't need to conform to both. If we want both, we can also use the `Transform` protocol which encompasses both. They are synonymous with `Encodable`, `Decodable` and `Codable`.
 
 ### Custom transforms
 
@@ -808,20 +816,20 @@ public protocol EncodingTransform {
     associatedtype ValueSource
     associatedtype JSONDestination: Encodable
     
-    func toJSON(Self.ValueSource) throws -> Self.JSONDestination
+    func toJSON(Self.ValueSource, codingPath: [CodingKey]) throws -> Self.JSONDestination
 }
 
 public protocol DecodingTransform {
     associatedtype JSONSource: Decodable
     associatedtype ValueDestination
     
-    func from(json: Self.JSONSource) throws -> Self.ValueDestination
+    func from(json: Self.JSONSource, codingPath: [CodingKey]) throws -> Self.ValueDestination
 }
 ```
 
 `EncodingTransform` is used when encoding and the `DecodingTransform` is used when decoding. You could also implement both by conforming to the `Transform` protocol. 
 
-There are many use cases for this but the follwing are a few examples:
+There are many use cases for this but the following are a few examples:
 
 * Convert old DTO objects to newer objects.
 * Different `Encoding` or `Decoding` strategies on the same object
@@ -837,19 +845,15 @@ public class DateTransform: Transform {
         self.formatter = formatter
     }
     
-    public enum TransformError: Error {
-        case invalidDateFormat(expectedFormat: String, received: String)
-    }
-    
-    public func from(json: String) throws -> Date {
+    public func from(json: String, codingPath: [CodingKey]) throws -> Date {
         guard let date = formatter.date(from: json) else {
-            throw TransformError.invalidDateFormat(expectedFormat: formatter.dateFormat, received: json)
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not convert `\(json)` to `Date` using formatter `\(String(describing: formatter))`"))
         }
         
         return date
     }
     
-    public func toJSON(Date) throws -> String {
+    public func toJSON(Date, codingPath: [CodingKey]) throws -> String {
         return formatter.string(from: value)
     }
 }
@@ -883,16 +887,16 @@ Converts an `Int64` (including `Int`) to a `String` in both directions.
 
 Will convert an empty string (`""`) to a nil.
 
-NOTE: Using `decodeIfPresent` will result in a double optional (i.e. `??`). You can solve this by colescing to a `nil`. For example: 
+NOTE: Using `decodeIfPresent` will result in a double optional (i.e. `??`). You can solve this by coalescing to a `nil`. For example: 
 
 ```swift
 self.value = try container.decodeIfPresent(using: EmptyStringTransform(), forKey: .value) ?? nil
 ```
 
-## Memory Managment
+## Memory Management
 
 The `ResponseFuture` may have 3 types of strong references: 
-1. The system may have a strong reference to the `ResponseFuture` after `send()` is called. This reference is temporary and will be dealocated once the system returns a response. This will never create a circular reference but as the future is held on by the system, it will not be released until **AFTER** a response is recieved or an error is triggered.
+1. The system may have a strong reference to the `ResponseFuture` after `send()` is called. This reference is temporary and will be deallocated once the system returns a response. This will never create a circular reference but as the future is held on by the system, it will not be released until **AFTER** a response is received or an error is triggered.
 2. Any callback that references `self` has a strong reference to `self` unless `[weak self]` is explicitly specified.
 3. The developer's own strong reference to the `ResponseFuture`.
 
@@ -925,7 +929,7 @@ dispatcher.dataFuture(from: request).success({ response in
 }).send()
 ```
 
-You will have crashes if you force unwrap anything in your callbacks (i.e. usign a `!`).  We suggest you **ALWAYS** avoid force unwrapping anything in your callbacks. 
+You will have crashes if you force unwrap anything in your callbacks (i.e. using a `!`).  We suggest you **ALWAYS** avoid force unwrapping anything in your callbacks. 
 
 Always unwrap your objects before using them. This includes any `IBOutlet`s that the system generates. Use a guard, Use an assert. Use anything but a `!`.
 
