@@ -6,6 +6,9 @@
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=for-the-badge)](https://github.com/cuba/PiuPiu/blob/master/LICENSE)
 [![Build](https://img.shields.io/travis/cuba/PiuPiu/master.svg?style=for-the-badge)](https://travis-ci.org/cuba/PiuPiu)
 
+![PiuPiu Logo](https://github.com/cuba/PiuPiu/blob/master/Example/Example/Assets.xcassets/AppIcon.appiconset/AppIcon_iPadProApp_83.5@2x.png?raw=true)
+
+
 PiuPiu
 ============
 
