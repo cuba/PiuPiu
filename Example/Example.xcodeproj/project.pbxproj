@@ -90,7 +90,6 @@
 		DA28330322D867F800027DBA /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		DA28351422D8780600027DBA /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTests.swift; sourceTree = "<group>"; };
 		DA28355522DE243E00027DBA /* RequestSerializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestSerializerTests.swift; sourceTree = "<group>"; };
-		DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = PiuPiu.podspec; path = ../PiuPiu.podspec; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA62550F25391AC10006FC43 /* PiuPiu */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PiuPiu; path = ..; sourceTree = "<group>"; };
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
@@ -221,7 +220,6 @@
 			isa = PBXGroup;
 			children = (
 				DA53DAAA2289DE3300722CD8 /* README.md */,
-				DA53DA972289DD1E00722CD8 /* PiuPiu.podspec */,
 				8CC5081A1ED35E7D00C19524 /* Assets.xcassets */,
 				8CC5081C1ED35E7D00C19524 /* LaunchScreen.storyboard */,
 				8CC5081F1ED35E7D00C19524 /* Info.plist */,
@@ -309,7 +307,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "Jacob Sikorski";
 				TargetAttributes = {
 					8CC5080F1ED35E7D00C19524 = {
