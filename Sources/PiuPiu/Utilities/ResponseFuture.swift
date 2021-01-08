@@ -8,12 +8,6 @@
 
 import Foundation
 
-enum GroupedFailure<T, U>: Error {
-    case failedBoth(Error, Error)
-    case failedFirst(Error, U)
-    case failedSecond(T, Error)
-}
-
 /// A ResponseFuture is a delayed action that is performed after calling `start()`.
 public class ResponseFuture<T> {
     public typealias ActionCallback = (ResponseFuture<T>) throws -> Void
@@ -458,14 +452,14 @@ public class ResponseFuture<T> {
                     case .success(let secondResponse):
                         future.succeed(with: (firstResponse, secondResponse))
                     case .failure(let secondError):
-                        future.fail(with: GroupedFailure<T, U>.failedSecond(firstResponse, secondError))
+                        future.fail(with: secondError)
                     }
                 case .failure(let firstError):
                     switch secondResult {
                     case .success(let secondResponse):
-                        future.fail(with: GroupedFailure<T, U>.failedFirst(firstError, secondResponse))
+                        future.fail(with: firstError)
                     case .failure(let secondError):
-                        future.fail(with: GroupedFailure<T, U>.failedBoth(firstError, secondError))
+                        future.fail(with: GroupedFailure.two(firstError, secondError))
                     }
                 }
             }
