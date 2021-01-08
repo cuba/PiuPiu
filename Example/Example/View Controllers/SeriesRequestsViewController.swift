@@ -85,7 +85,7 @@ class SeriesRequestsViewController: UIViewController {
         return dispatcher.dataFuture {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
             return URLRequest(url: url, method: .get)
-        }.then { response -> String in
+        }.map(String.self) { response in
             return try response.decodeString(encoding: .utf8)
         }.safeResult()
     }

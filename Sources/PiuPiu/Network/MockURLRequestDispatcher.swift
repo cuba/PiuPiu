@@ -60,7 +60,7 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
             future.update(with: task)
             
             guard let response = try self.callback?(urlRequest) else {
-                throw MockDispatcherError.callbackNotSet
+                throw ResponseError.noResponse
             }
             
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {

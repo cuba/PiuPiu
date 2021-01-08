@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// An error object to cover any HTTP related errors
 public enum HTTPError: Error {
     case clientError(StatusCode)
     case serverError(StatusCode)

@@ -54,7 +54,7 @@ open class CloudinaryApiManager {
                 .parallelJoin(Response<Data?>.self) {
                     return self.upload(file: file.data, type: file.type, path: path, parameters: parameters)
                 }
-                .then { response -> [Response<Data?>] in
+                .map([Response<Data?>].self) { response in
                     var result = response.0
                     result.append(response.1)
                     return result

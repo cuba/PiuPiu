@@ -18,10 +18,10 @@ public extension Response where T == Data? {
     ///   - headers: The headers to use on the response
     ///   - encoder: The encoder to use to encode the object
     /// - Returns: A response object with a Data? data type
-    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
+    /// - Throws: Throws any errors when attempting to serialize `encodable`
     static func makeMockJSONResponse<T: Encodable>(with urlRequest: URLRequest, encodable: T, statusCode: StatusCode, headers: [String: String] = [:], encoder: JSONEncoder = JSONEncoder()) throws -> Response<Data?> {
         let data = try JSONEncoder().encode(encodable)
-        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+        return makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
     /// Create a mock response object.
@@ -33,10 +33,10 @@ public extension Response where T == Data? {
     ///   - statusCode: The statusCode to use on the response
     ///   - headers: The headers to use on the response
     /// - Returns: A response object with a Data? data type
-    /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
+    /// - Throws: Throws any errors when attempting to serialize `jsonObject`
     static func makeMockResponse(with urlRequest: URLRequest, jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = [], statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
         let data = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
-        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+        return makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
     /// Create a mock response object.
@@ -49,9 +49,9 @@ public extension Response where T == Data? {
     ///   - headers: The headers to use on the response
     /// - Returns: A response object with a Data? data type
     /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
-    static func makeMockResponse(with urlRequest: URLRequest, jsonString: String, encoding: String.Encoding = .utf8, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+    static func makeMockResponse(with urlRequest: URLRequest, jsonString: String, encoding: String.Encoding = .utf8, statusCode: StatusCode, headers: [String: String] = [:]) -> Response<Data?> {
         let data = jsonString.data(using: encoding)
-        return try makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
+        return makeMockResponse(with: urlRequest, data: data, statusCode: statusCode, headers: headers)
     }
     
     /// Create a mock response object.
@@ -63,7 +63,7 @@ public extension Response where T == Data? {
     ///   - headers: The headers to use on the response
     /// - Returns: A response object with a Data? data type
     /// - Throws: Throws RequestError.missingUrl if a url cannot be taken from the urlRequest
-    static func makeMockResponse(with urlRequest: URLRequest, data: Data? = nil, statusCode: StatusCode, headers: [String: String] = [:]) throws -> Response<Data?> {
+    static func makeMockResponse(with urlRequest: URLRequest, data: Data? = nil, statusCode: StatusCode, headers: [String: String] = [:]) -> Response<Data?> {
         let url = urlRequest.url!
         let httpResponse = HTTPURLResponse(url: url, statusCode: statusCode.rawValue, httpVersion: nil, headerFields: headers)!
         let response = Response(data: data, urlRequest: urlRequest, urlResponse: httpResponse)

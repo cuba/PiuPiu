@@ -19,7 +19,7 @@ class DataDispatcherTests: XCTestCase {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
         } else {
-            return try Response.makeMockResponse(with: request, statusCode: .notFound)
+            return Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
     
@@ -76,7 +76,7 @@ class DataDispatcherTests: XCTestCase {
         dispatcher.dataFuture(from: {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
             return URLRequest(url: url, method: .get)
-        }).then({ response -> [Post] in
+        }).then([Post].self) { response in
             // Attempt to get a http response
             let httpResponse = try response.makeHTTPResponse()
             
@@ -90,18 +90,18 @@ class DataDispatcherTests: XCTestCase {
             // Return the decoded object. If an error is thrown while decoding,
             // It will be caught in the `error` callback.
             return try response.decode([Post].self)
-        }).response({ posts in
+        }.response { posts in
             // Handle the success which will give your posts.
             responseExpectation.fulfill()
-        }).error({ error in
+        }.error { error in
             // Triggers whenever an error is thrown.
             // This includes deserialization errors, unwraping failures, and anything else that is thrown
             // in a any other throwable callback.
             errorExpectation.fulfill()
-        }).completion({
+        }.completion {
             // Always triggered at the very end to inform you this future has been satisfied.
             completionExpectation.fulfill()
-        }).send()
+        }.send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }

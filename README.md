@@ -379,15 +379,6 @@ getPost(id: 1)
     }
     .error { error in
         // This method is always invoked on the main queue.
-        
-        // Handles any errors during the request process,
-        // including all request creation errors and anything
-        // thrown in the `then` or `success` callbacks.
-        if let responseError = error as? ResponseError {
-            print(responseError)
-        } else if let httpError = error as? HTTPError {
-            print(httpError.statusCode.localizedDescription)
-        }
     }
     .completion {
         // The completion callback is guaranteed to be called once
@@ -502,11 +493,11 @@ dispatcher.dataFuture() {
     }
     
     return try response.decode(Post.self)
-}.replace { post -> ResponseFuture<EnrichedPost> in
+}.replace(EnrichedPost.self) { [weak self] post in
     // Perform some operation that itself uses a future
     // such as something heavy like markdown parsing.
     // Any callback can be transformed to a future.
-    return self.enrich(post: post)
+    return self?.enrich(post: post)
 }.seriesJoin(User.self) { enrichedPost -> ResponseFuture<User> in
     // Joins a future with another one returning both results
     return self.fetchUser(forId: post.userId)
@@ -587,7 +578,7 @@ This callback transforms the future to another type using another callback.  Thi
 ```swift
 dispatcher.dataFuture(from: request).then { response -> Post in
     return try response.decode(Post.self)
-}.replace { [weak self] post -> ResponseFuture<EnrichedPost> in
+}.replace(EnrichedPost.self) { [weak self] post in
     // Perform some operation operation that itself requires a future
     // such as something heavy like markdown parsing.
     return self?.enrich(post: post)
@@ -756,7 +747,7 @@ dispatcher.dataFuture() {
 
 ### Unwrapping `Data`
 
-This will unwrap the data object for you or throw a ResponseError if it not there. This is convenient so that you don't have to deal with those pesky optionals. 
+This will unwrap the data object for you or throw a `ResponseError.unexpectedEmptyResponse` if it not there. This is convenient so that you don't have to deal with those pesky optionals. 
 
 ```swift
 dispatcher.dataFuture(from: request).response { response in

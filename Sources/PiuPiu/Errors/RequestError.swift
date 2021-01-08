@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// An error object to cover any errors that are triggered by the `RequestSerializer` when attempting to create a `URLRequest`
 public enum RequestError: Error {
     case missingURL
     case missingServerProvider

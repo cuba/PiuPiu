@@ -27,7 +27,7 @@ class ResponseFutureTests: XCTestCase {
             let user = User(id: 123, name: "Jim Halpert")
             return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
-            return try Response.makeMockResponse(with: request, statusCode: .notFound)
+            return Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
     
@@ -45,7 +45,7 @@ class ResponseFutureTests: XCTestCase {
             let user = User(id: 123, name: "Jim Halpert")
             return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
         } else {
-            return try Response.makeMockResponse(with: request, statusCode: .notFound)
+            return Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
 
@@ -75,11 +75,11 @@ class ResponseFutureTests: XCTestCase {
             
             XCTAssertFalse(calledCompletion)
             return try response.decode(Post.self)
-        }.replace { post -> ResponseFuture<EnrichedPost> in
+        }.replace(EnrichedPost.self) { [weak self] post in
             // Perform some operation operation that itself requires a future
             // such as something heavy like markdown parsing.
             XCTAssertFalse(calledCompletion)
-            return self.enrich(post: post)
+            return self?.enrich(post: post)
         }.seriesJoin(User.self) { [weak self] enrichedPost in
             // Joins a future with another one
             XCTAssertFalse(calledCompletion)
@@ -230,8 +230,8 @@ class ResponseFutureTests: XCTestCase {
             return URLRequest(url: url, method: .get)
         }.then { response -> Post in
             return try response.decode(Post.self)
-        }.replace { post -> ResponseFuture<EnrichedPost> in
-            return self.enrich(post: post)
+        }.replace(EnrichedPost.self) { [weak self] post in
+            return self?.enrich(post: post)
         }.seriesJoin(User.self) { enrichedPost in
             // Joins a future with another one
             return self.fetchUser(forId: enrichedPost.post.userId)
@@ -283,7 +283,7 @@ class ResponseFutureTests: XCTestCase {
         instantDispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }.replace { response -> ResponseFuture<Response<Data>>? in
+        }.replace(Response<Data>.self) { response in
             return nil
         }.success { response in
             XCTFail("Should not be triggered")

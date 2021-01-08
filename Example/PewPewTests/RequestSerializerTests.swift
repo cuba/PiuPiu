@@ -24,7 +24,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
             let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
             return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
         } else {
-            return try Response.makeMockResponse(with: request, statusCode: .notFound)
+            return Response.makeMockResponse(with: request, statusCode: .notFound)
         }
     })
     
@@ -41,32 +41,37 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         let request = BasicRequest(method: .get, path: "/posts/1")
         
         // Then
-        networkSerializer.dataFuture(from: request).then({ response -> Post in
-            // Attempt to get a http response
-            let httpResponse = try response.makeHTTPResponse()
-            
-            // Check if we have any http error
-            if let error = httpResponse.httpError {
-                // Throwing an error in any callback will trigger the `error` callback.
-                // This allows us to pool all failures in that callback if we want to
-                throw error
+        networkSerializer.dataFuture(from: request)
+            .then(Post.self) { response in
+                // Attempt to get a http response
+                let httpResponse = try response.makeHTTPResponse()
+                
+                // Check if we have any http error
+                if let error = httpResponse.httpError {
+                    // Throwing an error in any callback will trigger the `error` callback.
+                    // This allows us to pool all failures in that callback if we want to
+                    throw error
+                }
+                
+                XCTAssertFalse(calledCompletion)
+                return try response.decode(Post.self)
             }
-            
-            XCTAssertFalse(calledCompletion)
-            return try response.decode(Post.self)
-        }).response({ post in
-            // The final response callback includes all the transformations and
-            // Joins we had previously performed.
-            XCTAssertFalse(calledCompletion)
-            successExpectation.fulfill()
-        }).error({ error in
-            XCTAssertFalse(calledCompletion)
-            errorExpectation.fulfill()
-        }).completion({
-            XCTAssertFalse(calledCompletion)
-            calledCompletion = true
-            completionExpectation.fulfill()
-        }).send()
+            .response { post in
+                // The final response callback includes all the transformations and
+                // Joins we had previously performed.
+                XCTAssertFalse(calledCompletion)
+                successExpectation.fulfill()
+            }
+            .error { error in
+                XCTAssertFalse(calledCompletion)
+                errorExpectation.fulfill()
+            }
+            .completion {
+                XCTAssertFalse(calledCompletion)
+                calledCompletion = true
+                completionExpectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }

@@ -257,6 +257,18 @@ public class ResponseFuture<T> {
         return map(U.self, on: queue, successCallback: successCallback)
     }
     
+    /// Convert the success callback to another type.
+    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    /// NOTE: You should not be updating anything on UI from this thread. To be safe avoid calling self on the callback.
+    ///
+    /// - Parameters:
+    ///   - queue: The queue to run the callback on. The default is the main thread.
+    ///   - callback: The callback to perform the transformation
+    /// - Returns: The transformed future
+    public func then<U>(_ type: U.Type, on queue: DispatchQueue = DispatchQueue.main, _ successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
+        return map(type, on: queue, successCallback: successCallback)
+    }
+    
     /// Return a new future with the results of both futures.
     /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
@@ -265,48 +277,6 @@ public class ResponseFuture<T> {
     @available(*, deprecated, renamed: "seriesJoin")
     public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
         return seriesJoin(U.self, callback: callback)
-    }
-    
-    /// Return a new future with the results of both futures.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
-    ///
-    /// - Parameter callback: The callback that returns the nested future
-    /// - Returns: A new future with the results of both futures
-    public func seriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
-        return ResponseFuture<(T, U)> { future in
-            self.success({ response in
-                guard let newFuture = try callback(response) else {
-                    future.cancel()
-                    return
-                }
-                
-                newFuture.success({ newResponse in
-                    future.succeed(with: (response, newResponse))
-                }).error({ error in
-                    future.fail(with: error)
-                }).updated({ task in
-                    future.update(with: task)
-                }).cancellation({
-                    future.cancel()
-                }).send()
-            }).error({ error in
-                future.fail(with: error)
-            }).updated({ task in
-                future.update(with: task)
-            }).cancellation({
-                future.cancel()
-            }).send()
-        }
-    }
-    
-    /// Return a new future with the results of both futures making both calls in parallel
-    ///
-    /// - Parameter callback: The callback that returns the nested future
-    /// - Returns: A new future with the results of both futures
-    public func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, Result<U, Error>)> {
-        return seriesJoin(Result<U, Error>.self) { result in
-            return try callback(result)?.safeResult()
-        }
     }
     
     /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
@@ -387,12 +357,13 @@ public class ResponseFuture<T> {
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
+    @available(*, deprecated, message: "This was replaced with a method that takes an explicit type.")
     public func replace<U>(_ successCallback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
         return replace(U.self, callback: successCallback)
     }
     
-    /// Return a new future with the results of the future retuned in the callback.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    /// Return a new future with the results of both futures making both calls in series
+    /// WARNING: Returning `nil` on the callback will cause all the requests to be cancelled and the cancellation callback to be triggered.
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: A new response future that will contain the results
@@ -424,7 +395,6 @@ public class ResponseFuture<T> {
     }
     
     /// Return a new future with the results of the future retuned in the callback.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
     ///
     /// - Parameter callback: The future that returns the results we want to return.
     /// - Returns: The
@@ -433,57 +403,30 @@ public class ResponseFuture<T> {
         return parallelJoin(U.self, callback: callback)
     }
     
-    /// Return a new future with the results of the future retuned in the callback.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
+    /// Return a new future with the results of both futures making both calls in parallel
+    /// WARNING: Returning `nil` on the callback will cause all the requests to be cancelled and the cancellation callback to be triggered.
     ///
-    /// - Parameter callback: The future that returns the results we want to return.
-    /// - Returns: The new future with both responses
-    public func parallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
-        let newFuture = callback()
-        
+    /// - Parameter callback: The callback that contains the results of the original future
+    /// - Returns: A new future with the results of both futures
+    public func seriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
         return ResponseFuture<(T, U)> { future in
-            var firstResult: Result<T, Error>?
-            var secondResult: Result<U, Error>?
-            
-            func resultCallback(firstResult: Result<T, Error>, secondResult: Result<U, Error>) {
-                switch firstResult {
-                case .success(let firstResponse):
-                    switch secondResult {
-                    case .success(let secondResponse):
-                        future.succeed(with: (firstResponse, secondResponse))
-                    case .failure(let secondError):
-                        future.fail(with: secondError)
-                    }
-                case .failure(let firstError):
-                    switch secondResult {
-                    case .success(let secondResponse):
-                        future.fail(with: firstError)
-                    case .failure(let secondError):
-                        future.fail(with: GroupedFailure.two(firstError, secondError))
-                    }
-                }
-            }
-            
-            self.result({ result in
-                guard let secondResult = secondResult else {
-                    firstResult = result
+            self.success({ response in
+                guard let newFuture = try callback(response) else {
+                    future.cancel()
                     return
                 }
                 
-                resultCallback(firstResult: result, secondResult: secondResult)
-            }).updated({ task in
-                future.update(with: task)
-            }).cancellation({
-                future.cancel()
-            }).send()
-            
-            newFuture.result({ result in
-                guard let firstResult = firstResult else {
-                    secondResult = result
-                    return
-                }
-                
-                resultCallback(firstResult: firstResult, secondResult: result)
+                newFuture.success({ newResponse in
+                    future.succeed(with: (response, newResponse))
+                }).error({ error in
+                    future.fail(with: error)
+                }).updated({ task in
+                    future.update(with: task)
+                }).cancellation({
+                    future.cancel()
+                }).send()
+            }).error({ error in
+                future.fail(with: error)
             }).updated({ task in
                 future.update(with: task)
             }).cancellation({
@@ -494,12 +437,139 @@ public class ResponseFuture<T> {
     
     /// Return a new future with the results of both futures making both calls in parallel
     ///
+    /// - Parameter callback: The future that returns the results we want to return.
+    /// - Returns: The new future with both responses
+    public func parallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
+        let newFuture = callback()
+        
+        return ResponseFuture<(T, U)> { future in
+            var firstResponse: T?
+            var secondResponse: U?
+            
+            self.success({ response in
+                guard let secondResponse = secondResponse else {
+                    firstResponse = response
+                    return
+                }
+                
+                future.succeed(with: (response, secondResponse))
+            }).error({ error in
+                future.fail(with: error)
+            }).updated({ task in
+                future.update(with: task)
+            }).cancellation({
+                future.cancel()
+            }).send()
+            
+            newFuture.success({ response in
+                guard let firstResponse = firstResponse else {
+                    secondResponse = response
+                    return
+                }
+                
+                future.succeed(with: (firstResponse, response))
+            }).error({ error in
+                future.fail(with: error)
+            }).updated({ task in
+                future.update(with: task)
+            }).cancellation({
+                future.cancel()
+            }).send()
+        }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in series
+    /// Returning `nil` on the callback does **not** cancel the requests
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func seriesNullableJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U?)> {
+        return ResponseFuture<(T, U?)> { future in
+            self.success({ response in
+                guard let newFuture = try callback(response) else {
+                    future.succeed(with: (response, nil))
+                    return
+                }
+                
+                newFuture.success({ newResponse in
+                    future.succeed(with: (response, newResponse))
+                }).error({ error in
+                    future.fail(with: error)
+                }).updated({ task in
+                    future.update(with: task)
+                }).cancellation({
+                    future.cancel()
+                }).send()
+            }).error({ error in
+                future.fail(with: error)
+            }).updated({ task in
+                future.update(with: task)
+            }).cancellation({
+                future.cancel()
+            }).send()
+        }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in parallel
+    /// Returning `nil` on the callback does **not** cancel the requests
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func parallelNullableJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>?) -> ResponseFuture<(T, U?)> {
+        if let future = callback() {
+            return parallelJoin(type) {
+                return future
+            }.then((T, U?).self) { result in
+                return (result.0, result.1 as U?)
+            }
+        } else {
+            return then((T, U?).self) { result in
+                return (result, nil)
+            }
+        }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in series
+    /// WARNING: Returning `nil` on the callback will cause all the requests to be cancelled and the cancellation callback to be triggered.
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func safeSeriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, Result<U, Error>)> {
+        return seriesJoin(Result<U, Error>.self) { result in
+            return try callback(result)?.safeResult()
+        }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in parallel
+    /// Returning `nil` on the callback does **not** cancel the requests
+    ///
     /// - Parameter callback: The callback that returns the nested future
     /// - Returns: A new future with the results of both futures
     public func safeParallelJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, Result<U, Error>)> {
         return parallelJoin(Result<U, Error>.self, callback: {
             return callback().safeResult()
         })
+    }
+    
+    /// Return a new future with the results of both futures making both calls in parallel
+    /// Returning `nil` on the callback does **not** cancel the requests
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func safeSeriesNullableJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, Result<U, Error>?)> {
+        return seriesNullableJoin(Result<U, Error>.self) { result in
+            return try callback(result)?.safeResult()
+        }
+    }
+    
+    /// Return a new future with the results of both futures making both calls in series
+    ///
+    /// - Parameter callback: The callback that returns the nested future
+    /// - Returns: A new future with the results of both futures
+    public func safeParallelNullableJoin<U>(_ type: U.Type, callback: () -> ResponseFuture<U>?) -> ResponseFuture<(T, Result<U, Error>?)> {
+        return parallelNullableJoin(Result<U, Error>.self) {
+            return callback()?.safeResult()
+        }
     }
     
     /// This method triggers the action method defined on this future.
@@ -521,6 +591,7 @@ public class ResponseFuture<T> {
 }
 
 public extension ResponseFuture where T: Sequence {
+    /// Conveniently call a  future in parallel and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
     func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]> {
         return parallelJoin(T.Element.self, callback: callback)
             .map([T.Element].self) { (sequence, element) in
@@ -530,11 +601,42 @@ public extension ResponseFuture where T: Sequence {
             }
     }
     
+    /// Conveniently call a  future in series and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
+    /// WARNING: Returning `nil` on the callback will cause all the requests to be cancelled and the cancellation callback to be triggered.
     func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
         return seriesJoin(T.Element.self, callback: callback)
             .map([T.Element].self) { (sequence, element) in
                 var result = Array(sequence)
                 result.append(element)
+                return result
+            }
+    }
+    
+    /// Conveniently call a  future in parallel and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
+    func addingParallelNullableResult(from callback: () -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
+        return parallelNullableJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                
+                if let element = element {
+                    result.append(element)
+                }
+                
+                return result
+            }
+    }
+    
+    /// Conveniently call a  future in series and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
+    /// Returning `nil` on the callback does **not** cancel the requests
+    func addingSeriesNullableResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
+        return seriesNullableJoin(T.Element.self, callback: callback)
+            .map([T.Element].self) { (sequence, element) in
+                var result = Array(sequence)
+                
+                if let element = element {
+                    result.append(element)
+                }
+                
                 return result
             }
     }
