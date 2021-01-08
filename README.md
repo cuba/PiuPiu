@@ -39,6 +39,13 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.9.0
+* Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.
+* Addes some more convenience "join" functions on `ResponseFuture`: `addingParallelNullableResult`, `addingSeriesNullableResult`, `safeParallelNullableJoin`, `safeSeriesNullableJoin`, `parallelNullableJoin`, and `seriesNullableJoin`
+* Deprecated some `ResponseFuture` functions in favour of ones that take an explicit type
+* Remove useless throwables that never threw anything
+* Remove `MockDispatcherError` and use `ResponseError.noResponse` if no callback is set on `MockURLRequestDispatcher`
+
 ### 1.8.0
 * Dropped `SafeResponse` in favour or `Result`
 * Require `[CodingKey]` to be passed in to the `EncodingTransform` and `DecodingTransform` methods
