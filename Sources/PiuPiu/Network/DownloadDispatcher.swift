@@ -9,7 +9,7 @@
 import Foundation
 
 /// The object that will be making the API call and returning the Future
-public protocol DownloadDispatcher: class {
+public protocol DownloadDispatcher: AnyObject {
     /// Create a future to make a download request.
     ///
     /// - Parameters:

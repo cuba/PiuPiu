@@ -114,7 +114,7 @@ class DocumentationExamples: XCTestCase {
                 // PiuPiu has a convenience method to decode responses containing `Decodable` objects
                 // We use `decodeResponse` instead of just `decode`. This will convert
                 // HTTPResponse<Data?> into HTTPResponse<Post>
-                return try httpResponse.decodedResponse(Post.self)
+                return try httpResponse.decoded(Post.self)
             }
             .success { response in
                 // Here we handle our success as long as nothing was thrown along the way
@@ -224,7 +224,7 @@ class DocumentationExamples: XCTestCase {
                 // this `callback` is being invoked on a `background` queue
                 
                 // PiuPiu has a convenience method to decode `Decodable` objects
-                return try httpResponse.decodedResponse(Post.self)
+                return try httpResponse.decoded(Post.self)
             }
     }
     
@@ -235,7 +235,7 @@ class DocumentationExamples: XCTestCase {
         
         return dispatcher.dataFuture(from: request)
             .validHTTPResponse()
-            .decodedResponse(User.self)
+            .decoded(User.self)
     }
     
     /// This method handles common HTTP errors and returns an HTTP response.
@@ -531,9 +531,9 @@ extension ResponseFuture where T == Response<Data?> {
 
 extension ResponseFuture where T == HTTPResponse<Data?> {
     /// This method returns an HTTP response containing a decoded object
-    func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
+    func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
         return then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in
-            return try httpResponse.decodedResponse(type, using: decoder)
+            return try httpResponse.decoded(type, using: decoder)
         }
     }
 }

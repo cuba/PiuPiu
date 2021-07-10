@@ -36,7 +36,7 @@ extension Response where T == Data? {
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
     /// - Throws: `SerializationError`
-    public func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D> {
+    public func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D> {
         let decoded = try self.decode(type, using: decoder)
         return Response<D>(data: decoded, urlRequest: urlRequest, urlResponse: urlResponse)
     }
@@ -48,8 +48,32 @@ extension Response where T == Data? {
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
     /// - Throws: `SerializationError`
-    public func decodedResponseIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D?> {
+    @available(*, deprecated, renamed: "decoded")
+    public func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D> {
+        return try decoded(type, using: decoder)
+    }
+    
+    /// Attempt to Decode the response to a response containing a decodable object
+    ///
+    /// - Parameters:
+    ///   - type: The Decodable type to decode
+    ///   - decoder: The decoder to use.
+    /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
+    public func decodedIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D?> {
         let decoded = try self.decodeIfPresent(type, using: decoder)
         return Response<D?>(data: decoded, urlRequest: urlRequest, urlResponse: urlResponse)
+    }
+    
+    /// Attempt to Decode the response to a response containing a decodable object
+    ///
+    /// - Parameters:
+    ///   - type: The Decodable type to decode
+    ///   - decoder: The decoder to use.
+    /// - Returns: The decoded object
+    /// - Throws: `SerializationError`
+    @available(*, deprecated, renamed: "decodedIfPresent")
+    public func decodedResponseIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D?> {
+        return try decodedIfPresent(type, using: decoder)
     }
 }

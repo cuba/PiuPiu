@@ -10,7 +10,7 @@ import Foundation
 
 
 /// The object that will be making the API call and returning the Future
-public protocol UploadDispatcher: class {
+public protocol UploadDispatcher: AnyObject {
     /// Create a future to make an upload request.
     ///
     /// - Parameters:

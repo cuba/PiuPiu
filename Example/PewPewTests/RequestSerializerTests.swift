@@ -11,7 +11,6 @@ import XCTest
 @testable import Example
 
 class RequestSerializerTests: XCTestCase, ServerProvider {
-    
     var baseURL: URL? {
         return URL(string: "https://jsonplaceholder.typicode.com/posts/1")
     }

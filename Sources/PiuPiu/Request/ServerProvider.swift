@@ -8,6 +8,6 @@
 import Foundation
 
 /// The object that returns the server host or base url
-public protocol ServerProvider: class {
+public protocol ServerProvider: AnyObject {
     var baseURL: URL? { get }
 }

@@ -13,6 +13,11 @@ public class RequestSerializer {
     public var dispatcher: DataDispatcher
     public weak var serverProvider: ServerProvider?
     
+    
+    /// Initialize this serializer with a dispatcher and server provider
+    /// - Parameters:
+    ///   - dispatcher: The dispatcher to send the calls with
+    ///   - serverProvider: The server provider that provides the base URL. Note: The reference to this is weak so you need to hold on to it yourself
     public init(dispatcher: DataDispatcher, serverProvider: ServerProvider) {
         self.dispatcher = dispatcher
         self.serverProvider = serverProvider
@@ -59,6 +64,3 @@ public class RequestSerializer {
         }
     }
 }
-
-@available(*, deprecated, renamed: "RequestSerializer")
-typealias NetworkSerializer = RequestSerializer
