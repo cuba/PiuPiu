@@ -9,5 +9,6 @@ import Foundation
 
 /// The object that returns the server host or base url
 public protocol ServerProvider: AnyObject {
+    /// The base url that will be used to construct
     var baseURL: URL? { get }
 }

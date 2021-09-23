@@ -48,7 +48,8 @@ extension HTTPResponse where T == Data? {
     ///   - type: The Decodable type to decode
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
+    /// - throws: `ResponseError.unexpectedEmptyResponse` if there is no data
+    /// - throws: An error if any value throws an error during decoding.
     public func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D> {
         let decoded = try self.decode(type, using: decoder)
         return HTTPResponse<D>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
@@ -60,7 +61,8 @@ extension HTTPResponse where T == Data? {
     ///   - type: The Decodable type to decode
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
+    /// - throws: `ResponseError.unexpectedEmptyResponse` if there is no data
+    /// - throws: An error if any value throws an error during decoding.
     @available(*, deprecated, renamed: "decoded")
     public func decodedResponse<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D> {
         return try decoded(type, using: decoder)
@@ -72,7 +74,7 @@ extension HTTPResponse where T == Data? {
     ///   - type: The Decodable type to decode
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
+    /// - throws: An error if any value throws an error during decoding.
     public func decodedIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D?> {
         let decoded = try self.decodeIfPresent(type, using: decoder)
         return HTTPResponse<D?>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
@@ -84,7 +86,7 @@ extension HTTPResponse where T == Data? {
     ///   - type: The Decodable type to decode
     ///   - decoder: The decoder to use.
     /// - Returns: The decoded object
-    /// - Throws: `SerializationError`
+    /// - throws: An error if any value throws an error during decoding.
     @available(*, deprecated, renamed: "decodedIfPresent")
     public func decodedResponseIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D?> {
         return try decodedIfPresent(type, using: decoder)

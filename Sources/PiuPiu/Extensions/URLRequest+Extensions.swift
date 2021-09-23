@@ -21,7 +21,7 @@ public extension URLRequest {
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
     ///   - encoder: The encoder to use for encoding the encodable object. Default is a the system encoder.
-    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    /// - throws: Any serialization errors thrown by the `JSONEncoder`.
     mutating func setJSONBody<T: Encodable>(encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
         self.httpBody = try encoder.encode(encodable)
         ensureJSONContentType()
@@ -52,7 +52,7 @@ public extension URLRequest {
     /// - Parameters:
     ///   - jsonObject: The JSON Object to encode into the request body using `JSONSerialization`.
     ///   - options: The writing options to use when encoding.
-    /// - Throws: Any errors thrown by `JSONSerialization`.
+    /// - throws: Any errors thrown by `JSONSerialization`.
     mutating func setHTTPBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonObject, options: options)
     }
@@ -62,7 +62,7 @@ public extension URLRequest {
     /// - Parameters:
     ///   - jsonObject: The JSON Object to encode into the request body using `JSONSerialization`. This does the same thing as the `setHTTPBody(jsonArray:options:)` method except that it also adds to `Content-Type` header.
     ///   - options: The writing options to use when encoding.
-    /// - Throws: Any errors thrown by `JSONSerialization`.
+    /// - throws: Any errors thrown by `JSONSerialization`.
     mutating func setJSONBody(jsonObject: [String: Any?], options: JSONSerialization.WritingOptions = []) throws {
         try setHTTPBody(jsonObject: jsonObject, options: options)
         ensureJSONContentType()
@@ -73,7 +73,7 @@ public extension URLRequest {
     /// - Parameters:
     ///   - jsonArray: The JSON Object array to encode into the request body using `JSONSerialization`.
     ///   - options: The writing options to use when encoding.
-    /// - Throws: Any errors thrown by `JSONSerialization`.
+    /// - throws: Any errors thrown by `JSONSerialization`.
     mutating func setHTTPBody(jsonArray: [[String: Any?]], options: JSONSerialization.WritingOptions = []) throws {
         self.httpBody = try JSONSerialization.data(withJSONObject: jsonArray, options: options)
     }
@@ -83,7 +83,7 @@ public extension URLRequest {
     /// - Parameters:
     ///   - jsonArray: The JSON Object array to encode into the request body using `JSONSerialization`.
     ///   - options: The writing options to use when encoding.
-    /// - Throws: Any errors thrown by `JSONSerialization`.
+    /// - throws: Any errors thrown by `JSONSerialization`.
     mutating func setJSONBody(jsonArray: [[String: Any?]], options: JSONSerialization.WritingOptions = []) throws {
         try setHTTPBody(jsonArray: jsonArray, options: options)
         ensureJSONContentType()
@@ -93,7 +93,7 @@ public extension URLRequest {
     ///
     /// - Parameters:
     ///   - encodable: The `Encodable` object to serialize into JSON using the `JSONEncoder`.
-    /// - Throws: Any serialization errors thrown by the `JSONEncoder`.
+    /// - throws: Any serialization errors thrown by the `JSONEncoder`.
     mutating func setJSONBody<T: Encodable>(_ encodable: T, encoder: JSONEncoder = JSONEncoder()) throws {
         try setJSONBody(encodable: encodable, encoder: encoder)
     }

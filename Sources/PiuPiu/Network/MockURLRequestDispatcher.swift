@@ -8,18 +8,20 @@
 
 import Foundation
 
-/// A mock dispatcher that does not actually make any network calls.
+/// A mock dispatcher that does not actually make any network calls. Useful for tests or for mocking data.
 open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
     public typealias ResponseCallback = (URLRequest) throws -> Response<Data?>
+    /// Add a delay to the response to simulate slower load times. Its a good idea to keep this short on tests
     open var delay: TimeInterval = 0
     
+    /// The callback that is triggered which returns the appropriate response given a `URLRequest`
     open var callback: ResponseCallback?
     
     /// Initialize this object with some mock data.
     ///
     /// - Parameters:
-    ///   - mockStatusCode: The status code to return
-    ///   - mockHeaders: The headers that will be returned
+    ///   - delay: Add a delay to the response to simulate slower load times. Its a good idea to keep this short on tests
+    ///   - callback: The callback that is triggered which returns the appropriate response given a `URLRequest`
     public init(delay: TimeInterval = 0, callback: @escaping ResponseCallback) {
         self.callback = callback
         self.delay = delay
