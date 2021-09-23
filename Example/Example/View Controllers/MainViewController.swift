@@ -58,20 +58,31 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch row {
         case .seriesExample:
-            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Series Example"
+            cell.detailTextLabel?.text = "Perform sample api calls in series"
+            cell.imageView?.image = makeImage(systemName: "square.and.arrow.down")
             return cell
+            
         case .parallelExample:
-            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Parallel Example"
+            cell.detailTextLabel?.text = "Perform sample api calls in parallel"
+            cell.imageView?.image = makeImage(systemName: "square.and.arrow.down.on.square")
             return cell
+            
         case .downloadExample:
-            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Download Example"
+            cell.detailTextLabel?.text = "Perform a sample image download API call"
+            cell.imageView?.image = makeImage(systemName: "photo")
             return cell
+            
         case .uploadExample:
-            let cell = Cell.standard.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Upload Example"
+            cell.detailTextLabel?.text = "Perform a sample upload API call"
+            cell.imageView?.image = makeImage(systemName: "paperclip")
             return cell
         }
     }
@@ -92,6 +103,14 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         case .uploadExample:
             let viewController = UploadViewController()
             navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
+    
+    private func makeImage(systemName: String) -> UIImage? {
+        if #available(iOS 13.0, *) {
+            return UIImage(systemName: systemName)
+        } else {
+            return nil
         }
     }
 }
