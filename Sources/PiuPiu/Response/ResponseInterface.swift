@@ -28,12 +28,7 @@ public extension ResponseInterface where T == Data? {
     /// - Returns: The `HTTPResponse` object which wraps the `HTTPURLResponse`
     /// - throws: `ResponseError.notHTTPResponse`
     func makeHTTPResponse() throws -> HTTPResponse<T> {
-        // Ensure there is a http response
-        guard let httpResponse = urlResponse as? HTTPURLResponse else {
-            throw ResponseError.notHTTPResponse
-        }
-        
-        return HTTPResponse(data: data, urlRequest: urlRequest, httpResponse: httpResponse)
+        return try HTTPResponse(response: self, data: data)
     }
     
     /// Attempt to unwrap the response data.

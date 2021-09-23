@@ -31,6 +31,17 @@ public struct Response<T>: ResponseInterface {
         self.urlResponse = urlResponse
         self.urlRequest = urlRequest
     }
+    
+    /// Create a successful response object.
+    ///
+    /// - Parameters:
+    ///   - response: the original response
+    ///   - data: The data object to return
+    public init<R: ResponseInterface>(response: R, data: T) {
+        self.data = data
+        self.urlResponse = response.urlResponse
+        self.urlRequest = response.urlRequest
+    }
 }
 
 extension Response where T == Data? {
@@ -44,7 +55,7 @@ extension Response where T == Data? {
     /// - throws: An error if any value throws an error during decoding.
     public func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D> {
         let decoded = try self.decode(type, using: decoder)
-        return Response<D>(data: decoded, urlRequest: urlRequest, urlResponse: urlResponse)
+        return Response<D>(response: self, data: decoded)
     }
     
     /// Attempt to decode the response to a response containing a `Decodable` object
@@ -69,7 +80,7 @@ extension Response where T == Data? {
     /// - throws: An error if any value throws an error during decoding.
     public func decodedIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> Response<D?> {
         let decoded = try self.decodeIfPresent(type, using: decoder)
-        return Response<D?>(data: decoded, urlRequest: urlRequest, urlResponse: urlResponse)
+        return Response<D?>(response: self, data: decoded)
     }
     
     /// Attempt to decode the response to a response containing a `Decodable` object

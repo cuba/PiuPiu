@@ -39,6 +39,23 @@ public struct HTTPResponse<T>: ResponseInterface {
         self.urlRequest = urlRequest
         self.httpResponse = httpResponse
     }
+    
+    /// Create a successful response object.
+    ///
+    /// - Parameters:
+    ///   - response: the original response
+    ///   - data: The data object to return
+    /// - throws: `ResponseError.notHTTPResponse`
+    public init<R: ResponseInterface>(response: R, data: T) throws {
+        // Ensure there is a http response
+        guard let httpResponse = response.urlResponse as? HTTPURLResponse else {
+            throw ResponseError.notHTTPResponse
+        }
+        
+        self.data = data
+        self.urlRequest = response.urlRequest
+        self.httpResponse = httpResponse
+    }
 }
 
 extension HTTPResponse where T == Data? {
@@ -52,7 +69,7 @@ extension HTTPResponse where T == Data? {
     /// - throws: An error if any value throws an error during decoding.
     public func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D> {
         let decoded = try self.decode(type, using: decoder)
-        return HTTPResponse<D>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
+        return try HTTPResponse<D>(response: self, data: decoded)
     }
     
     /// Attempt to Decode the response to a response containing a decodable object
@@ -77,7 +94,7 @@ extension HTTPResponse where T == Data? {
     /// - throws: An error if any value throws an error during decoding.
     public func decodedIfPresent<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) throws -> HTTPResponse<D?> {
         let decoded = try self.decodeIfPresent(type, using: decoder)
-        return HTTPResponse<D?>(data: decoded, urlRequest: urlRequest, httpResponse: httpResponse)
+        return try HTTPResponse<D?>(response: self, data: decoded)
     }
     
     /// Attempt to Decode the response to a response containing a decodable object
