@@ -41,8 +41,8 @@ public class RequestSerializer {
             }
             
             let urlRequest = try request.urlRequest(withBaseURL: baseUrl)
-            let newFuture = self.dispatcher.dataFuture(from: urlRequest)
-            future.fulfill(by: newFuture)
+            self.dispatcher.dataFuture(from: urlRequest)
+                .fulfill(future)
         }
     }
     
@@ -59,8 +59,8 @@ public class RequestSerializer {
                 return
             }
             
-            let nestedFuture = self.dataFuture(from: request)
-            future.fulfill(by: nestedFuture)
+            self.dataFuture(from: request)
+                .fulfill(future)
         }
     }
 }

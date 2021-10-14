@@ -65,19 +65,23 @@ public class ResponseFuture<T> {
     /// Fulfills the given future with the results of this future. Both futures have to be of the same type.
     ///
     /// - Parameter future: The future to be fulfilled.
-    private func fulfill(_ future: ResponseFuture<T>) {
-        self.success({ result in
+    public func fulfill(_ future: ResponseFuture<T>) {
+        self.success { result in
             future.succeed(with: result)
-        }).updated({ task in
+        }
+        .updated { task in
             future.update(with: task)
-        }).error({ error in
+        }
+        .error { error in
             future.fail(with: error)
-        }).send()
+        }
+        .send()
     }
     
     /// Fulfills this future with the results of the given future. Both futures have to be of the same type.
     ///
     /// - Parameter future: The future to be fulfilled.
+    @available(*, deprecated, message: "Reverse the roles and use `fulfill(:ResponseFuture)` instead.")
     public func fulfill(by future: ResponseFuture<T>) {
         future.fulfill(self)
     }
@@ -85,7 +89,7 @@ public class ResponseFuture<T> {
     /// Fulfills this future with the results of the given future. Both futures have to be of the same type.
     ///
     /// - Parameter future: The future to be fulfilled.
-    @available(*, deprecated, renamed: "fulfill(by:)")
+    @available(*, deprecated, message: "Reverse the roles and use `fulfill(:ResponseFuture)` instead.")
     public func fulfill(with future: ResponseFuture<T>) {
         future.fulfill(self)
     }

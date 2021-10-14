@@ -36,8 +36,8 @@ public extension DataDispatcher {
                 return
             }
             
-            let nestedFuture = self.dataFuture(from: urlRequest)
-            future.fulfill(by: nestedFuture)
+            self.dataFuture(from: urlRequest)
+                .fulfill(future)
         }
     }
 }
