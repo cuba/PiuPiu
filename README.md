@@ -39,6 +39,9 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.10.0
+* Using `DispatchGroup` for parallel joins
+
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.
 * Addes some more convenience "join" functions on `ResponseFuture`: `addingParallelNullableResult`, `addingSeriesNullableResult`, `safeParallelNullableJoin`, `safeSeriesNullableJoin`, `parallelNullableJoin`, and `seriesNullableJoin`

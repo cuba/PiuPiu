@@ -24,52 +24,50 @@ class PerformanceTests: XCTestCase {
     })
     
     func testSeriesPerformance() {
-        let expectation = self.expectation(description: "Success response triggered")
-        var future = ResponseFuture<[Post]>(result: [])
-        
-        for id in 1...500 {
-            future = future.addingSeriesResult() { _ in
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                let request = URLRequest(url: url, method: .get)
-                
-                return self.dispatcher.dataFuture(from: request).map(Post.self) { response in
-                    return try response.decode(Post.self)
+        self.measure {
+            let expectation = self.expectation(description: "Success response triggered")
+            var future = ResponseFuture<[Post]>(result: [])
+            
+            for id in 1...50 {
+                future = future.addingSeriesResult() { _ in
+                    self.makePostFuture(id: id)
                 }
             }
-        }
-        
-        self.measure {
+            
             future.response({ posts in
                 expectation.fulfill()
             }).send()
+            
+            waitForExpectations(timeout: 10, handler: nil)
         }
-        
-        waitForExpectations(timeout: 10, handler: nil)
     }
     
     func testParallelPerformance() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        var future = ResponseFuture<[Post]>(result: [])
-        
-        for id in 1...500 {
-            future = future.addingParallelResult() {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                let request = URLRequest(url: url, method: .get)
-                
-                return self.dispatcher.dataFuture(from: request).map(Post.self) { response in
-                    return try response.decode(Post.self)
-                }
-            }
-        }
-        
         self.measure {
-            future.response({ posts in
-                expectation.fulfill()
-            }).send()
+            let expectation = self.expectation(description: "Success response triggered")
+            
+            ResponseFuture<[Post]>
+                .init {
+                    (1...500).map { id in
+                        makePostFuture(id: id)
+                    }
+                }
+                .response { posts in
+                    expectation.fulfill()
+                }
+                .send()
+            
+            waitForExpectations(timeout: 10, handler: nil)
         }
-        
-        waitForExpectations(timeout: 10, handler: nil)
     }
-
+    
+    private func makePostFuture(id: Int) -> ResponseFuture<Post> {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+        let urlRequest = URLRequest(url: url, method: .get)
+        
+        return self.dispatcher.dataFuture(from: urlRequest)
+            .then { response in
+                return try response.decode(Post.self)
+            }
+    }
 }

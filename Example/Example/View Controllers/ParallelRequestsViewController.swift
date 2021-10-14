@@ -45,39 +45,37 @@ class ParallelRequestsViewController: UIViewController {
     @objc private func tappedSendButton() {
         progressView.progress = 0
         
-        var future = ResponseFuture<[String]>(result: [])
-        
-        for id in 1...sampleCount {
-            future = future.addingParallelResult() {
-                self.fetchUser(forId: id)
+        ResponseFuture<[String]>
+            .init {
+                (1...sampleCount).map { id in
+                    self.fetchUser(forId: id)
+                }
             }
-        }
-        
-        future.updated { [weak self] task in
-            guard let self = self else { return }
-            guard task.state == .completed || task.state == .running else {
-                self.pendingTasks.remove(task)
-                return
+            .updated { [weak self] task in
+                guard let self = self else { return }
+                guard task.state == .completed || task.state == .running else {
+                    self.pendingTasks.remove(task)
+                    return
+                }
+                
+                self.pendingTasks.insert(task)
+                let completedTasks = self.pendingTasks.completed
+                let progress = Float(completedTasks.count) / Float(self.sampleCount)
+                print("PROGRESS: \(progress)")
+                self.progressView.progress = progress
+                
             }
-            
-            self.pendingTasks.insert(task)
-            let completedTasks = self.pendingTasks.completed
-            let progress = Float(completedTasks.count) / Float(self.sampleCount)
-            print("PROGRESS: \(progress)")
-            self.progressView.progress = progress
-            
-        }
-        .response { [weak self] values in
-            self?.textView.text = values.joined(separator: "\n\n")
-        }
-        .error { [weak self] error in
-            self?.textView.text = error.localizedDescription
-        }
-        .completion { [weak self] in
-            self?.progressView.progress = 1
-            self?.pendingTasks = []
-        }
-        .send()
+            .response { [weak self] values in
+                self?.textView.text = values.joined(separator: "\n\n")
+            }
+            .error { [weak self] error in
+                self?.textView.text = error.localizedDescription
+            }
+            .completion { [weak self] in
+                self?.progressView.progress = 1
+                self?.pendingTasks = []
+            }
+            .send()
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<String> {

@@ -471,46 +471,52 @@ public class ResponseFuture<T> {
         let newFuture = callback()
         
         return ResponseFuture<(T, U)> { future in
-            var firstResponse: T?
-            var secondResponse: U?
+            var firstResult: Result<T, Error>?
+            var secondResult: Result<U, Error>?
+            let dispatchGroup = DispatchGroup()
             
-            self.success { response in
-                guard let secondResponse = secondResponse else {
-                    firstResponse = response
-                    return
-                }
-                
-                future.succeed(with: (response, secondResponse))
-            }
-            .error { error in
-                future.fail(with: error)
+            dispatchGroup.enter()
+            self.result { result in
+                firstResult = result
             }
             .updated { task in
                 future.update(with: task)
             }
-            .cancellation {
-                future.cancel()
+            .completion {
+                dispatchGroup.leave()
             }
             .send()
             
-            newFuture.success { response in
-                guard let firstResponse = firstResponse else {
-                    secondResponse = response
-                    return
-                }
-                
-                future.succeed(with: (firstResponse, response))
-            }
-            .error { error in
-                future.fail(with: error)
+            dispatchGroup.enter()
+            newFuture.result { result in
+                secondResult = result
             }
             .updated { task in
                 future.update(with: task)
             }
-            .cancellation {
-                future.cancel()
+            .completion {
+                dispatchGroup.leave()
             }
             .send()
+            
+            dispatchGroup.notify(queue: .main) {
+                guard let firstResult = firstResult, let secondResult = secondResult else {
+                    // The only way that neither is returned is one or the other was cancelled
+                    future.cancel()
+                    return
+                }
+                
+                switch (firstResult, secondResult) {
+                case (.success(let first), .success(let second)):
+                    future.succeed(with: (first, second))
+                case (.failure(let error), .success):
+                    future.fail(with: error)
+                case (.success, .failure(let error)):
+                    future.fail(with: error)
+                case (.failure(let error), .failure):
+                    future.fail(with: error)
+                }
+            }
         }
     }
     

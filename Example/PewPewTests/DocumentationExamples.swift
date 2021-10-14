@@ -364,27 +364,6 @@ class DocumentationExamples: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testWeakCallbacksWeakReferenceDealocated() {
-        // Expectations
-        let expectation = self.expectation(description: "Success response should not be triggered")
-        expectation.isInverted = true
-        
-        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).completion({
-            // [weak self] needed as `self` is not called
-            expectation.fulfill()
-        })
-        
-        // Our object is already nil because we have not established a strong reference to it.
-        // The `send` method will do nothing. No callback will be triggered.
-        
-        XCTAssertNil(weakFuture)
-        weakFuture?.send()
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-    
     func testSeriesJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         

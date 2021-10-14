@@ -32,8 +32,6 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         var calledCompletion = false
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let errorExpectation = self.expectation(description: "Error triggered")
-        errorExpectation.isInverted = true
         
         // Given
         let networkSerializer = RequestSerializer(dispatcher: instantDispatcher, serverProvider: self)
@@ -63,7 +61,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
             }
             .error { error in
                 XCTAssertFalse(calledCompletion)
-                errorExpectation.fulfill()
+                XCTFail("Should not be triggered")
             }
             .completion {
                 XCTAssertFalse(calledCompletion)
