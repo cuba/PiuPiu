@@ -277,48 +277,6 @@ public class ResponseFuture<T> {
         return map(type, on: queue, successCallback: successCallback)
     }
     
-    /// Return a new future with the results of both futures.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
-    ///
-    /// - Parameter callback: The callback that returns the nested future
-    /// - Returns: A new future with the results of both futures
-    @available(*, deprecated, renamed: "seriesJoin")
-    public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
-        return seriesJoin(U.self, callback: callback)
-    }
-    
-    /// Handle failures by returning an object. The new future will have a success response with either the response object or the returned object in the callback
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
-    ///
-    /// - Parameter callback: A callback to handle the error. Throwing here will result in the error callback being triggered.
-    /// - Returns: A new response future with a success response with either the object or the error.
-    @available(*, deprecated, renamed: "thenResult")
-    public func thenError<U>(_ callback: @escaping (SafeResponse<T>) throws -> U) -> ResponseFuture<U> {
-        return thenResult(U.self) { result in
-            switch result {
-            case .success(let value):
-                return try callback(.response(value))
-            case .failure(let error):
-                return try callback(.error(error))
-            }
-        }
-    }
-    
-    /// Allows the error to fail by returning a success response with either the original response or the error
-    ///
-    /// - Returns: A new future containing the original response or an error object.
-    @available(*, deprecated, renamed: "safeResult")
-    public func nonFailing() -> ResponseFuture<SafeResponse<T>> {
-        return self.thenResult(SafeResponse<T>.self) { result in
-            switch result {
-            case .success(let value):
-                return SafeResponse.response(value)
-            case .failure(let error):
-                return SafeResponse.error(error)
-            }
-        }
-    }
-    
     /// Allows the error to fail by returning a success response with either the original response or the error
     ///
     /// - Returns: A new future containing the original response or an error object.
@@ -364,16 +322,6 @@ public class ResponseFuture<T> {
         }
     }
     
-    /// Return a new future with the results of the future retuned in the callback.
-    /// Returning nil on the callback will cause a the cancellation callback to be triggered.
-    ///
-    /// - Parameter callback: The future that returns the results we want to return.
-    /// - Returns: A new response future that will contain the results
-    @available(*, deprecated, message: "This was replaced with a method that takes an explicit type.")
-    public func replace<U>(_ successCallback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
-        return replace(U.self, callback: successCallback)
-    }
-    
     /// Return a new future with the results of both futures making both calls in series
     /// WARNING: Returning `nil` on the callback will cause all the requests to be cancelled and the cancellation callback to be triggered.
     ///
@@ -412,15 +360,6 @@ public class ResponseFuture<T> {
             }
             .send()
         }
-    }
-    
-    /// Return a new future with the results of the future retuned in the callback.
-    ///
-    /// - Parameter callback: The future that returns the results we want to return.
-    /// - Returns: The
-    @available(*, deprecated, renamed: "parallelJoin")
-    public func join<U>(_ callback: () -> ResponseFuture<U>) -> ResponseFuture<(T, U)> {
-        return parallelJoin(U.self, callback: callback)
     }
     
     /// Return a new future with the results of both futures making both calls in parallel
