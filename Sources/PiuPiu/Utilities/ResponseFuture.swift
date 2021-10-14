@@ -225,7 +225,7 @@ public class ResponseFuture<T> {
     /// - Returns: The transformed future
     public func map<U>(_ type: U.Type, on queue: DispatchQueue = DispatchQueue.main, successCallback: @escaping (T) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
-            self.success({ result in
+            self.success { result in
                 queue.async {
                     do {
                         let transformed = try successCallback(result)
@@ -234,13 +234,17 @@ public class ResponseFuture<T> {
                         future.fail(with: error)
                     }
                 }
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).error({ error in
+            }
+            .error { error in
                 future.fail(with: error)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
         
     }
@@ -316,21 +320,25 @@ public class ResponseFuture<T> {
     /// - Returns: A new future containing the original response or an error object.
     public func thenResult<U>(_ type: U.Type, callback: @escaping (Result<T, Error>) throws -> U) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
-            self.success({ response in
+            self.success { response in
                 let callbackResult = try callback(.success(response))
                 future.succeed(with: callbackResult)
-            }).error({ error in
+            }
+            .error { error in
                 do {
                     let callbackResult = try callback(.failure(error))
                     future.succeed(with: callbackResult)
                 } catch let newError {
                     future.fail(with: newError)
                 }
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
     }
     
@@ -369,28 +377,36 @@ public class ResponseFuture<T> {
     /// - Returns: A new response future that will contain the results
     public func replace<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<U> {
         return ResponseFuture<U> { future in
-            self.success({ response in
+            self.success { response in
                 guard let newPromise = try callback(response) else {
                     future.cancel()
                     return
                 }
                 
-                newPromise.success({ newResponse in
+                newPromise.success { newResponse in
                     future.succeed(with: newResponse)
-                }).updated({ task in
+                }
+                .updated { task in
                     future.update(with: task)
-                }).error({ error in
+                }
+                .error { error in
                     future.fail(with: error)
-                }).cancellation({
+                }
+                .cancellation {
                     future.cancel()
-                }).send()
-            }).error({ error in
+                }
+                .send()
+            }
+            .error { error in
                 future.fail(with: error)
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
     }
     
@@ -410,28 +426,36 @@ public class ResponseFuture<T> {
     /// - Returns: A new future with the results of both futures
     public func seriesJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)> {
         return ResponseFuture<(T, U)> { future in
-            self.success({ response in
+            self.success { response in
                 guard let newFuture = try callback(response) else {
                     future.cancel()
                     return
                 }
                 
-                newFuture.success({ newResponse in
+                newFuture.success { newResponse in
                     future.succeed(with: (response, newResponse))
-                }).error({ error in
+                }
+                .error { error in
                     future.fail(with: error)
-                }).updated({ task in
+                }
+                .updated { task in
                     future.update(with: task)
-                }).cancellation({
+                }
+                .cancellation {
                     future.cancel()
-                }).send()
-            }).error({ error in
+                }
+                .send()
+            }
+            .error { error in
                 future.fail(with: error)
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
     }
     
@@ -446,35 +470,43 @@ public class ResponseFuture<T> {
             var firstResponse: T?
             var secondResponse: U?
             
-            self.success({ response in
+            self.success { response in
                 guard let secondResponse = secondResponse else {
                     firstResponse = response
                     return
                 }
                 
                 future.succeed(with: (response, secondResponse))
-            }).error({ error in
+            }
+            .error { error in
                 future.fail(with: error)
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
             
-            newFuture.success({ response in
+            newFuture.success { response in
                 guard let firstResponse = firstResponse else {
                     secondResponse = response
                     return
                 }
                 
                 future.succeed(with: (firstResponse, response))
-            }).error({ error in
+            }
+            .error { error in
                 future.fail(with: error)
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
     }
     
@@ -485,28 +517,35 @@ public class ResponseFuture<T> {
     /// - Returns: A new future with the results of both futures
     public func seriesNullableJoin<U>(_ type: U.Type, callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U?)> {
         return ResponseFuture<(T, U?)> { future in
-            self.success({ response in
+            self.success { response in
                 guard let newFuture = try callback(response) else {
                     future.succeed(with: (response, nil))
                     return
                 }
                 
-                newFuture.success({ newResponse in
+                newFuture.success { newResponse in
                     future.succeed(with: (response, newResponse))
-                }).error({ error in
+                }
+                .error { error in
                     future.fail(with: error)
-                }).updated({ task in
+                }
+                .updated { task in
                     future.update(with: task)
-                }).cancellation({
+                }
+                .cancellation {
                     future.cancel()
-                }).send()
-            }).error({ error in
+                }
+                .send()
+            }.error { error in
                 future.fail(with: error)
-            }).updated({ task in
+            }
+            .updated { task in
                 future.update(with: task)
-            }).cancellation({
+            }
+            .cancellation {
                 future.cancel()
-            }).send()
+            }
+            .send()
         }
     }
     

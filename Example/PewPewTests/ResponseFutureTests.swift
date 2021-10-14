@@ -228,28 +228,35 @@ class ResponseFutureTests: XCTestCase {
         weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher.dataFuture() {
             let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
             return URLRequest(url: url, method: .get)
-        }.then { response -> Post in
-            return try response.decode(Post.self)
-        }.replace(EnrichedPost.self) { [weak self] post in
-            return self?.enrich(post: post)
-        }.seriesJoin(User.self) { enrichedPost in
-            // Joins a future with another one
-            return self.fetchUser(forId: enrichedPost.post.userId)
-        }.success { response in
-            successExpectation.fulfill()
-        }.error { error in
-            errorExpectation.fulfill()
-        }.completion {
-            completionExpectation.fulfill()
-        }.cancellation {
-            cancellationExpectation.fulfill()
         }
+            .then { response -> Post in
+                return try response.decode(Post.self)
+            }
+            .replace(EnrichedPost.self) { [weak self] post in
+                return self?.enrich(post: post)
+            }
+            .seriesJoin(User.self) { enrichedPost in
+                // Joins a future with another one
+                return self.fetchUser(forId: enrichedPost.post.userId)
+            }
+            .success { response in
+                successExpectation.fulfill()
+            }
+            .error { error in
+                errorExpectation.fulfill()
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .cancellation {
+                cancellationExpectation.fulfill()
+            }
         
         // Then
         
         // Our object is already nil because we have not established a strong reference to it.
         // The `send` method will do nothing. No callback will be triggered.
-        //weakFuture?.send()
+        weakFuture?.send()
         XCTAssertNil(weakFuture)
         waitForExpectations(timeout: 1, handler: nil)
     }
@@ -257,21 +264,26 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
         let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let urlRequest = URLRequest(url: url, method: .get)
         
-        instantDispatcher.dataFuture() {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }.seriesJoin(Response<Data>.self) { result in
-            return nil
-        }.success { response in
-            XCTFail("Should not be triggered")
-        }.error { error in
-            XCTFail(error.localizedDescription)
-        }.cancellation {
-            cancellationExpectation.fulfill()
-        }.completion {
-            completionExpectation.fulfill()
-        }.send()
+        instantDispatcher.dataFuture(from: urlRequest)
+            .seriesJoin(Response<Data>.self) { result in
+                return nil
+            }
+            .success { response in
+                XCTFail("Should not be triggered")
+            }
+            .error { error in
+                XCTFail(error.localizedDescription)
+            }
+            .cancellation {
+                cancellationExpectation.fulfill()
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -279,21 +291,26 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInReplace() {
         let cancellationExpectation = self.expectation(description: "Cancellation triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let urlRequest = URLRequest(url: url, method: .get)
         
-        instantDispatcher.dataFuture() {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }.replace(Response<Data>.self) { response in
-            return nil
-        }.success { response in
-            XCTFail("Should not be triggered")
-        }.error { error in
-            XCTFail(error.localizedDescription)
-        }.cancellation {
-            cancellationExpectation.fulfill()
-        }.completion {
-            completionExpectation.fulfill()
-        }.send()
+        instantDispatcher.dataFuture(from: urlRequest)
+            .replace(Response<Data>.self) { response in
+                return nil
+            }
+            .success { response in
+                XCTFail("Should not be triggered")
+            }
+            .error { error in
+                XCTFail(error.localizedDescription)
+            }
+            .cancellation {
+                cancellationExpectation.fulfill()
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -317,12 +334,13 @@ class ResponseFutureTests: XCTestCase {
         for id in 1...count {
             future = future
                 .parallelJoin(Post.self) {
-                    self.instantDispatcher.dataFuture() {
-                        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                        return URLRequest(url: url, method: .get)
-                    }.then { response in
-                        return try response.decode(Post.self)
-                    }
+                    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+                    let urlRequest = URLRequest(url: url, method: .get)
+                    
+                    return self.instantDispatcher.dataFuture(from: urlRequest)
+                        .then { response in
+                            return try response.decode(Post.self)
+                        }
                 }.map([Post].self) { posts, addedPost in
                     var posts = posts
                     posts.append(addedPost)
@@ -332,22 +350,27 @@ class ResponseFutureTests: XCTestCase {
         
         // When
         
-        future.updated({ task in
+        future.updated { task in
             progressExpectation.fulfill()
-        }).success({ posts in
+        }
+        .success { posts in
             successExpectation.fulfill()
             XCTAssertEqual(count, posts.count)
             
             for id in 1...count {
                 XCTAssertEqual(posts[id - 1].id, id)
             }
-        }).error({ error in
+        }
+        .error { error in
             XCTFail(error.localizedDescription)
-        }).completion({
+        }
+        .completion {
             completionExpectation.fulfill()
-        }).cancellation({
+        }
+        .cancellation {
             XCTFail("Should not be triggered")
-        }).send()
+        }
+        .send()
         
         // Then
         
