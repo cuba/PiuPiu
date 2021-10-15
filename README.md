@@ -58,6 +58,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Localize HTTPError
 * Add `makeHTTPResponse` and `decoded` functions to `ResponseFuture` with type `Response<Data?>`
 * Add `decoded` function to `ResponseFuture` with type `HTTPResponse<Data?>`
+* Add `safeDecoded` function to `ResponseFuture` with type `HTTPResponse<Data?>` 
 * Move `makeHTTPResponse` from `ResponseInterface` to `Response`
 
 ### 1.9.0
