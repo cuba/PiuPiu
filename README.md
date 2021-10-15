@@ -463,7 +463,7 @@ But these are just some examples. There is an infinite number of combinations yo
 
 You've already seen that a `ResponseFuture` allows you to chain your callbacks, transform the response object and pass it around. But besides the simple examples above, there is so much more you can do to make your code amazingly clean!
 
-### Callbacks
+### Callbacks and functions
 
 #### `success` callback
 
@@ -471,9 +471,11 @@ The `success` callback is triggered when the request is received and no errors a
 At the end of the callback sequences, this gives you exactly what your transforms "promised" to return.
 
 ```swift
-dispatcher.dataFuture(from: request).success { response in
-    // Triggered when a response is received and all callbacks succeed.
-}
+dispatcher.dataFuture(from: request)
+    .success { response in
+        // Triggered when a response is received and all callbacks succeed.
+    }
+    .send()
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
@@ -483,10 +485,12 @@ dispatcher.dataFuture(from: request).success { response in
 Think of this as a `catch` on a `do` block. From the moment you trigger `send()`, the error callback is triggered whenever something is thrown during the callback sequence. This includes errors thrown in any other callback.
 
 ```swift
-dispatcher.dataFuture(from: request).error { error in
-    // Any errors thrown in any other callback will be triggered here.
-    // Think of this as the `catch` on a `do` block.
-}
+dispatcher.dataFuture(from: request)
+    .error { error in
+        // Any errors thrown in any other callback will be triggered here.
+        // Think of this as the `catch` on a `do` block.
+    }
+    .send()
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
@@ -496,10 +500,12 @@ dispatcher.dataFuture(from: request).error { error in
 The completion callback is always triggered at the end after all `ResponseFuture` callbacks once every time `send()` or `start()` is triggered.
 
 ```swift
-dispatcher.dataFuture(from: request).completion {
-    // The completion callback guaranteed to be called once
-    // for every time the `send` or `start` method is triggered on the callback.
-}
+dispatcher.dataFuture(from: request)
+    .completion {
+        // The completion callback guaranteed to be called once
+        // for every time the `send` or `start` method is triggered on the callback.
+    }
+    .send()
 ```
 
 **NOTE**:  This method should **ONLY** be called **ONCE**.
@@ -508,138 +514,252 @@ dispatcher.dataFuture(from: request).completion {
 
 This callback transforms the `response` type to another type. This operation is done on a background queue so heavy operations won't lock your main queue. 
 
-You may want to specify the return type in the method to make it easier on your compiler.
+```swift
+dispatcher.dataFuture(from: request)
+    .then([Post].self, on: .main) { response in
+        // This callback transforms the future from one form to another
+        // (i.e. it changes the return object)
 
-You may also specify the thread to use.
+        // Any errors thrown will be handled by the `error` callback
+        return try response.decode([Post].self)
+    }
+    .send()
+```
+
+Note: Although not necessary, you should eagerly specify the return type in the method to make it easier on your compiler.
+Note: You may also specify the thread to use. Use `main` if you're going to call self that will update any UI. You can also use any background threads for heavier operations.
 
 **WARNING**: You should avoid calling self in this callback if you're not specifying the `main` thread.
-
-```swift
-dispatcher.dataFuture(from: request).then { response -> Post in
-    // The `then` callback transforms a successful response to another object
-    // You can return any object here and this will be reflected on the `success` callback.
-    return try response.decode(Post.self)
-}.success { post in
-    // Handles any success responses.
-    // In this case the object returned in the `then` method.
-}
-```
 
 #### `replace` callback
 
 This callback transforms the future to another type using another callback. This allows us to make asynchronous calls inside our callbacks.
 
 ```swift
-dispatcher.dataFuture(from: request).then { response -> Post in
-    return try response.decode(Post.self)
-}.replace(EnrichedPost.self) { [weak self] post in
-    // Perform some operation operation that itself requires a future
-    // such as something heavy like markdown parsing.
-    return self?.enrich(post: post)
-}.success { enrichedPost in
-    // The final response callback has the enriched post.
+dispatcher.dataFuture(from: request)
+    .replace(EnrichedPost.self) { [weak self] response in
+        // Perform some operation operation that itself requires a future
+        // such as something heavy like markdown parsing.
+        let post = try response.decode(Post.self)
+        
+        // In this case we're parsing markdown and enriching the post.
+        return self?.enrich(post: post)
+    }
+    .success { enrichedPost in
+        // The final response callback has the enriched post.
+    }
+    .send()
+```
+
+Here is what the `EnrichedPost` and `enrich` method looks like 
+
+```swift
+typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
+    
+private func enrich(post: Post) -> ResponseFuture<EnrichedPost> {
+    return ResponseFuture<EnrichedPost>() { future in
+        DispatchQueue.global(qos: .background).async {
+            do {
+                let enrichedPost = try Parser.parse(markdown: post.body)
+                future.succeed(with: (post, enrichedPost))
+            } catch {
+                future.fail(with: error)
+            }
+        }
+    }
 }
 ```
 
-**NOTE**: You can return nil to stop the request process. Useful when you want a weak self. 
+#### `decoded`
+
+Since decoding data is necessary, a convenience `decoded` method is added which will use the `Decodable` protocol. 
+
+You may even provide your own custom `JSONDecoder`. 
+
+This method is only available on futures that contain `Response<Data?>` and `HTTPResponse<Data?>`
+
+```swift
+dispatcher.dataFuture(from: request)
+    .makeHTTPResponse()
+    .decoded([Post].self)
+    .success { (posts: HTTPResponse<[Post]>) in
+        // Here is what happened in order:
+        // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+        // * `makeHTTPResponse()` method transfomed the future to `HTTPResponse<Data?>`
+        // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+    }
+    .send()
+```
+
+**NOTE**: You can return nil to stop the request process. Useful when you want a weak self.
+
+#### `safeResult()`
+
+The safe result is not useful in itself but very useful when you are joining requests. It will not cause all the requests to fail if this one future fails.
+
+It will return a `Result` object in the success block and the error block will not be triggered for everything before the `safeResult()` Error callback may still be triggered if an error occurs afterwards, for example if you add a `parallelJoin` after `safeResult` that parallel join may cause the final future to fail.
+
+The following is an example of using safeResult()
+
+```swift
+dispatcher.dataFuture(from: request)
+    .decoded([Post].self)
+    .safeResult()
+    .success { (posts: Result<Response<[Post]>, Error>) in
+        // Here is what happened in order:
+        // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+        // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+        // * `safeResult()` method transfomed the future to `Result<HTTPResponse<Data?>, Error>`
+        
+        // Unlike the parallel call example above, the error callback will never be triggered as we do safeResult right before the success
+    }
+    .send()
+``` 
 
 #### `parallelJoin` or `seriesJoin` callbacks
 
 This callback transforms the future to another type containing its original results plus the results of the returned callback.
 This callback comes with 2 flavours: parallel and series. You may also use `parallelJoin` and `seriesJoin` which do the same thing
 
-##### `seriesJoin` callback
-
-The series join waits for the first response and passes it to the callback so you can make requests that depend on that response but is obviously much slower than making parallel calls.
-
-```swift
-dispatcher.dataFuture() {
-    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-    return URLRequest(url: url, method: .get)
-}.then { response in
-    // Transform this response so that we can reference it in the join callback.
-    return try response.decode(Post.self)
-}.seriesJoin(User.self) { [weak self] post in
-    guard let self = self else {
-        // We used [weak self] because our dispatcher is referenced on self.
-        // Returning nil will cancel execution of this promise
-        // and trigger the `cancellation` and `completion` callbacks.
-        // Do this check to prevent memory leaks.
-        return nil
-    }
-
-    // Joins a future with another one returning both results.
-    // The post is passed so it can be used in the second request.
-    // In this case, we take the user ID of the post to construct our URL.
-    let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
-    let request = URLRequest(url: url, method: .get)
-
-    return self.dispatcher.dataFuture(from: request).then { response -> User in
-        return try response.decode(User.self)
-    }
-}.success { post, user in
-    // The final response callback includes both results.
-    expectation.fulfill()
-}.send()
-```
-
-**NOTE**: You can return nil to stop the request process. Useful when you want a weak self.
-
 ##### `parallelJoin` callback
 
 This callback does not wait for the original request to complete, and executes right away. It is useful when you don't need to wait for some other data to comeback before making a request.
 
 ```swift
-dispatcher.dataFuture() {
-    let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-    return URLRequest(url: url, method: .get)
-}.then { response in
-    return try response.decode([Post].self)
-}.parallelJoin([User].self) {
-    // Joins a future with another one returning both results.
-    // Since this callback is non-escaping, you don't have to use [weak self]
-    let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
-    let request = URLRequest(url: url, method: .get)
-
-    return self.dispatcher.dataFuture(from: request).then { response -> [User] in
-        return try response.decode([User].self)
+dispatcher.dataFuture(from: request)
+    .makeHTTPResponse()
+    .decoded([Post].self)
+    .parallelJoin(HTTPResponse<[User]>.self) {
+        // Joins a future with another one returning both results.
+        // Since this callback is non-escaping, you don't have to use [weak self]
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+        let request = URLRequest(url: url, method: .get)
+        
+        return self.dispatcher.dataFuture(from: request)
+            .makeHTTPResponse()
+            .decoded([User].self)
     }
-}.success { posts, users in
-    // The final response callback includes both results.
-    expectation.fulfill()
-}.send()
+    .success { (posts: HTTPResponse<[Post]>, users: HTTPResponse<[User]>) in
+        // The final response callback includes both results.
+        // Here is what happened in order:
+        // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+        // * `makeHTTPResponse()` method transfomed the future to `HTTPResponse<Data?>`
+        // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+        // * `parallelJoin` gave us a second result with its own changes which transformed the future to (HTTPResponse<[Post]>, HTTPResponse<[User]>)
+        
+        // If any futures fail, this callbakc will not be called. To prevent that, we need to use a `safeResult()`
+    }
+    .send()
 ```
 
+Notice that we don't need the user id to do the second call. This is why we can do it in parallel. 
+
+Notice that we decode `[Post]` before joining. this is not necessary but our convienent `decoded` method only exists on Futures of type `HTTPResponse<Data?>` or `Response<Data?>`. If we joined first, we would not have `Response<Data?>` but a touple of `(Response<Data?>, HTTPResponse<[User]>)` and then we would be able to use our convenient method. We would have to do something more custom.
+
+Order of operations really really matters. It helps to deal with thing one at a time. 
+
+Notice too that unlike the `seriesJoin` above we are also calling `makeHTTPResponse()` giving us a `HTTPResponse` rather than a `Response`. There is no need to do this in the example but in reality you can't really decode a json response unless your response is an HTTP response. Plus the http response gives us access to status codes, headers if we need them. 
+
+This is why we added a convenient `validateHTTPResponse()` method in an example above which does more than give us a `HTTPResponse` but also checks if we have a valid status code and throws the appropriate error.
+
 **NOTE**: This callback will execute right away (it is non-escaping). `[weak self]` is therefore not necessary.
+
+
+##### `seriesJoin` callback
+
+The series join waits for the first response and passes it to the callback so you can make requests that depend on that response but is obviously much slower than making parallel calls.
+
+```swift
+dispatcher.dataFuture(from: request)
+    .decoded(Post.self)
+    .seriesJoin(Response<User>.self) { [weak self] result in
+        guard let self = self else {
+            // We used [weak self] because our dispatcher is referenced on self.
+            // Returning nil will cancel execution of this promise
+            // and triger the `cancellation` and `completion` callbacks.
+            // Do this check to prevent memory leaks.
+            return nil
+        }
+        // Joins a future with another one returning both results.
+        // Since this callback is non-escaping, you don't have to use [weak self]
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(result.data.userId)")!
+        let request = URLRequest(url: url, method: .get)
+        
+        return self.dispatcher.dataFuture(from: request)
+            .decoded(User.self)
+    }
+    .success { (post: Response<Post>, user: Response<User>) in
+        // The final response callback includes both responses
+        // Here is what happened in order:
+        // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+        // * `decoded([Post].self)` method transformed the future to `Result<[Post]>`
+        // * `seriesJoin` gave us a second result as a touple which transformed the future to (Response<Post>, Response<User>)
+    }
+    .send()
+```
+
+**NOTE**: You can return nil to stop the request process. Useful when you want a `[weak self]`.
+
+Notice in this example how we need the id of the user from the post before we can get the user.
+This is why we decoded the post before joining.
+
+Failures for either the future before the join and the future in the join can cause the whole thing to fail.
+As a result, we use a safeResult() before the join and inside the join.
+
+#### `safeSeriesJoin` and `safeParallelJoin`
+
+Because this is so convenient (and often necessary) to not have all your requests fail when joining, `safeParallelJoin` and `safeSeriesJoin` callbacks are also available. More about this below. These callback do the same thing as parallelJoin and seriesJoin but attach a safeResult() to them.
+
+```swift
+dispatcher.dataFuture(from: request)
+    .decoded([Post].self)
+    .safeParallelJoin(Response<[User]>.self) {
+        // Joins a future with another one returning both results.
+        // Since this callback is non-escaping, you don't have to use [weak self]
+        let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+        let request = URLRequest(url: url, method: .get)
+        
+        return self.dispatcher.dataFuture(from: request)
+            .decoded([User].self)
+    }
+    .success { (posts: Response<[Post]>, users: Result<Response<[User]>, Error>) in
+        // The final response callback includes both results.
+        // Here is what happened in order:
+        // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+        // * `decoded([Post].self)` method transformed the future to `Response<[Post]>`
+        // * `safeParallelJoin` gave us a second result with its own changes which transformed the future to (Response<[Post]>, Result<Response<[User]>, Error>).
+        
+        // Notice we are no longer calling `safeResponse()` and yet we still get a `Result<Response<[User]>, Error>` for the joined future. This is because safeResponse() is done for us via the `safeParallelJoin`
+        
+        // Also notice that we don't call `safeResult()` before doing the join. This means that the first response is "unsafe" and will cause everythign to fail if it has an error. But this might be exactly what we want depending on our business rules.
+    }
+    .send()
+```
 
 #### `result`
 
 This is a callback that groups both the `success` and `failure` callbacks into one callback using `Result<Success, Failure>`. This is useful when you want to treat the success and failure under similar conditions.
 
-#### `send` or `start`
-
-This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server. 
+```swift
+dispatcher.dataFuture(from: request)
+    .result { result in
+        // This is a convenience callback that will trigger for both success and error.
+        // This is useful when you need to treat success and error in a similar fashion.
+        
+        // Doing this will not prevent this future and all other joined futures from failing.
+        // For that you should use `safeResult()` or `safeParallelJoin` and `safeSeriesJoin`
+    }
+    .send()
+```
 
 **NOTE**: If this method is not called, nothing will happen (no request will be made).
-**NOTE**: This method should **ONLY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then`, `seriesJoin`, `parallelJoin` etc...)
 
-### Conveniences
+#### `send` or `start`
 
-There are also some conveniences build into PiuPiu futures that will make your life easier
+This will start the `ResponseFuture`. In other words, the `action` callback will be triggered and the requests will be sent to the server.
 
-#### `safeResult()`
-
-The safe result is not useful in itself but very useful when you are joining requests. It will not cause all the requests to fail if this one future fails. 
-
-But the result will be different. Instead of getting your object you will get a `Result<Success, Error>` object back.
-
-Because this is so convenient (and often necessary), for parallel and series joins `safeParallelJoin` and `safeSeriesJoin` callbacks are also available.
-
-#### `decoded`
-
-Since decoding data is necessary, a convenience `decoded` method is added which will use the `Decodable` protocol. 
-
-You may even provide your own custom `JSONDecoder`
+**WARNING**: This method should **ONLY** be called **AFTER** declaring all of your callbacks (`success`, `failure`, `error`, `then`, `seriesJoin`, `parallelJoin` etc...). The compiler won't even let you do anything after calling `send()` because send doesn't return itself back.
+**WARNING**: This function MUST be called.
 
 ### Creating your own `ResponseFuture`
 

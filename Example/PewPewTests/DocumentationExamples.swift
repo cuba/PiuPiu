@@ -11,6 +11,18 @@ import XCTest
 @testable import PiuPiu
 
 class DocumentationExamples: XCTestCase {
+    typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
+    
+    class Parser {
+        static func parse(markdown: String) throws -> NSAttributedString? {
+            if #available(iOS 15, *) {
+                return try NSAttributedString(markdown: markdown)
+            } else {
+                return nil
+            }
+        }
+    }
+    
     private var strongFuture: ResponseFuture<Post>?
     private var post: Post?
     private var user: User?
@@ -378,76 +390,6 @@ class DocumentationExamples: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testSeriesJoin() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        dispatcher
-            .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-                return URLRequest(url: url, method: .get)
-            }
-            .then { response in
-                // Transform this response so that we can reference it in the join callback.
-                return try response.decode(Post.self)
-            }
-            .seriesJoin(User.self) { [weak self] post in
-                guard let self = self else {
-                    // We used [weak self] because our dispatcher is referenced on self.
-                    // Returning nil will cancel execution of this promise
-                    // and triger the `cancellation` and `completion` callbacks.
-                    // Do this check to prevent memory leaks.
-                    return nil
-                }
-                
-                // Joins a future with another one returning both results.
-                // The post is passed so it can be used in the second request.
-                // In this case, we take the user ID of the post to construct our URL.
-                let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
-                let request = URLRequest(url: url, method: .get)
-                
-                return self.dispatcher.dataFuture(from: request).then({ response -> User in
-                    return try response.decode(User.self)
-                })
-            }
-            .success { post, user in
-                // The final response callback includes both results.
-                expectation.fulfill()
-            }
-            .send()
-        
-        waitForExpectations(timeout: 4, handler: nil)
-    }
-    
-    func testParallelJoin() {
-        let expectation = self.expectation(description: "Success response triggered")
-        
-        dispatcher
-            .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-                return URLRequest(url: url, method: .get)
-            }
-            .then { response in
-                return try response.decode([Post].self)
-            }
-            .parallelJoin([User].self) {
-                // Joins a future with another one returning both results.
-                // Since this callback is non-escaping, you don't have to use [weak self]
-                let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
-                let request = URLRequest(url: url, method: .get)
-                
-                return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
-                    return try response.decode([User].self)
-                })
-            }
-            .success { posts, users in
-                // The final response callback includes both results.
-                expectation.fulfill()
-            }
-            .send()
-        
-        waitForExpectations(timeout: 4, handler: nil)
-    }
-    
     func testCustomFuture() {
         // Expectations
         let completionExpectation = self.expectation(description: "Completion triggered")
@@ -468,6 +410,231 @@ class DocumentationExamples: XCTestCase {
             .start()
         
         waitForExpectations(timeout: 4, handler: nil)
+    }
+    
+    func testSuccessCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .success { response in
+                // Triggered when a response is received and all callbacks succeed.
+            }
+            .send()
+    }
+    
+    func testErrorCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .error { error in
+                // Any errors thrown in any other callback will be triggered here.
+                // Think of this as the `catch` on a `do` block.
+            }
+            .send()
+    }
+    
+    func testCompletionCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .completion {
+                // The completion callback guaranteed to be called once
+                // for every time the `send` or `start` method is triggered on the callback.
+            }
+            .send()
+    }
+    
+    func testThenCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .then([Post].self, on: .main) { response in
+                // This callback transforms the future from one form to another
+                // (i.e. it changes the return object)
+
+                // Any errors thrown will be handled by the `error` callback
+                return try response.decode([Post].self)
+            }
+            .send()
+    }
+    
+    func testReplaceCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .replace(EnrichedPost.self) { [weak self] response in
+                // Perform some operation operation that itself requires a future
+                // such as something heavy like markdown parsing.
+                let post = try response.decode(Post.self)
+                
+                // In this case we're parsing markdown and enriching the post.
+                return self?.enrich(post: post)
+            }
+            .success { enrichedPost in
+                // The final response callback has the enriched post.
+            }
+            .send()
+    }
+    
+    func testResultCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .result { result in
+                // This will put both success and error object in a Result<Success, Error> callback
+                // This is useful when you need to treat success and error in a similar fashion.
+                
+                // Doing this will not prevent this future and all other joined futures from failing.
+                // For that you should use `safeResult()` or `safeParallelJoin` and `safeSeriesJoin`
+            }
+            .send()
+    }
+    
+    func testSeriesJoinCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .decoded(Post.self)
+            .seriesJoin(Response<User>.self) { [weak self] result in
+                guard let self = self else {
+                    // We used [weak self] because our dispatcher is referenced on self.
+                    // Returning nil will cancel execution of this promise
+                    // and triger the `cancellation` and `completion` callbacks.
+                    // Do this check to prevent memory leaks.
+                    return nil
+                }
+                // Joins a future with another one returning both results.
+                // Since this callback is non-escaping, you don't have to use [weak self]
+                let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(result.data.userId)")!
+                let request = URLRequest(url: url, method: .get)
+                
+                return self.dispatcher.dataFuture(from: request)
+                    .decoded(User.self)
+            }
+            .success { (post: Response<Post>, user: Response<User>) in
+                // The final response callback includes both responses
+                // Here is what happened in order:
+                // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+                // * `decoded([Post].self)` method transformed the future to `Result<[Post]>`
+                // * `seriesJoin` gave us a second result as a touple which transformed the future to (Response<Post>, Response<User>)
+            }
+            .send()
+    }
+    
+    func testParallelJoinCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .makeHTTPResponse()
+            .decoded([Post].self)
+            .safeResult()
+            .parallelJoin(Result<HTTPResponse<[User]>, Error>.self) {
+                // Joins a future with another one returning both results.
+                // Since this callback is non-escaping, you don't have to use [weak self]
+                let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+                let request = URLRequest(url: url, method: .get)
+                
+                return self.dispatcher.dataFuture(from: request)
+                    .makeHTTPResponse()
+                    .decoded([User].self)
+                    .safeResult()
+            }
+            .success { (posts: Result<HTTPResponse<[Post]>, Error>, users: Result<HTTPResponse<[User]>, Error>) in
+                // The final response callback includes both results.
+                // Here is what happened in order:
+                // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+                // * `makeHTTPResponse()` method transfomed the future to `HTTPResponse<Data?>`
+                // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+                // * `safeResult` method transformed the future to `Result<HTTPResponse<[Post]>`
+                // * `parallelJoin` gave us a second result with its own changes which transformed the future to (Result<HTTPResponse<[Post]>, Error>, Result<HTTPResponse<[User]>, Error>)
+                
+                // If any futures fail, this callbakc will not be called. To prevent that, we need to use a `safeResult()`
+            }
+            .send()
+    }
+    
+    func testSafeParallelJoinCallbackExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .decoded([Post].self)
+            .safeParallelJoin(Response<[User]>.self) {
+                // Joins a future with another one returning both results.
+                // Since this callback is non-escaping, you don't have to use [weak self]
+                let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+                let request = URLRequest(url: url, method: .get)
+                
+                return self.dispatcher.dataFuture(from: request)
+                    .decoded([User].self)
+            }
+            .success { (posts: Response<[Post]>, users: Result<Response<[User]>, Error>) in
+                // The final response callback includes both results.
+                // Here is what happened in order:
+                // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+                // * `decoded([Post].self)` method transformed the future to `Response<[Post]>`
+                // * `safeParallelJoin` gave us a second result with its own changes which transformed the future to (Response<[Post]>, Result<Response<[User]>, Error>).
+                
+                // Notice we are no longer calling `safeResponse()` and yet we still get a `Result<Response<[User]>, Error>` for the joined future. This is because safeResponse() is done for us via the `safeParallelJoin`
+                
+                // Also notice that we don't call `safeResult()` before doing the join. This means that the first response is "unsafe" and will cause everythign to fail if it has an error. But this might be exactly what we want depending on our business rules.
+            }
+            .send()
+    }
+    
+    func testSafeResultMethodExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .decoded([Post].self)
+            .safeResult()
+            .success { (posts: Result<Response<[Post]>, Error>) in
+                // Here is what happened in order:
+                // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+                // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+                // * `safeResult()` method transfomed the future to `Result<HTTPResponse<Data?>, Error>`
+                
+                // Unlike the parallel call example above, the error callback will never be triggered as we do safeResult right before the success
+            }
+            .send()
+    }
+    
+    func testDecodedMethodExample() {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        dispatcher.dataFuture(from: request)
+            .makeHTTPResponse()
+            .decoded([Post].self)
+            .success { (posts: HTTPResponse<[Post]>) in
+                // Here is what happened in order:
+                // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
+                // * `makeHTTPResponse()` method transfomed the future to `HTTPResponse<Data?>`
+                // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
+            }
+            .send()
+    }
+    
+    private func enrich(post: Post) -> ResponseFuture<EnrichedPost> {
+        return ResponseFuture<EnrichedPost>() { future in
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    let enrichedPost = try Parser.parse(markdown: post.body)
+                    future.succeed(with: (post, enrichedPost))
+                } catch {
+                    future.fail(with: error)
+                }
+            }
+        }
     }
     
     private func resize(image: UIImage) -> ResponseFuture<UIImage> {
@@ -528,15 +695,6 @@ extension ResponseFuture where Success == Response<Data?> {
             
             // Everything is good, so we just return our HTTP response.
             return httpResponse
-        }
-    }
-}
-
-extension ResponseFuture where Success == HTTPResponse<Data?> {
-    /// This method returns an HTTP response containing a decoded object
-    func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
-        return then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in
-            return try httpResponse.decoded(type, using: decoder)
         }
     }
 }
