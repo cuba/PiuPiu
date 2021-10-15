@@ -13,10 +13,11 @@ import XCTest
 class DocumentationExamples: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
     
+    /// This is not a real decoder. It pretends to decode.
     class Parser {
         static func parse(markdown: String) throws -> NSAttributedString? {
             if #available(iOS 15, *) {
-                return try NSAttributedString(markdown: markdown)
+                return NSAttributedString(string: markdown)
             } else {
                 return nil
             }
