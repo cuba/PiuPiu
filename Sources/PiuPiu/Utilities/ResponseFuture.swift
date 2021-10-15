@@ -576,17 +576,59 @@ public class ResponseFuture<T> {
     public func send() {
         start()
     }
-}
+} 
 
 public extension ResponseFuture where T: Sequence {
-    /// Conveniently call a  future in parallel and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
-    func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]> {
-        return parallelJoin(T.Element.self, callback: callback)
-            .map([T.Element].self) { (sequence, element) in
-                var result = Array(sequence)
-                result.append(element)
-                return result
+    convenience init(childFuturesCallback: () -> [ResponseFuture<T.Element>]) {
+        self.init(childFutures: childFuturesCallback())
+    }
+    
+    convenience init(arrayLiteral futures: ResponseFuture<T.Element>...) {
+        self.init(childFutures: futures)
+    }
+    
+    convenience init(childFutures: [ResponseFuture<T.Element>]) {
+        self.init { future in
+            var results = [Result<T.Element, Error>?](repeating: nil, count: childFutures.count)
+            let dispatchGroup = DispatchGroup()
+            
+            for (futureIndex, childFuture) in childFutures.enumerated() {
+                dispatchGroup.enter()
+                
+                childFuture
+                    .result { result in
+                        results[futureIndex] = result
+                    }
+                    .updated { task in
+                        future.update(with: task)
+                    }
+                    .completion {
+                        dispatchGroup.leave()
+                    }
+                    .send()
             }
+            
+            dispatchGroup.notify(queue: .main) {
+                var elements: [T.Element] = []
+                
+                for result in results {
+                    guard let result = result else {
+                        // This shouldn't happen
+                        continue
+                    }
+                    
+                    switch result {
+                    case .success(let element):
+                        elements.append(element)
+                    case .failure(let error):
+                        future.fail(with: error)
+                        return
+                    }
+                }
+                
+                future.succeed(with: elements as! T)
+            }
+        }
     }
     
     /// Conveniently call a  future in series and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
@@ -596,35 +638,6 @@ public extension ResponseFuture where T: Sequence {
             .map([T.Element].self) { (sequence, element) in
                 var result = Array(sequence)
                 result.append(element)
-                return result
-            }
-    }
-    
-    /// Conveniently call a  future in parallel and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
-    func addingParallelNullableResult(from callback: () -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
-        return parallelNullableJoin(T.Element.self, callback: callback)
-            .map([T.Element].self) { (sequence, element) in
-                var result = Array(sequence)
-                
-                if let element = element {
-                    result.append(element)
-                }
-                
-                return result
-            }
-    }
-    
-    /// Conveniently call a  future in series and append its results into this future where the result of the future is a sequence and the result of the given future is an element of that sequence.
-    /// Returning `nil` on the callback does **not** cancel the requests
-    func addingSeriesNullableResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]> {
-        return seriesNullableJoin(T.Element.self, callback: callback)
-            .map([T.Element].self) { (sequence, element) in
-                var result = Array(sequence)
-                
-                if let element = element {
-                    result.append(element)
-                }
-                
                 return result
             }
     }

@@ -47,6 +47,10 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
   * `public func nonFailing() -> ResponseFuture<SafeResponse<T>>`
   * `public func thenError<U>(_ callback: @escaping (SafeResponse<T>) throws -> U) -> ResponseFuture<U>`
   * `public func join<U>(_ callback: @escaping (T) throws -> ResponseFuture<U>?) -> ResponseFuture<(T, U)>`
+* Removed methods for joining calls of the same type on a sequence (array) of futures
+  * `func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]>`
+  * `func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]>`
+* Added an initalizer for joining many parallel calls on a sequence
 
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.
