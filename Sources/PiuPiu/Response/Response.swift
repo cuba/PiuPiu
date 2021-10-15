@@ -45,6 +45,13 @@ public struct Response<Body>: ResponseInterface {
 }
 
 extension Response where Body == Data? {
+    /// Attempts to cast the `URLRequest` to a `HTTPURLResponse` and returns a wrapping `HTTPResponse` object if succesful.
+    /// - Returns: The `HTTPResponse` object which wraps the `HTTPURLResponse`
+    /// - throws: `ResponseError.notHTTPResponse`
+    public func makeHTTPResponse() throws -> HTTPResponse<Body> {
+        return try HTTPResponse(response: self, data: data)
+    }
+    
     /// Attempt to decode the response to a response containing a  `Decodable` object
     ///
     /// - Parameters:

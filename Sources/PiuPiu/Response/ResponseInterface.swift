@@ -24,13 +24,6 @@ public protocol ResponseInterface {
 }
 
 public extension ResponseInterface where Body == Data? {
-    /// Attempts to cast the `URLRequest` to a `HTTPURLResponse` and returns a wrapping `HTTPResponse` object if succesful.
-    /// - Returns: The `HTTPResponse` object which wraps the `HTTPURLResponse`
-    /// - throws: `ResponseError.notHTTPResponse`
-    func makeHTTPResponse() throws -> HTTPResponse<Body> {
-        return try HTTPResponse(response: self, data: data)
-    }
-    
     /// Attempt to unwrap the response data.
     ///
     /// - Returns: The unwrapped object
