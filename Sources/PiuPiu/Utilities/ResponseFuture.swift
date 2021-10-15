@@ -643,3 +643,18 @@ public extension ResponseFuture where Success: Sequence {
             }
     }
 }
+
+public extension ResponseFuture where Success == Response<Data?> {
+    func makeHTTPResponse() -> ResponseFuture<HTTPResponse<Data?>> {
+        return then(HTTPResponse<Data?>.self, on: DispatchQueue.global(qos: .background)) { response -> HTTPResponse<Data?> in
+            return try response.makeHTTPResponse()
+        }
+    }
+    
+    /// This method returns an HTTP response containing a decoded object
+    func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<Response<D>> {
+        return then(Response<D>.self, on: DispatchQueue.global(qos: .background)) { response -> Response<D> in
+            return try response.decoded(type, using: decoder)
+        }
+    }
+}
