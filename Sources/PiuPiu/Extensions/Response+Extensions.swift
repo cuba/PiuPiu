@@ -8,7 +8,7 @@
 
 import Foundation
 
-public extension Response where T == Data? {
+public extension Response where Body == Data? {
     /// Create a mock response object.
     ///
     /// - Parameters:

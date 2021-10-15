@@ -52,7 +52,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
   * `func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]>`
 * Added an initalizer for joining many parallel calls on a sequence
 * Rename `ResponseFuture` embedded type from `T` to `Success` (i.e. `ResponseFuture<Success>`)
-  * If you have any extensions on ResponseFuture you need to change `T` to `Success` (e.g. `extension ResponseFuture where Success == Result<Data?>`)
+* Rename `Response` embedded type from `T` to `Body` (i.e. `Response<Body>`)
 
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.

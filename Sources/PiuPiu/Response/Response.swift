@@ -9,9 +9,9 @@
 import Foundation
 
 /// A successful response object. This is retuned when there is any 2xx response.
-public struct Response<T>: ResponseInterface {
+public struct Response<Body>: ResponseInterface {
     /// The data object that is attached to this response as specified by the user
-    public let data: T
+    public let data: Body
     
     /// The `URLRequest` that is returned on a successful response.
     /// **Note**: successful responses includes all responses incuding ones with `5xx` status codes
@@ -26,7 +26,7 @@ public struct Response<T>: ResponseInterface {
     ///   - data: The data object to return.
     ///   - urlRequest: The `URLRequest` that is returned.
     ///   - urlResponse: The original `URLResponse` that was created.
-    public init(data: T, urlRequest: URLRequest, urlResponse: URLResponse) {
+    public init(data: Body, urlRequest: URLRequest, urlResponse: URLResponse) {
         self.data = data
         self.urlResponse = urlResponse
         self.urlRequest = urlRequest
@@ -37,14 +37,14 @@ public struct Response<T>: ResponseInterface {
     /// - Parameters:
     ///   - response: the original response
     ///   - data: The data object to return
-    public init<R: ResponseInterface>(response: R, data: T) {
+    public init<R: ResponseInterface>(response: R, data: Body) {
         self.data = data
         self.urlResponse = response.urlResponse
         self.urlRequest = response.urlRequest
     }
 }
 
-extension Response where T == Data? {
+extension Response where Body == Data? {
     /// Attempt to decode the response to a response containing a  `Decodable` object
     ///
     /// - Parameters:
