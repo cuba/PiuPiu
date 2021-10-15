@@ -71,27 +71,33 @@ class DownloadViewController: BaseViewController {
         guard let urlString = fileUrlTextField.text, let url = URL(string: urlString) else { return }
         let destination = URL.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("tmp")
         
-        dispatcher.downloadFuture(destination: destination) {
-            return URLRequest(url: url, method: .get)
-        }.updated { [weak self] task in
-            guard task.state == .completed || task.state == .running else { return }
-            self?.pendingTasks.insert(task)
-            
-            if let percent = self?.pendingTasks.averagePercentTransferred {
-                print("PROGRESS: \(percent)")
-                self?.progressView.progress = percent
+        dispatcher
+            .downloadFuture(destination: destination) {
+                return URLRequest(url: url, method: .get)
             }
-        }.success { [weak self] response in
-            let url = response.data
-            let data = try Data(contentsOf: url)
-            let image = UIImage(data: data)
-            self?.imageView.image = image
-        }.error { [weak self] error in
-            self?.showAlert(title: "Whoops!", message: error.localizedDescription)
-        }.completion { [weak self] in
-            self?.progressView.progress = 1
-            self?.pendingTasks = []
-        }.send()
+            .updated { [weak self] task in
+                guard task.state == .completed || task.state == .running else { return }
+                self?.pendingTasks.insert(task)
+                
+                if let percent = self?.pendingTasks.averagePercentTransferred {
+                    print("PROGRESS: \(percent)")
+                    self?.progressView.progress = percent
+                }
+            }
+            .success { [weak self] response in
+                let url = response.data
+                let data = try Data(contentsOf: url)
+                let image = UIImage(data: data)
+                self?.imageView.image = image
+            }
+            .error { [weak self] error in
+                self?.showAlert(title: "Whoops!", message: error.localizedDescription)
+            }
+            .completion { [weak self] in
+                self?.progressView.progress = 1
+                self?.pendingTasks = []
+            }
+            .send()
     }
     
     private func setupLayout() {

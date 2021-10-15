@@ -42,7 +42,7 @@ public struct BasicRequest: Request {
         }
     }
     
-    /// Attempt to construct a URL from the request.
+    /// Attempt to construct a `URL` from the request.
     ///
     /// - Parameter request: The request that will be sent.
     /// - Returns: A url to which the request will be sent.

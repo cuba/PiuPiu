@@ -16,7 +16,7 @@ public class DateTransform: Transform {
         self.formatter = formatter
     }
     
-    /// Decodes a  `String` represented date to a `Date` object using the specified `DateFormatter`.  If the value cannot be decoded, `DateTransform.TransformError` will be thrown.
+    /// Decodes a  `String` represented date to a `Date` object using the specified `DateFormatter`. If the value cannot be decoded, `DateTransform.TransformError` will be thrown.
     public func from(json: String, codingPath: [CodingKey]) throws -> Date {
         guard let date = formatter.date(from: json) else {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not convert `\(json)` to `Date` using formatter `\(String(describing: formatter))`"))

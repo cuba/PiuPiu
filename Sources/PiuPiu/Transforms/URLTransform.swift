@@ -13,7 +13,7 @@ public class URLTransform: Transform {
     /// Initializes this transform.
     public init() {}
     
-    /// Decodes a `String` into a `URL`.  If the value cannot be decoded, a `URLTransform.TransformError` will be thrown.
+    /// Decodes a `String` into a `URL`. If the value cannot be decoded, a `URLTransform.TransformError` will be thrown.
     public func from(json: String, codingPath: [CodingKey]) throws -> URL {
         guard let url = URL(string: json) else {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath, debugDescription: "Could not convert `\(json)` to `URL`"))

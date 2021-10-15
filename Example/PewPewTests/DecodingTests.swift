@@ -31,16 +31,20 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request).response({ response in
-            let data = try response.unwrapData()
-            
-            // do something with data.
-            print(data)
-        }).error({ error in
-            // Triggered when unwrapData fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
+        dispatcher.dataFuture(from: request)
+            .success { response in
+                let data = try response.unwrapData()
+                
+                // do something with data.
+                print(data)
+            }
+            .error { error in
+                // Triggered when unwrapData fails.
+            }
+            .completion {
+                expectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -53,16 +57,20 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request).response({ response in
-            let string = try response.decodeString(encoding: .utf8)
-            
-            // do something with string.
-            print(string)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
+        dispatcher.dataFuture(from: request)
+            .success { response in
+                let string = try response.decodeString(encoding: .utf8)
+                
+                // do something with string.
+                print(string)
+            }
+            .error { error in
+                // Triggered when decoding fails.
+            }
+            .completion {
+                expectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -75,16 +83,20 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request).response({ response in
-            let posts = try response.decode(Post.self)
-            
-            // do something with string.
-            print(posts)
-        }).error({ error in
-            // Triggered when decoding fails.
-        }).completion({
-            expectation.fulfill()
-        }).send()
+        dispatcher.dataFuture(from: request)
+            .success { response in
+                let posts = try response.decode(Post.self)
+                
+                // do something with string.
+                print(posts)
+            }
+            .error { error in
+                // Triggered when decoding fails.
+            }
+            .completion {
+                expectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -99,17 +111,22 @@ class DecodingTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        dispatcher.dataFuture(from: request).then({ response in
-            // When
-            return try response.decode(Post.self)
-        }).success({ response in
-            // Then
-            XCTFail("Should not trigger the success")
-        }).error({ error in
-            errorExpectation.fulfill()
-        }).completion({
-            completionExpectation.fulfill()
-        }).send()
+        dispatcher.dataFuture(from: request)
+            .then { response in
+                // When
+                return try response.decode(Post.self)
+            }
+            .success { response in
+                // Then
+                XCTFail("Should not trigger the success")
+            }
+            .error { error in
+                errorExpectation.fulfill()
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 5, handler: nil)
     }

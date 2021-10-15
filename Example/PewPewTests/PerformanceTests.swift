@@ -34,9 +34,11 @@ class PerformanceTests: XCTestCase {
                 }
             }
             
-            future.response({ posts in
-                expectation.fulfill()
-            }).send()
+            future
+                .success { posts in
+                    expectation.fulfill()
+                }
+                .send()
             
             waitForExpectations(timeout: 10, handler: nil)
         }
@@ -52,7 +54,7 @@ class PerformanceTests: XCTestCase {
                         makePostFuture(id: id)
                     }
                 }
-                .response { posts in
+                .success { posts in
                     expectation.fulfill()
                 }
                 .send()

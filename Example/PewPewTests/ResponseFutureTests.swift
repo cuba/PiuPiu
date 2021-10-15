@@ -64,7 +64,7 @@ class ResponseFutureTests: XCTestCase {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
                 return URLRequest(url: url, method: .get)
             }
-            .then { response -> Post in
+            .then(Post.self) { response -> Post in
                 // Attempt to get a http response
                 let httpResponse = try response.makeHTTPResponse()
                 
@@ -89,19 +89,22 @@ class ResponseFutureTests: XCTestCase {
                 XCTAssertFalse(calledCompletion)
                 return self?.fetchUser(forId: enrichedPost.post.userId)
             }
-            .response { enrichedPost, user in
+            .success { enrichedPost, user in
                 // The final response callback includes all the transformations and
                 // Joins we had previously performed.
                 XCTAssertFalse(calledCompletion)
                 successExpectation.fulfill()
             }
             .error { error in
+                // Handles any errors throw in any callbacks
                 XCTFail("Should not trigger the failure")
             }
             .updated { task in
+                // Provides tasks so you can perform things like progress updates
                 progressExpectation.fulfill()
             }
             .completion {
+                // At the end of all the callbacks, this is triggered once. Error or no error.
                 calledCompletion = true
                 completionExpectation.fulfill()
             }
@@ -222,7 +225,7 @@ class ResponseFutureTests: XCTestCase {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
                 return URLRequest(url: url, method: .get)
             }
-            .response { posts in
+            .success { posts in
                 // Then
                 successExpectation.fulfill()
             }

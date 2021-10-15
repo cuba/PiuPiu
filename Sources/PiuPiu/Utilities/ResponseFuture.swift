@@ -174,6 +174,7 @@ public class ResponseFuture<Success> {
     ///
     /// - Parameter handler: The success handler that will be trigged after the `succeed()` method is called.
     /// - Returns: This future for chaining.
+    @available(*, deprecated, renamed: "success")
     public func response(_ handler: @escaping SuccessHandler) -> ResponseFuture<Success> {
         return success(handler)
     }

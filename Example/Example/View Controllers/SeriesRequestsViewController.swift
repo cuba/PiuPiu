@@ -56,29 +56,33 @@ class SeriesRequestsViewController: UIViewController {
             }
         }
         
-        future.updated { [weak self] task in
-            guard let self = self else { return }
-            guard task.state == .completed || task.state == .running else {
-                self.pendingTasks.remove(task)
-                return
-            }
-            
-            self.pendingTasks.insert(task)
-            let progress = Float(self.pendingTasks.completed.count) / Float(self.sampleCount)
-            print("PROGRESS: \(progress)")
-            self.progressView.progress = progress
-        }.response { [weak self] values in
-            self?.textView.text = values.map({ result in
-                switch result {
-                case .success(let value):
-                    return value
-                case .failure(let error):
-                    return error.localizedDescription
+        future
+            .updated { [weak self] task in
+                guard let self = self else { return }
+                guard task.state == .completed || task.state == .running else {
+                    self.pendingTasks.remove(task)
+                    return
                 }
-            }).joined(separator: "\n\n")
-        }.error { [weak self] error in
-            self?.textView.text = error.localizedDescription
-        }.send()
+                
+                self.pendingTasks.insert(task)
+                let progress = Float(self.pendingTasks.completed.count) / Float(self.sampleCount)
+                print("PROGRESS: \(progress)")
+                self.progressView.progress = progress
+            }
+            .success { [weak self] values in
+                self?.textView.text = values.map({ result in
+                    switch result {
+                    case .success(let value):
+                        return value
+                    case .failure(let error):
+                        return error.localizedDescription
+                    }
+                }).joined(separator: "\n\n")
+            }
+            .error { [weak self] error in
+                self?.textView.text = error.localizedDescription
+            }
+            .send()
     }
     
     private func fetchPost(forId id: Int) -> ResponseFuture<Result<String, Error>> {

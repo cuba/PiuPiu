@@ -53,7 +53,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
                 XCTAssertFalse(calledCompletion)
                 return try response.decode(Post.self)
             }
-            .response { post in
+            .success { post in
                 // The final response callback includes all the transformations and
                 // Joins we had previously performed.
                 XCTAssertFalse(calledCompletion)

@@ -174,7 +174,7 @@ class UploadViewController: BaseViewController {
                     self?.progressView.progress = percent
                 }
             }
-            .response { [weak self] response in
+            .success { [weak self] response in
                 let strings = try response.map({ try $0.decodeString(encoding: .utf8) })
                 self?.textView.text = strings.joined(separator: "\n")
             }
@@ -202,7 +202,7 @@ class UploadViewController: BaseViewController {
                     self?.progressView.progress = percent
                 }
             }
-            .response { [weak self] response in
+            .success { [weak self] response in
                 let string = try response.decodeString(encoding: .utf8)
                 self?.textView.text = string
             }

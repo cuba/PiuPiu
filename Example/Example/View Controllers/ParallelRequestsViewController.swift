@@ -65,7 +65,7 @@ class ParallelRequestsViewController: UIViewController {
                 self.progressView.progress = progress
                 
             }
-            .response { [weak self] values in
+            .success { [weak self] values in
                 self?.textView.text = values.joined(separator: "\n\n")
             }
             .error { [weak self] error in

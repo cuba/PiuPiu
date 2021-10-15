@@ -38,7 +38,7 @@ class DocumentationExamples: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         dispatcher.dataFuture(from: request)
-            .response { response in
+            .success { response in
                 // Here we handle our response as long as nothing was thrown along the way
                 // This method is always invoked on the main queue.
                 
@@ -85,7 +85,7 @@ class DocumentationExamples: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         dispatcher.dataFuture(from: request)
-            .then() { response -> HTTPResponse<Data?> in
+            .then(HTTPResponse<Data?>.self) { response -> HTTPResponse<Data?> in
                 // In this callback we handle common HTTP errors
                 
                 // Here we check if we have an HTTP response.
@@ -104,7 +104,7 @@ class DocumentationExamples: XCTestCase {
                 // Everything is good, so we just return our HTTP response.
                 return httpResponse
             }
-            .then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<Post> in
+            .then(HTTPResponse<Post>.self, on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<Post> in
                 // Here we decode the http response into an object using `Decodable`
                 // We use the `background` thread because decoding can be somewhat intensive.
                 
@@ -115,6 +115,9 @@ class DocumentationExamples: XCTestCase {
                 // We use `decodeResponse` instead of just `decode`. This will convert
                 // HTTPResponse<Data?> into HTTPResponse<Post>
                 return try httpResponse.decoded(Post.self)
+            }
+            .updated { task in
+                // Provides tasks so you can perform things like progress updates
             }
             .success { response in
                 // Here we handle our success as long as nothing was thrown along the way
@@ -234,7 +237,7 @@ class DocumentationExamples: XCTestCase {
         let request = URLRequest(url: url, method: .get)
         
         return dispatcher.dataFuture(from: request)
-            .validHTTPResponse()
+            .validHTTPResponse
             .decoded(User.self)
     }
     
@@ -263,76 +266,83 @@ class DocumentationExamples: XCTestCase {
             }
     }
     
-    func testWrapEncodingInAFuture() {
-        // Expectations
-        let expectation = self.expectation(description: "Success response triggered")
-        
+    func testWrapEncodingInAFutureExample() {
         // Given
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // When
-        dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            var request = URLRequest(url: url, method: .post)
-            try request.setJSONBody(post)
-            return request
-        }).error({ error in
-            // Any error thrown while creating the request will trigger this callback.
-        }).completion({
-            expectation.fulfill()
-        }).send()
-        
-        waitForExpectations(timeout: 5, handler: nil)
+        dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                var request = URLRequest(url: url, method: .post)
+                try request.setJSONBody(post)
+                return request
+            }
+            .error { error in
+                // Any error thrown while creating the request will trigger this callback.
+            }
+            .send()
     }
     
     func testFullResponseFutureExample() {
-        dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
-            // Attempt to get a http response
-            let httpResponse = try response.makeHTTPResponse()
-            
-            // Check if we have any http error
-            if let error = httpResponse.httpError {
-                // Throwing an error in any callback will trigger the `error` callback.
-                // This allows us to pool all failures in that callback if we want to
-                throw error
+        dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                return URLRequest(url: url, method: .get)
             }
-            
-            // If we have no error, we just return the decoded object
-            // If anything is thrown, it will be caught in the `error` callback.
-            return try response.decode(Post.self)
-        }).response({ post in
-            // Handles any success responses.
-            // In this case the object returned in the `then` method.
-        }).error({ error in
-            // Handles any errors during the request process,
-            // including all request creation errors and anything
-            // thrown in the `then` or `success` callbacks.
-        }).completion({
-            // The completion callback guaranteed to be called once
-            // for every time the `start` method is triggered on the callback.
-        }).send()
+            .then { response -> Post in
+                // Attempt to get a http response
+                let httpResponse = try response.makeHTTPResponse()
+                
+                // Check if we have any http error
+                if let error = httpResponse.httpError {
+                    // Throwing an error in any callback will trigger the `error` callback.
+                    // This allows us to pool all failures in that callback if we want to
+                    throw error
+                }
+                
+                // If we have no error, we just return the decoded object
+                // If anything is thrown, it will be caught in the `error` callback.
+                return try response.decode(Post.self)
+            }
+            .success { post in
+                // Handles any success responses.
+                // In this case the object returned in the `then` method.
+            }
+            .error { error in
+                // Handles any errors during the request process,
+                // including all request creation errors and anything
+                // thrown in the `then` or `success` callbacks.
+            }
+            .completion {
+                // The completion callback guaranteed to be called once
+                // for every time the `start` method is triggered on the callback.
+            }
+            .send()
     }
     
     func testWeakCallbacks() {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
-            return try response.decode(Post.self)
-        }).response({ [weak self] post in
-            // [weak self] needed as `self` is called
-            self?.show(post)
-        }).completion({
-            // [weak self] needed as `self` is called
-            // You can use an optional self directly.
-            expectation.fulfill()
-        }).send()
+        dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                return URLRequest(url: url, method: .get)
+            }
+            .then { response -> Post in
+                return try response.decode(Post.self)
+            }
+            .success { [weak self] post in
+                // [weak self] needed as `self` is called
+                self?.show(post)
+            }
+            .completion {
+                // [weak self] needed as `self` is called
+                // You can use an optional self directly.
+                expectation.fulfill()
+            }
+            .send()
         
         
         waitForExpectations(timeout: 5, handler: nil)
@@ -342,20 +352,24 @@ class DocumentationExamples: XCTestCase {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        self.strongFuture = dispatcher.dataFuture(from: {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }).then({ response -> Post in
-            // [weak self] not needed as `self` is not called
-            return try response.decode(Post.self)
-        }).response({ [weak self] post in
-            // [weak self] needed as `self` is called
-            self?.show(post)
-        }).completion({ [weak self] in
-            // [weak self] needed as `self` is called
-            self?.strongFuture = nil
-            expectation.fulfill()
-        })
+        self.strongFuture = dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                return URLRequest(url: url, method: .get)
+            }
+            .then { response -> Post in
+                // [weak self] not needed as `self` is not called
+                return try response.decode(Post.self)
+            }
+            .success { [weak self] post in
+                // [weak self] needed as `self` is called
+                self?.show(post)
+            }
+            .completion { [weak self] in
+                // [weak self] needed as `self` is called
+                self?.strongFuture = nil
+                expectation.fulfill()
+            }
         
         // Perform other logic, add delay, do whatever you would do that forced you
         // to store a reference to this future in the first place
@@ -367,34 +381,39 @@ class DocumentationExamples: XCTestCase {
     func testSeriesJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         
-        dispatcher.dataFuture() {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-            return URLRequest(url: url, method: .get)
-        }.then { response in
-            // Transform this response so that we can reference it in the join callback.
-            return try response.decode(Post.self)
-        }.seriesJoin(User.self) { [weak self] post in
-            guard let self = self else {
-                // We used [weak self] because our dispatcher is referenced on self.
-                // Returning nil will cancel execution of this promise
-                // and triger the `cancellation` and `completion` callbacks.
-                // Do this check to prevent memory leaks.
-                return nil
+        dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                return URLRequest(url: url, method: .get)
             }
-            
-            // Joins a future with another one returning both results.
-            // The post is passed so it can be used in the second request.
-            // In this case, we take the user ID of the post to construct our URL.
-            let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
-            let request = URLRequest(url: url, method: .get)
-            
-            return self.dispatcher.dataFuture(from: request).then({ response -> User in
-                return try response.decode(User.self)
-            })
-        }.success { post, user in
-            // The final response callback includes both results.
-            expectation.fulfill()
-        }.send()
+            .then { response in
+                // Transform this response so that we can reference it in the join callback.
+                return try response.decode(Post.self)
+            }
+            .seriesJoin(User.self) { [weak self] post in
+                guard let self = self else {
+                    // We used [weak self] because our dispatcher is referenced on self.
+                    // Returning nil will cancel execution of this promise
+                    // and triger the `cancellation` and `completion` callbacks.
+                    // Do this check to prevent memory leaks.
+                    return nil
+                }
+                
+                // Joins a future with another one returning both results.
+                // The post is passed so it can be used in the second request.
+                // In this case, we take the user ID of the post to construct our URL.
+                let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(post.userId)")!
+                let request = URLRequest(url: url, method: .get)
+                
+                return self.dispatcher.dataFuture(from: request).then({ response -> User in
+                    return try response.decode(User.self)
+                })
+            }
+            .success { post, user in
+                // The final response callback includes both results.
+                expectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 4, handler: nil)
     }
@@ -402,24 +421,29 @@ class DocumentationExamples: XCTestCase {
     func testParallelJoin() {
         let expectation = self.expectation(description: "Success response triggered")
         
-        dispatcher.dataFuture() {
-            let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-            return URLRequest(url: url, method: .get)
-        }.then { response in
-            return try response.decode([Post].self)
-        }.parallelJoin([User].self) {
-            // Joins a future with another one returning both results.
-            // Since this callback is non-escaping, you don't have to use [weak self]
-            let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
-            let request = URLRequest(url: url, method: .get)
-            
-            return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
-                return try response.decode([User].self)
-            })
-        }.success { posts, users in
-            // The final response callback includes both results.
-            expectation.fulfill()
-        }.send()
+        dispatcher
+            .dataFuture {
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                return URLRequest(url: url, method: .get)
+            }
+            .then { response in
+                return try response.decode([Post].self)
+            }
+            .parallelJoin([User].self) {
+                // Joins a future with another one returning both results.
+                // Since this callback is non-escaping, you don't have to use [weak self]
+                let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
+                let request = URLRequest(url: url, method: .get)
+                
+                return self.dispatcher.dataFuture(from: request).then({ response -> [User] in
+                    return try response.decode([User].self)
+                })
+            }
+            .success { posts, users in
+                // The final response callback includes both results.
+                expectation.fulfill()
+            }
+            .send()
         
         waitForExpectations(timeout: 4, handler: nil)
     }
@@ -447,7 +471,7 @@ class DocumentationExamples: XCTestCase {
     }
     
     private func resize(image: UIImage) -> ResponseFuture<UIImage> {
-        return ResponseFuture<UIImage>(action: { future in
+        return ResponseFuture<UIImage> { future in
             // This is an example of how a future is executed and fulfilled.
             DispatchQueue.global(qos: .background).async {
                 // lets make an expensive operation on a background thread.
@@ -466,7 +490,7 @@ class DocumentationExamples: XCTestCase {
                     future.fail(with: error)
                 }
             }
-        })
+        }
     }
     
     
@@ -484,8 +508,8 @@ extension UIImage {
 
 extension ResponseFuture where Success == Response<Data?> {
     /// This method handles common HTTP errors and returns an HTTP response.
-    func validHTTPResponse() -> ResponseFuture<HTTPResponse<Data?>> {
-        return then { response -> HTTPResponse<Data?> in
+    var validHTTPResponse: ResponseFuture<HTTPResponse<Data?>> {
+        return then(HTTPResponse<Data?>.self) { response -> HTTPResponse<Data?> in
             // In this callback we handle common HTTP errors
             
             // Here we check if we have an HTTP response.
