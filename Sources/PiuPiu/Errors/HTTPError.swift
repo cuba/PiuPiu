@@ -9,7 +9,7 @@
 import Foundation
 
 /// An error object to cover any HTTP related errors
-public enum HTTPError: Error {
+public enum HTTPError: LocalizedError {
     case clientError(StatusCode)
     case serverError(StatusCode)
     case invalidStatusCode(StatusCode)
@@ -23,5 +23,9 @@ public enum HTTPError: Error {
         case .invalidStatusCode(let statusCode):
             return statusCode
         }
+    }
+    
+    public var errorDescription: String? {
+        return statusCode.localizedDescription
     }
 }

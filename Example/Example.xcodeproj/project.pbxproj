@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C99EF6A2719038400C212F5 /* HTTPErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C99EF692719038400C212F5 /* HTTPErrorTests.swift */; };
 		8CC508141ED35E7D00C19524 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508131ED35E7D00C19524 /* AppDelegate.swift */; };
 		8CC508161ED35E7D00C19524 /* SeriesRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */; };
 		8CC5081B1ED35E7D00C19524 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CC5081A1ED35E7D00C19524 /* Assets.xcassets */; };
@@ -68,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8C99EF692719038400C212F5 /* HTTPErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HTTPErrorTests.swift; path = ../Tests/PiuPiuTests/HTTPErrorTests.swift; sourceTree = "<group>"; };
 		8CC508101ED35E7D00C19524 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CC508131ED35E7D00C19524 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesRequestsViewController.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		8CC508071ED35E7D00C19524 = {
 			isa = PBXGroup;
 			children = (
+				8C99EF692719038400C212F5 /* HTTPErrorTests.swift */,
 				DA62550F25391AC10006FC43 /* PiuPiu */,
 				DAD58BCB23ECCAA70009E425 /* Example.entitlements */,
 				8CC508121ED35E7D00C19524 /* Source */,
@@ -402,6 +405,7 @@
 				DA173AF5238F60C20045617E /* KeyedDecodingContainerTests.swift in Sources */,
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
+				8C99EF6A2719038400C212F5 /* HTTPErrorTests.swift in Sources */,
 				DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */,
 				DA173AF7238F60D20045617E /* KeyedEncodingContainerTests.swift in Sources */,
 				DA173AF0238F5EFC0045617E /* URLTransformTests.swift in Sources */,
