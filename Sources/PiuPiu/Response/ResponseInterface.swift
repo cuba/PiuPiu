@@ -10,10 +10,10 @@ import Foundation
 
 /// The protocol wrapping the response object.
 public protocol ResponseInterface {
-    associatedtype T
+    associatedtype Body
     
     /// The data object that is attached to this response as specified by the user
-    var data: T { get }
+    var data: Body { get }
     
     /// The `URLRequest` that is returned on a successful response.
     /// **Note**: successful responses includes all responses incuding ones with `5xx` status codes
@@ -23,11 +23,11 @@ public protocol ResponseInterface {
     var urlRequest: URLRequest { get }
 }
 
-public extension ResponseInterface where T == Data? {
+public extension ResponseInterface where Body == Data? {
     /// Attempts to cast the `URLRequest` to a `HTTPURLResponse` and returns a wrapping `HTTPResponse` object if succesful.
     /// - Returns: The `HTTPResponse` object which wraps the `HTTPURLResponse`
     /// - throws: `ResponseError.notHTTPResponse`
-    func makeHTTPResponse() throws -> HTTPResponse<T> {
+    func makeHTTPResponse() throws -> HTTPResponse<Body> {
         return try HTTPResponse(response: self, data: data)
     }
     
