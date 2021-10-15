@@ -53,6 +53,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Added an initalizer for joining many parallel calls on a sequence
 * Rename `ResponseFuture` embedded type from `T` to `Success` (i.e. `ResponseFuture<Success>`)
 * Rename `Response` embedded type from `T` to `Body` (i.e. `Response<Body>`)
+* Rename `HTTPResponse` embedded type from `T` to `Body` (i.e. `HTTPResponse<Body>`)
 
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.

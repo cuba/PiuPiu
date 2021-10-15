@@ -9,8 +9,8 @@
 import Foundation
 
 /// A successful response object. This is retuned when there is any 2xx response.
-public struct HTTPResponse<T>: ResponseInterface {
-    public let data: T
+public struct HTTPResponse<Body>: ResponseInterface {
+    public let data: Body
     public var urlRequest: URLRequest
     public let httpResponse: HTTPURLResponse
     
@@ -34,7 +34,7 @@ public struct HTTPResponse<T>: ResponseInterface {
     ///   - data: The data object to return.
     ///   - urlRequest: The original `URLRequest` that was created.   
     ///   - httpResponse: The `HTTPURLresponse` that is returned.
-    public init(data: T, urlRequest: URLRequest, httpResponse: HTTPURLResponse) {
+    public init(data: Body, urlRequest: URLRequest, httpResponse: HTTPURLResponse) {
         self.data = data
         self.urlRequest = urlRequest
         self.httpResponse = httpResponse
@@ -46,7 +46,7 @@ public struct HTTPResponse<T>: ResponseInterface {
     ///   - response: the original response
     ///   - data: The data object to return
     /// - throws: `ResponseError.notHTTPResponse`
-    public init<R: ResponseInterface>(response: R, data: T) throws {
+    public init<R: ResponseInterface>(response: R, data: Body) throws {
         // Ensure there is a http response
         guard let httpResponse = response.urlResponse as? HTTPURLResponse else {
             throw ResponseError.notHTTPResponse
@@ -58,7 +58,7 @@ public struct HTTPResponse<T>: ResponseInterface {
     }
 }
 
-extension HTTPResponse where T == Data? {
+extension HTTPResponse where Body == Data? {
     /// Attempt to Decode the response to a response containing a decodable object
     ///
     /// - Parameters:
