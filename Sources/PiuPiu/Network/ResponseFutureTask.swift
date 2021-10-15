@@ -8,15 +8,15 @@
 
 import Foundation
 
-class ResponseFutureTask<T> {
+class ResponseFutureTask<Success> {
     let taskIdentifier: Int
-    let future: ResponseFuture<Response<T>>
+    let future: ResponseFuture<Response<Success>>
     let destination: URL?
     var error: Error?
     var data: Data?
     
     
-    public init(taskIdentifier: Int, future: ResponseFuture<Response<T>>, destination: URL? = nil) {
+    public init(taskIdentifier: Int, future: ResponseFuture<Response<Success>>, destination: URL? = nil) {
         self.taskIdentifier = taskIdentifier
         self.future = future
         self.destination = destination

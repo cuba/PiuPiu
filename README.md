@@ -51,6 +51,8 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
   * `func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]>`
   * `func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]>`
 * Added an initalizer for joining many parallel calls on a sequence
+* Rename `ResponseFuture` embedded type from `T` to `Success` (i.e. `ResponseFuture<Success>`)
+  * If you have any extensions on ResponseFuture you need to change `T` to `Success` (e.g. `extension ResponseFuture where Success == Result<Data?>`)
 
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.
@@ -418,7 +420,7 @@ Another way to handle common logic is to add extensions to futures.
 We can perform our `getHTTPResponse` logic inside an extension such as this:
 
 ```swift
-extension ResponseFuture where T == Response<Data?> {
+extension ResponseFuture where Success == Response<Data?> {
     /// This method handles common HTTP errors and returns an HTTP response.
     func validHTTPResponse() -> ResponseFuture<HTTPResponse<Data?>> {
         return then { response -> HTTPResponse<Data?> in
@@ -450,7 +452,7 @@ The only difference in this extension from the original `getHTTPResponse` is tha
 But first let's also add an extension that helps us parse the `Post` object.
 
 ```swift
-extension ResponseFuture where T == HTTPResponse<Data?> {
+extension ResponseFuture where Success == HTTPResponse<Data?> {
     /// This method returns an HTTP response containing a decoded object
     func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
         return then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in

@@ -482,7 +482,7 @@ extension UIImage {
     }
 }
 
-extension ResponseFuture where T == Response<Data?> {
+extension ResponseFuture where Success == Response<Data?> {
     /// This method handles common HTTP errors and returns an HTTP response.
     func validHTTPResponse() -> ResponseFuture<HTTPResponse<Data?>> {
         return then { response -> HTTPResponse<Data?> in
@@ -508,7 +508,7 @@ extension ResponseFuture where T == Response<Data?> {
     }
 }
 
-extension ResponseFuture where T == HTTPResponse<Data?> {
+extension ResponseFuture where Success == HTTPResponse<Data?> {
     /// This method returns an HTTP response containing a decoded object
     func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
         return then(on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in
