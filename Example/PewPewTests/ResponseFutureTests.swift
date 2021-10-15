@@ -350,74 +350,57 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testFutureWithParallelJoins() {
+    func testFutureRetentionWithParallelJoins() {
         // Expectations
-        let count = 1000
-        let successExpectation = self.expectation(description: "Success response triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        progressExpectation.expectedFulfillmentCount = count * 2
         
         // Given
         
-        var future: ResponseFuture<[Post]>? = ResponseFuture<[Post]> { future in
-            future.succeed(with: [])
-        }
-        
-        for id in 1...count {
-            future = future?
-                .parallelJoin(Post.self) {
-                    let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                    let urlRequest = URLRequest(url: url, method: .get)
-                    
-                    return self.instantDispatcher.dataFuture(from: urlRequest)
-                        .then { response in
-                            return try response.decode(Post.self)
-                        }
-                }
-                .map([Post].self) { posts, addedPost in
-                    var posts = posts
-                    posts.append(addedPost)
-                    return posts
-                }
-        }
-        
-        // When
-        
-        future?
-            .updated { task in
-                progressExpectation.fulfill()
-            }
-            .success { posts in
-                successExpectation.fulfill()
-                XCTAssertEqual(count, posts.count)
+        var future: ResponseFuture<[Post]>? = ResponseFuture<[Post]>
+            .init(childFutures: (1...10).map({ id in
+                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+                let urlRequest = URLRequest(url: url, method: .get)
                 
-                for id in 1...count {
-                    XCTAssertEqual(posts[id - 1].id, id)
-                }
-            }
-            .error { error in
-                XCTFail(error.localizedDescription)
-            }
+                return self.instantDispatcher.dataFuture(from: urlRequest)
+                    .then { response in
+                        return try response.decode(Post.self)
+                    }
+            }))
+        
+        // We still have a reference to future so weak future is not yet nil
+        weak var weakFuture: ResponseFuture<[Post]>? = future
+        XCTAssertNotNil(weakFuture)
+        
+        // We then add a completion handler which will check for retention while the future is still active (non-finalized)
+        // and does a send
+        weakFuture?
             .completion {
+                // The future is retained by the system because each
+                // callback retains its future
+                // There is a chain of retentions that should be broken
+                // when the future is finalized
+                XCTAssertNotNil(weakFuture)
                 completionExpectation.fulfill()
-            }
-            .cancellation {
-                XCTFail("Should not be triggered")
             }
             .send()
         
         // Then
-        weak var weakFuture: ResponseFuture<[Post]>? = future
+        // We broke the reference but weak future will still be retained
+        // Until all the requests are completed.
         future = nil
         XCTAssertNotNil(weakFuture)
         
         waitForExpectations(timeout: 10) { error in
+            future = nil
+            XCTAssertNil(error)
+            
+            // We should have completed all the requests.
+            // Now the weak future should be nil
             XCTAssertNil(weakFuture)
         }
     }
     
-    func testFutureWithParallelJoinsInitializer() {
+    func testFutureInitializerWithChildFutures() {
         // Expectations
         let count = 1000
         let successExpectation = self.expectation(description: "Success response triggered")
@@ -459,7 +442,7 @@ class ResponseFutureTests: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testFutureWithParallelJoinsWithArrayLiteral() {
+    func testFutureInitializerWithArrayLiteral() {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
         let progressExpectation = self.expectation(description: "Progress triggered")

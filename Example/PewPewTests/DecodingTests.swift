@@ -130,4 +130,70 @@ class DecodingTests: XCTestCase {
         
         waitForExpectations(timeout: 5, handler: nil)
     }
+    
+    func testResponseFutureDecodedMethodDeserialization() {
+        // Given
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        // When
+        let errorExpectation = self.expectation(description: "Error response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        // Then
+        dispatcher.dataFuture(from: request)
+            .decoded(Post.self)
+            .success { response in
+                // Then
+                XCTFail("Should not trigger the success")
+            }
+            .error { error in
+                errorExpectation.fulfill()
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testResponseFutureSafeDecodedMethodDeserialization() {
+        // Given
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+        let request = URLRequest(url: url, method: .get)
+        
+        // When
+        let successExpectation = self.expectation(description: "Error response triggered")
+        let completionExpectation = self.expectation(description: "Completion triggered")
+        
+        // Then
+        dispatcher.dataFuture(from: request)
+            .makeHTTPResponse()
+            .safeDecoded(Post.self)
+            .safeResult()
+            .success { result in
+                switch result {
+                case .success(let response):
+                    switch response.data {
+                    case .success:
+                        XCTFail("Should not trigger the success")
+                    case .failure:
+                        // Then
+                        successExpectation.fulfill()
+                    }
+                case .failure(let error):
+                    XCTFail(error.localizedDescription)
+                }
+            }
+            .error { error in
+                XCTFail("Should not trigger the failure")
+            }
+            .completion {
+                completionExpectation.fulfill()
+            }
+            .send()
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 }
