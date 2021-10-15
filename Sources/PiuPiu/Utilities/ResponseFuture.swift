@@ -658,3 +658,12 @@ public extension ResponseFuture where Success == Response<Data?> {
         }
     }
 }
+
+public extension ResponseFuture where Success == HTTPResponse<Data?> {
+    /// This method returns an HTTP response containing a decoded object
+    func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<D>> {
+        return then(HTTPResponse<D>.self, on: DispatchQueue.global(qos: .background)) { httpResponse -> HTTPResponse<D> in
+            return try httpResponse.decoded(type, using: decoder)
+        }
+    }
+}
