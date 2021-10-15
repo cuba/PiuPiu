@@ -666,4 +666,29 @@ public extension ResponseFuture where Success == HTTPResponse<Data?> {
             return try httpResponse.decoded(type, using: decoder)
         }
     }
+    
+    /// This method returns an `HTTPResponse` containing a result with either the decoded object or an error that occured during decoding.
+    /// This is useful because we may need to do a safe decoding but we don't care for any other errors
+    func safeDecoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<HTTPResponse<Result<D, Error>>> {
+        return ResponseFuture<HTTPResponse<Result<D, Error>>> { future in
+            self
+                .success { response in
+                    do {
+                        let decoded = try response.decoded(type, using: decoder)
+                        let newResponse = try HTTPResponse<Result<D, Error>>(response: response, data: .success(decoded.data))
+                        future.succeed(with: newResponse)
+                    } catch {
+                        let newResponse = try HTTPResponse<Result<D, Error>>(response: response, data: .failure(error))
+                        future.succeed(with: newResponse)
+                    }
+                }
+                .error { error in
+                    future.fail(with: error)
+                }
+                .updated{ task in
+                    future.update(with: task)
+                }
+                .send()
+        }
+    }
 }
