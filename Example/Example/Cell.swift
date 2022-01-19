@@ -15,9 +15,9 @@ enum Cell {
     
     public var reuseIdentifier: String {
         switch self {
-        case .standard                          : return "StandardCell"
-        case .subtitle                          : return "SubtitleCell"
-        case .rightValue                        : return "RightValue"
+        case .standard:     return "StandardCell"
+        case .subtitle:     return "SubtitleCell"
+        case .rightValue:   return "RightValue"
         }
     }
     
@@ -27,7 +27,7 @@ enum Cell {
         }
     }
     
-    public func dequeCell(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
+    public func dequeueCell(for tableView: UITableView, at indexPath: IndexPath) -> UITableViewCell {
         switch self {
         case .subtitle:
             return tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) ?? UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: reuseIdentifier)

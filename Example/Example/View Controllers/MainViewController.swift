@@ -17,7 +17,12 @@ class MainViewController: UIViewController {
     }
     
     lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        if #available(iOS 13.0, *) {
+            let tableView = UITableView(frame: CGRect.zero, style: .insetGrouped)
+        } else {
+            let tableView = UITableView(frame: CGRect.zero, style: .grouped)
+        }
+        
         tableView.delegate = self
         tableView.dataSource = self
         return tableView
@@ -58,28 +63,28 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch row {
         case .seriesExample:
-            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Series Example"
             cell.detailTextLabel?.text = "Perform sample api calls in series"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down")
             return cell
             
         case .parallelExample:
-            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Parallel Example"
             cell.detailTextLabel?.text = "Perform sample api calls in parallel"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down.on.square")
             return cell
             
         case .downloadExample:
-            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Download Example"
             cell.detailTextLabel?.text = "Perform a sample image download API call"
             cell.imageView?.image = makeImage(systemName: "photo")
             return cell
             
         case .uploadExample:
-            let cell = Cell.subtitle.dequeCell(for: tableView, at: indexPath)
+            let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
             cell.textLabel?.text = "Upload Example"
             cell.detailTextLabel?.text = "Perform a sample upload API call"
             cell.imageView?.image = makeImage(systemName: "paperclip")
