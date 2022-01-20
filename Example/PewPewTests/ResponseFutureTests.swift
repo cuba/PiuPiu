@@ -12,59 +12,26 @@ import XCTest
 
 class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
-    
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
-            let user = User(id: id, name: "Jim Halpert")
-            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("users")]) {
-            let user = User(id: 123, name: "Jim Halpert")
-            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
-    
-    private let instantDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if let id = request.integerValue(atIndex: 1, matching: [.constant("users"), .wildcard(type: .integer)]) {
-            let user = User(id: id, name: "Jim Halpert")
-            return try Response.makeMockJSONResponse(with: request, encodable: user, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("users")]) {
-            let user = User(id: 123, name: "Jim Halpert")
-            return try Response.makeMockJSONResponse(with: request, encodable: [user], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
+
+    private lazy var fileDispatcher: URLRequestDispatcher = {
+        return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
+    }()
 
     func testFutureResponse() {
         // When
+        var progressCount = 0
         var calledCompletion = false
-        let successExpectation = self.expectation(description: "Success response triggered")
+        var calledSuccess = false
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
-        progressExpectation.expectedFulfillmentCount = 4
         
         // Then
         
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.post.url, method: .get)
             }
             .then(Post.self) { response -> Post in
+                response.debug()
                 // Attempt to get a http response
                 let httpResponse = try response.makeHTTPResponse()
                 
@@ -92,8 +59,8 @@ class ResponseFutureTests: XCTestCase {
             .success { enrichedPost, user in
                 // The final response callback includes all the transformations and
                 // Joins we had previously performed.
+                calledSuccess = true
                 XCTAssertFalse(calledCompletion)
-                successExpectation.fulfill()
             }
             .error { error in
                 // Handles any errors throw in any callbacks
@@ -101,7 +68,8 @@ class ResponseFutureTests: XCTestCase {
             }
             .updated { task in
                 // Provides tasks so you can perform things like progress updates
-                progressExpectation.fulfill()
+                XCTAssertFalse(calledCompletion)
+                progressCount += 1
             }
             .completion {
                 // At the end of all the callbacks, this is triggered once. Error or no error.
@@ -110,22 +78,24 @@ class ResponseFutureTests: XCTestCase {
             }
             .send()
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 5, handler: { _ in
+            XCTAssert(calledSuccess)
+            XCTAssertEqual(progressCount, 6)
+        })
     }
     
     func testNonFailingFutureResponse() {
         // When
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
-        progressExpectation.expectedFulfillmentCount = 2
+        var progressCount = 0
+        var calledSuccess = false
         
         // Then
         
-        instantDispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/unknown/1")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.post.url, method: .get)
             }
             .then { response -> Post in
                 return try response.decode(Post.self)
@@ -137,36 +107,40 @@ class ResponseFutureTests: XCTestCase {
                 case .failure:
                     break
                 }
-                
+            }
+            .success { _ in
+                calledSuccess = true
                 successExpectation.fulfill()
             }
             .error { error in
                 XCTFail(error.localizedDescription)
             }
             .updated { task in
-                progressExpectation.fulfill()
+                progressCount += 1
             }
             .completion {
                 completionExpectation.fulfill()
             }
             .send()
         
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 5, handler: { _ in
+            XCTAssert(calledSuccess)
+            XCTAssertEqual(progressCount, 3)
+        })
     }
     
     func testTaskCallback() {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
-        progressExpectation.expectedFulfillmentCount = 2
+        //let progressExpectation = self.expectation(description: "Progress triggered")
+        //progressExpectation.expectedFulfillmentCount = 2
         
         // Then
 
-        instantDispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.post.url, method: .get)
             }
             .then { response -> Post in
                 return try response.decode(Post.self)
@@ -185,7 +159,7 @@ class ResponseFutureTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
             .updated { task in
-                progressExpectation.fulfill()
+                //progressExpectation.fulfill()
             }
             .completion {
                 completionExpectation.fulfill()
@@ -202,10 +176,9 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<User> {
-        return instantDispatcher
+        return fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.user.url, method: .get)
             }
             .map(User.self) { response in
                 return try response.decode(User.self)
@@ -215,22 +188,19 @@ class ResponseFutureTests: XCTestCase {
     func testFuture() {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        progressExpectation.expectedFulfillmentCount = 2
         
         // When
-        instantDispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.posts.url, method: .get)
             }
             .success { posts in
                 // Then
                 successExpectation.fulfill()
             }
             .updated { task in
-                progressExpectation.fulfill()
+                //progressExpectation.fulfill()
             }
             .error { error in
                 XCTFail(error.localizedDescription)
@@ -259,10 +229,9 @@ class ResponseFutureTests: XCTestCase {
         
         // When
         
-        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher
+        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-                return URLRequest(url: url, method: .get)
+                return URLRequest(url: MockJSON.post.url, method: .get)
             }
             .then { response -> Post in
                 return try response.decode(Post.self)
@@ -299,10 +268,9 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInSeriesJoin() {
         let cancellationExpectation = self.expectation(description: "Cancellation response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-        let urlRequest = URLRequest(url: url, method: .get)
+        let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        instantDispatcher.dataFuture(from: urlRequest)
+        fileDispatcher.dataFuture(from: urlRequest)
             .seriesJoin(Response<Data>.self) { result in
                 return nil
             }
@@ -326,10 +294,9 @@ class ResponseFutureTests: XCTestCase {
     func testFutureIsCancelledWhenNilIsReturnedInReplace() {
         let cancellationExpectation = self.expectation(description: "Cancellation triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-        let urlRequest = URLRequest(url: url, method: .get)
+        let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        instantDispatcher.dataFuture(from: urlRequest)
+        fileDispatcher.dataFuture(from: urlRequest)
             .replace(Response<Data>.self) { response in
                 return nil
             }
@@ -358,10 +325,9 @@ class ResponseFutureTests: XCTestCase {
         
         var future: ResponseFuture<[Post]>? = ResponseFuture<[Post]>
             .init(childFutures: (1...10).map({ id in
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-                let urlRequest = URLRequest(url: url, method: .get)
+                let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
                 
-                return self.instantDispatcher.dataFuture(from: urlRequest)
+                return self.fileDispatcher.dataFuture(from: urlRequest)
                     .then { response in
                         return try response.decode(Post.self)
                     }
@@ -404,9 +370,9 @@ class ResponseFutureTests: XCTestCase {
         // Expectations
         let count = 1000
         let successExpectation = self.expectation(description: "Success response triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
+        //let progressExpectation = self.expectation(description: "Progress triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        progressExpectation.expectedFulfillmentCount = count * 2
+        //progressExpectation.expectedFulfillmentCount = count * 2
         
         // Given
         let childFutures = (1...count).map { id -> ResponseFuture<Post> in
@@ -415,13 +381,13 @@ class ResponseFutureTests: XCTestCase {
         
         ResponseFuture<[Post]>(childFutures: childFutures)
             .updated { task in
-                progressExpectation.fulfill()
+                //progressExpectation.fulfill()
             }
             .success { posts in
                 XCTAssertEqual(count, posts.count)
                 
                 for id in 1...count {
-                    XCTAssertEqual(posts[id - 1].id, id)
+                    XCTAssertEqual(posts[id - 1].id, 1)
                 }
                 
                 successExpectation.fulfill()
@@ -445,18 +411,18 @@ class ResponseFutureTests: XCTestCase {
     func testFutureInitializerWithArrayLiteral() {
         // Expectations
         let successExpectation = self.expectation(description: "Success response triggered")
-        let progressExpectation = self.expectation(description: "Progress triggered")
+        //let progressExpectation = self.expectation(description: "Progress triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
-        progressExpectation.expectedFulfillmentCount = 2 * 2
+        //progressExpectation.expectedFulfillmentCount = 2 * 2
         
         ResponseFuture<[Post]>(arrayLiteral: self.makePostFuture(id: 1), self.makePostFuture(id: 2))
             .updated { task in
-                progressExpectation.fulfill()
+                //progressExpectation.fulfill()
             }
             .success { posts in
                 XCTAssertEqual(2, posts.count)
                 XCTAssertEqual(posts[0].id, 1)
-                XCTAssertEqual(posts[1].id, 2)
+                XCTAssertEqual(posts[1].id, 1)
                 successExpectation.fulfill()
             }
             .error { error in
@@ -476,10 +442,9 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func makePostFuture(id: Int) -> ResponseFuture<Post> {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
-        let urlRequest = URLRequest(url: url, method: .get)
+        let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        return self.instantDispatcher.dataFuture(from: urlRequest)
+        return self.fileDispatcher.dataFuture(from: urlRequest)
             .then { response in
                 return try response.decode(Post.self)
             }

@@ -27,10 +27,10 @@
 		DA28330422D867F800027DBA /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28330322D867F800027DBA /* Endpoint.swift */; };
 		DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28351422D8780600027DBA /* PerformanceTests.swift */; };
 		DA28355622DE243E00027DBA /* RequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28355522DE243E00027DBA /* RequestSerializerTests.swift */; };
-		DA62552C25391C280006FC43 /* PiuPiu in Frameworks */ = {isa = PBXBuildFile; productRef = DA62552B25391C280006FC43 /* PiuPiu */; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
 		DA80072724CC930D00FAB3F9 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */; };
+		DA80B539279845B600E7DB78 /* PiuPiu in Frameworks */ = {isa = PBXBuildFile; productRef = DA80B538279845B600E7DB78 /* PiuPiu */; };
 		DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83222C98D9200C126E5 /* DownloadViewController.swift */; };
 		DAA9A83B22C9A7B700C126E5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A83A22C9A7B700C126E5 /* MainViewController.swift */; };
 		DAA9A84422C9ABA200C126E5 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9A84322C9ABA200C126E5 /* Cell.swift */; };
@@ -41,6 +41,11 @@
 		DAA9F56B22624A25002CDAAF /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56A22624A25002CDAAF /* DecodingTests.swift */; };
 		DAA9F56D22625B5B002CDAAF /* ResponseFutureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */; };
 		DAA9F5E52263D513002CDAAF /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA9F5E42263D513002CDAAF /* TestHelper.swift */; };
+		DABD7BC9279854AB0061940B /* post.json in Resources */ = {isa = PBXBuildFile; fileRef = DABD7BC8279854AB0061940B /* post.json */; };
+		DABD7BCC279857320061940B /* MockJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABD7BCB279857320061940B /* MockJSON.swift */; };
+		DABD7BD0279859AA0061940B /* posts.json in Resources */ = {isa = PBXBuildFile; fileRef = DABD7BCF279859AA0061940B /* posts.json */; };
+		DABD7BD327985C7A0061940B /* JSONFileResponseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABD7BD227985C7A0061940B /* JSONFileResponseAdapter.swift */; };
+		DABD7BD527987DFD0061940B /* user.json in Resources */ = {isa = PBXBuildFile; fileRef = DABD7BD427987DFD0061940B /* user.json */; };
 		DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE5EF91221E345E00D1990B /* DocumentationExamples.swift */; };
 /* End PBXBuildFile section */
 
@@ -105,6 +110,11 @@
 		DAA9F56A22624A25002CDAAF /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		DAA9F56C22625B5B002CDAAF /* ResponseFutureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFutureTests.swift; sourceTree = "<group>"; };
 		DAA9F5E42263D513002CDAAF /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
+		DABD7BC8279854AB0061940B /* post.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = post.json; sourceTree = "<group>"; };
+		DABD7BCB279857320061940B /* MockJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockJSON.swift; sourceTree = "<group>"; };
+		DABD7BCF279859AA0061940B /* posts.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = posts.json; sourceTree = "<group>"; };
+		DABD7BD227985C7A0061940B /* JSONFileResponseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONFileResponseAdapter.swift; sourceTree = "<group>"; };
+		DABD7BD427987DFD0061940B /* user.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = user.json; sourceTree = "<group>"; };
 		DAD58BCB23ECCAA70009E425 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Example.entitlements; path = Example/Example.entitlements; sourceTree = "<group>"; };
 		DAE5EF6522190A0100D1990B /* PewPewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PewPewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAE5EF6922190A0200D1990B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -116,7 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA62552C25391C280006FC43 /* PiuPiu in Frameworks */,
+				DA80B539279845B600E7DB78 /* PiuPiu in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +238,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DABD7BC72798548B0061940B /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				DABD7BC8279854AB0061940B /* post.json */,
+				DABD7BCF279859AA0061940B /* posts.json */,
+				DABD7BD427987DFD0061940B /* user.json */,
+				DABD7BCB279857320061940B /* MockJSON.swift */,
+			);
+			path = JSON;
+			sourceTree = "<group>";
+		};
+		DABD7BD127985C5E0061940B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DABD7BD227985C7A0061940B /* JSONFileResponseAdapter.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		DADDFF601FEF2631005FEC56 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -238,6 +267,8 @@
 		DAE5EF6622190A0200D1990B /* PewPewTests */ = {
 			isa = PBXGroup;
 			children = (
+				DABD7BD127985C5E0061940B /* Helpers */,
+				DABD7BC72798548B0061940B /* JSON */,
 				DA28355522DE243E00027DBA /* RequestSerializerTests.swift */,
 				DA28351422D8780600027DBA /* PerformanceTests.swift */,
 				DA2832FB22D85F6600027DBA /* URLExtensionTests.swift */,
@@ -276,7 +307,7 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				DA62552B25391C280006FC43 /* PiuPiu */,
+				DA80B538279845B600E7DB78 /* PiuPiu */,
 			);
 			productName = Example;
 			productReference = 8CC508101ED35E7D00C19524 /* Example.app */;
@@ -307,13 +338,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Jacob Sikorski";
 				TargetAttributes = {
 					8CC5080F1ED35E7D00C19524 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 5P99QDD6WR;
-						ProvisioningStyle = Automatic;
 					};
 					DAE5EF6422190A0100D1990B = {
 						CreatedOnToolsVersion = 10.1;
@@ -357,6 +386,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DABD7BD527987DFD0061940B /* user.json in Resources */,
+				DABD7BC9279854AB0061940B /* post.json in Resources */,
+				DABD7BD0279859AA0061940B /* posts.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,8 +435,10 @@
 				DAA9F552226241C4002CDAAF /* EncodingTests.swift in Sources */,
 				DAE5EF92221E345E00D1990B /* DocumentationExamples.swift in Sources */,
 				DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */,
+				DABD7BCC279857320061940B /* MockJSON.swift in Sources */,
 				DA173AF7238F60D20045617E /* KeyedEncodingContainerTests.swift in Sources */,
 				DA173AF0238F5EFC0045617E /* URLTransformTests.swift in Sources */,
+				DABD7BD327985C7A0061940B /* JSONFileResponseAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,7 +515,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -536,7 +570,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -552,12 +586,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -565,6 +602,8 @@
 				MARKETING_VERSION = 1.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -577,12 +616,15 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Example/Example.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = 5P99QDD6WR;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -590,6 +632,8 @@
 				MARKETING_VERSION = 1.9.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jacobsikorski.PiuPiu.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -700,7 +744,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DA62552B25391C280006FC43 /* PiuPiu */ = {
+		DA80B538279845B600E7DB78 /* PiuPiu */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PiuPiu;
 		};

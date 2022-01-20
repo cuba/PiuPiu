@@ -18,14 +18,10 @@ class MainViewController: UIViewController {
     
     lazy var tableView: UITableView = {
         if #available(iOS 13.0, *) {
-            let tableView = UITableView(frame: CGRect.zero, style: .insetGrouped)
+            return UITableView(frame: CGRect.zero, style: .insetGrouped)
         } else {
-            let tableView = UITableView(frame: CGRect.zero, style: .grouped)
+            return UITableView(frame: CGRect.zero, style: .grouped)
         }
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        return tableView
     }()
     
     private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample, .uploadExample]
@@ -33,6 +29,10 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "PiuPiu"
+
+        // Setup table view
+        tableView.delegate = self
+        tableView.dataSource = self
         
         setupLayout()
     }
@@ -67,6 +67,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "Series Example"
             cell.detailTextLabel?.text = "Perform sample api calls in series"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down")
+            cell.accessoryType = .disclosureIndicator
             return cell
             
         case .parallelExample:
@@ -74,6 +75,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "Parallel Example"
             cell.detailTextLabel?.text = "Perform sample api calls in parallel"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down.on.square")
+            cell.accessoryType = .disclosureIndicator
             return cell
             
         case .downloadExample:
@@ -81,6 +83,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "Download Example"
             cell.detailTextLabel?.text = "Perform a sample image download API call"
             cell.imageView?.image = makeImage(systemName: "photo")
+            cell.accessoryType = .disclosureIndicator
             return cell
             
         case .uploadExample:
@@ -88,12 +91,14 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "Upload Example"
             cell.detailTextLabel?.text = "Perform a sample upload API call"
             cell.imageView?.image = makeImage(systemName: "paperclip")
+            cell.accessoryType = .disclosureIndicator
             return cell
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = rows[indexPath.row]
+        tableView.deselectRow(at: indexPath, animated: true)
         
         switch row {
         case .seriesExample:

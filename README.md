@@ -39,6 +39,9 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.11.0
+* Add a `URLRequestAdapter` and `URLResponseAdapter`
+
 ### 1.10.0
 * Using `DispatchGroup` for parallel joins
 * Removed deprecated methods on `ResponseFuture`
@@ -50,7 +53,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Removed methods for joining calls of the same type on a sequence (array) of futures
   * `func addingParallelResult(from callback: () -> ResponseFuture<T.Element>) -> ResponseFuture<[T.Element]>`
   * `func addingSeriesResult(from callback: @escaping (T) throws -> ResponseFuture<T.Element>?) -> ResponseFuture<[T.Element]>`
-* Added an initalizer for joining many parallel calls on a sequence
+* Added an initializer for joining many parallel calls on a sequence
 * Rename `ResponseFuture` embedded type from `T` to `Success` (i.e. `ResponseFuture<Success>`)
 * Rename `Response` embedded type from `T` to `Body` (i.e. `Response<Body>`)
 * Rename `HTTPResponse` embedded type from `T` to `Body` (i.e. `HTTPResponse<Body>`)
@@ -63,7 +66,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ### 1.9.0
 * Removed `GroupedFailure`. First error triggered will fail the future. If you need access to the results use `safeParallelJoin` instead.
-* Addes some more convenience "join" functions on `ResponseFuture`: `addingParallelNullableResult`, `addingSeriesNullableResult`, `safeParallelNullableJoin`, `safeSeriesNullableJoin`, `parallelNullableJoin`, and `seriesNullableJoin`
+* Added some more convenience "join" functions on `ResponseFuture`: `addingParallelNullableResult`, `addingSeriesNullableResult`, `safeParallelNullableJoin`, `safeSeriesNullableJoin`, `parallelNullableJoin`, and `seriesNullableJoin`
 * Deprecated some `ResponseFuture` functions in favour of ones that take an explicit type
 * Remove useless throwables that never threw anything
 * Remove `MockDispatcherError` and use `ResponseError.noResponse` if no callback is set on `MockURLRequestDispatcher`
@@ -101,7 +104,6 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 * Error handling has been simplified
   * `JSONSerializer` errors no longer are wrapped by another error
   * `Decodable` errors are no longer wrapped
-
 
 ### 1.4.0
 * Change `Request` protocol to return a `URLRequest`
@@ -150,34 +152,9 @@ Fixed crash when translating caused by renaming the project.
 
 ## Installation
 
-### Carthage
-
-NOTE: Carthage support will die since it no longer works with Catalyst
-
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
-
-You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
-
-```bash
-$ brew update
-$ brew install carthage
-```
-
-To integrate PiuPiu into your Xcode project using Carthage, specify it in your `Cartfile`:
-
-```ogdl
-github "cuba/PiuPiu" ~> 1.8
-```
-
-Run `carthage update` to build the framework and drag the built `PiuPiu.framework` into your Xcode project.
-
 ### SPM
 
 PiuPiu supports SPM
-
-### ~~Cocoapods~~
-
-PiuPiu no longer supports cocoapods. Cocoapods is dying and is ugly to maintain. Use SPM. It's easy to use and maintain.
 
 ## Usage
 
@@ -261,6 +238,27 @@ dispatcher.dataFuture(from: request)
 **NOTE**: Nothing will happen if you don't call `start()` or `send()`.
 
 ## Advanced Usage
+
+### URLRequestAdapter
+
+The `URLRequestAdapter` protocol allows you to change the request or perform some other task before dispatching it. 
+This is useful for a number of cases including:
+
+* Injecting authorization headers
+* Modifying url's to point to some local (mock data)
+* Logging the request
+
+For a better idea of how to use this protocol, take a look at the tests found under the example project.
+
+### URLResponseAdapter
+
+Similar to the `URLRequestAdapter`, the `URLResponseAdapter` allows you to modify the response or perform some other task before returning the response.
+This is useful for a number of cases including:
+
+* Converting mock responses (pointing to local files) to fake `HTTPResponses` (very useful for mock data testing)
+* Logging the response
+
+For a better idea of how to use this protocol, take a look at the tests found under the example project.
 
 ### Separating concerns
 

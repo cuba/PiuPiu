@@ -7,25 +7,17 @@
 //
 
 import XCTest
-@testable import PiuPiu
+import PiuPiu
 @testable import Example
 
 class RequestSerializerTests: XCTestCase, ServerProvider {
     var baseURL: URL? {
-        return URL(string: "https://jsonplaceholder.typicode.com/posts/1")
+        return URL(string: "https://jsonplaceholder.typicode.com")
     }
 
-    private let instantDispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
+    private lazy var fileDispatcher: URLRequestDispatcher = {
+        return URLRequestDispatcher(requestAdapter: self, responseAdapter: MockHTTPResponseAdapter.success)
+    }()
     
     func testSendRequest() {
         // When
@@ -34,7 +26,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Given
-        let networkSerializer = RequestSerializer(dispatcher: instantDispatcher, serverProvider: self)
+        let networkSerializer = RequestSerializer(dispatcher: fileDispatcher, serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts/1")
         
         // Then
@@ -71,5 +63,14 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
             .send()
         
         waitForExpectations(timeout: 5, handler: nil)
+    }
+}
+
+extension RequestSerializerTests: URLRequestAdapter {
+    func adapt(urlRequest: URLRequest, with callback: @escaping (URLRequest) throws -> Void) throws {
+        // In order to not make real api calls we will cheat
+        var urlRequest = urlRequest
+        urlRequest.url = MockJSON.post.url
+        try callback(urlRequest)
     }
 }

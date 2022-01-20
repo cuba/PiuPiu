@@ -11,27 +11,18 @@ import XCTest
 @testable import Example
 
 class DecodingTests: XCTestCase {
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
+    private lazy var fileDispatcher: URLRequestDispatcher = {
+        return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
+    }()
     
     func testUnwrappingData() {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .success { response in
                 let data = try response.unwrapData()
                 
@@ -53,11 +44,10 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .success { response in
                 let string = try response.decodeString(encoding: .utf8)
                 
@@ -79,11 +69,10 @@ class DecodingTests: XCTestCase {
         let expectation = self.expectation(description: "Success response triggered")
         
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.post.url, method: .get)
         
         // Example
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .success { response in
                 let posts = try response.decode(Post.self)
                 
@@ -103,15 +92,14 @@ class DecodingTests: XCTestCase {
     
     func testUnsuccessfulCodableDeserialization() {
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // When
         let errorExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .then { response in
                 // When
                 return try response.decode(Post.self)
@@ -133,15 +121,14 @@ class DecodingTests: XCTestCase {
     
     func testResponseFutureDecodedMethodDeserialization() {
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // When
         let errorExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .decoded(Post.self)
             .success { response in
                 // Then
@@ -160,15 +147,14 @@ class DecodingTests: XCTestCase {
     
     func testResponseFutureSafeDecodedMethodDeserialization() {
         // Given
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
-        let request = URLRequest(url: url, method: .get)
+        let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // When
         let successExpectation = self.expectation(description: "Error response triggered")
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        dispatcher.dataFuture(from: request)
+        fileDispatcher.dataFuture(from: request)
             .makeHTTPResponse()
             .safeDecoded(Post.self)
             .safeResult()

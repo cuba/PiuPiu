@@ -11,17 +11,9 @@ import XCTest
 @testable import Example
 
 class PerformanceTests: XCTestCase {
-    private let dispatcher = MockURLRequestDispatcher(delay: 0, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
+    private lazy var fileDispatcher: URLRequestDispatcher = {
+        return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
+    }()
     
     func testSeriesPerformance() {
         self.measure {
@@ -50,7 +42,7 @@ class PerformanceTests: XCTestCase {
             
             ResponseFuture<[Post]>
                 .init {
-                    (1...500).map { id in
+                    (1...50).map { id in
                         makePostFuture(id: id)
                     }
                 }
@@ -59,15 +51,15 @@ class PerformanceTests: XCTestCase {
                 }
                 .send()
             
-            waitForExpectations(timeout: 10, handler: nil)
+            waitForExpectations(timeout: 20, handler: nil)
         }
     }
     
     private func makePostFuture(id: Int) -> ResponseFuture<Post> {
-        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+        let url = MockJSON.post.url
         let urlRequest = URLRequest(url: url, method: .get)
         
-        return self.dispatcher.dataFuture(from: urlRequest)
+        return self.fileDispatcher.dataFuture(from: urlRequest)
             .then { response in
                 return try response.decode(Post.self)
             }

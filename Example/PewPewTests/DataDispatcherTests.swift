@@ -11,17 +11,9 @@ import XCTest
 @testable import PiuPiu
 
 class DataDispatcherTests: XCTestCase {
-    private let dispatcher = MockURLRequestDispatcher(delay: 0.5, callback: { request in
-        if let id = request.integerValue(atIndex: 1, matching: [.constant("posts"), .wildcard(type: .integer)]) {
-            let post = Post(id: id, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: post, statusCode: .ok)
-        } else if request.pathMatches(pattern: [.constant("posts")]) {
-            let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
-            return try Response.makeMockJSONResponse(with: request, encodable: [post], statusCode: .ok)
-        } else {
-            return Response.makeMockResponse(with: request, statusCode: .notFound)
-        }
-    })
+    private lazy var fileDispatcher: URLRequestDispatcher = {
+        return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
+    }()
     
     private var strongFuture: ResponseFuture<[Post]>?
     
@@ -30,9 +22,9 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+                let url = MockJSON.post.url
                 return URLRequest(url: url, method: .get)
             }
             .success { response in
@@ -76,9 +68,9 @@ class DataDispatcherTests: XCTestCase {
         
         // We create a future and tell it to transform the response using the
         // `then` callback.
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
             }
             .then([Post].self) { response in
@@ -102,8 +94,8 @@ class DataDispatcherTests: XCTestCase {
             }
             .error { error in
                 // Triggers whenever an error is thrown.
-                // This includes deserialization errors, unwraping failures, and anything else that is thrown
-                // in a any other throwable callback.
+                // This includes deserialization errors, unwrapping failures, and anything else that is thrown
+                // in any other throwable callback.
                 XCTFail("Should not be triggered")
             }
             .completion {
@@ -112,7 +104,7 @@ class DataDispatcherTests: XCTestCase {
             }
             .send()
         
-        waitForExpectations(timeout: 1, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
     
     func testFullResponseFutureExample() {
@@ -121,9 +113,9 @@ class DataDispatcherTests: XCTestCase {
         completionExpectation.expectedFulfillmentCount = 1
         
         // When
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
             }
             .then { response -> Post in
@@ -172,9 +164,9 @@ class DataDispatcherTests: XCTestCase {
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // When
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 var request = URLRequest(url: url, method: .post)
                 try request.setJSONBody(post)
                 return request
@@ -197,9 +189,9 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        dispatcher
+        fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
             }
             .then { response -> [Post] in
@@ -226,9 +218,9 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        self.strongFuture = dispatcher
+        self.strongFuture = fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
             }
             .then { response -> [Post] in
@@ -252,14 +244,14 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {
-        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = fileDispatcher
             .dataFuture {
-                let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+                let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
             }
             .completion {
                 // [weak self] not needed as `self` is not called
-                XCTFail("Shoud not be triggered")
+                XCTFail("Should not be triggered")
             }
         
         // Our object is already nil because we have not established a strong reference to it.

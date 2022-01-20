@@ -36,7 +36,7 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
         return makeFuture(from: urlRequest)
     }
     
-    /// Create a future to make a upload request.
+    /// Create a future to make an upload request.
     ///
     /// - Parameters:
     ///   - request: The request to send
@@ -60,11 +60,11 @@ open class MockURLRequestDispatcher: DataDispatcher, UploadDispatcher {
             guard let self = self else { return }
             let task = URLSessionDataTask()
             future.update(with: task)
-            
+
             guard let response = try self.callback?(urlRequest) else {
                 throw ResponseError.noResponse
             }
-            
+
             DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + self.delay) {
                 future.update(with: task)
                 future.succeed(with: response)
