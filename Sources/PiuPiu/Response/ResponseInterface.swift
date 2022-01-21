@@ -106,6 +106,7 @@ public extension ResponseInterface where Body == Data? {
     
     /// A method to print the request and response in the console.
     /// **Warning** This should not be used in a production environment.
+    #if DEBUG
     func debug() {
         print("===========================================")
         print(makeRequestMarkdown())
@@ -113,67 +114,17 @@ public extension ResponseInterface where Body == Data? {
         print(makeResponseMarkdown())
         print("===========================================")
     }
+    #endif
     
     /// A method to print the request in the console.
     /// **Warning** This should not be used in a production environment. You should place this call behind a macro such as `DEBUG`
     func makeRequestMarkdown() -> String {
-        var components: [String] = [
-            "## REQUEST",
-            "[\(urlRequest.httpMethod!)] \(urlRequest.url!)"
-        ]
-        
-        if let headerFields = urlRequest.allHTTPHeaderFields {
-            components.append("### Headers")
-            
-            for (key, value) in headerFields {
-                components.append("* \(key): \(value)")
-            }
-        }
-        
-        if let body = urlRequest.httpBody {
-            components.append("### Body")
-            components.append("```json")
-            
-            if let json = String(data: body, encoding: .utf8) {
-                components.append(json)
-            } else {
-                components.append(body.base64EncodedString())
-            }
-            
-            components.append("```")
-        }
-        
-        return components.joined(separator: "\n")
+        return urlRequest.makeRequestMarkdown()
     }
     
     /// A method to print the response in the console.
     /// **Warning** This should not be used in a production environment. You should place this call behind a macro such as `DEBUG`
     func makeResponseMarkdown() -> String {
-        var components: [String] = ["## RESPONSE"]
-        
-        if let httpResponse = self.urlResponse as? HTTPURLResponse {
-            components.append("[\(urlRequest.httpMethod!)] (\(httpResponse.statusCode)) \(urlRequest.url!)")
-            
-            components.append("### Headers")
-            for (key, value) in httpResponse.allHeaderFields {
-                components.append("* \(key): \(value)")
-            }
-        } else {
-            components.append("[\(urlRequest.httpMethod!)] \(urlRequest.url!)")
-        }
-        
-        if data != nil {
-            components.append("### Body")
-            components.append("```json")
-            do {
-                let json = try decodeString(encoding: .utf8)
-                components.append(json)
-            } catch {
-                components.append("\(error)")
-            }
-            components.append("```")
-        }
-        
-        return components.joined(separator: "\n")
+        return urlResponse.makeResponseMarkdown(with: urlRequest, data: data)
     }
 }

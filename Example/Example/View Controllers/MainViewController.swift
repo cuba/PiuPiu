@@ -14,6 +14,7 @@ class MainViewController: UIViewController {
         case parallelExample
         case downloadExample
         case uploadExample
+        case asyncAwait
     }
     
     lazy var tableView: UITableView = {
@@ -24,7 +25,7 @@ class MainViewController: UIViewController {
         }
     }()
     
-    private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample, .uploadExample]
+    private var rows: [Row] = [.seriesExample, .parallelExample, .downloadExample, .uploadExample, .asyncAwait]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +65,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         switch row {
         case .seriesExample:
             let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
-            cell.textLabel?.text = "Series Example"
+            cell.textLabel?.text = "Series example"
             cell.detailTextLabel?.text = "Perform sample api calls in series"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down")
             cell.accessoryType = .disclosureIndicator
@@ -72,7 +73,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             
         case .parallelExample:
             let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
-            cell.textLabel?.text = "Parallel Example"
+            cell.textLabel?.text = "Parallel example"
             cell.detailTextLabel?.text = "Perform sample api calls in parallel"
             cell.imageView?.image = makeImage(systemName: "square.and.arrow.down.on.square")
             cell.accessoryType = .disclosureIndicator
@@ -80,7 +81,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             
         case .downloadExample:
             let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
-            cell.textLabel?.text = "Download Example"
+            cell.textLabel?.text = "Download example"
             cell.detailTextLabel?.text = "Perform a sample image download API call"
             cell.imageView?.image = makeImage(systemName: "photo")
             cell.accessoryType = .disclosureIndicator
@@ -88,9 +89,28 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
             
         case .uploadExample:
             let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
-            cell.textLabel?.text = "Upload Example"
+            cell.textLabel?.text = "Upload example"
             cell.detailTextLabel?.text = "Perform a sample upload API call"
             cell.imageView?.image = makeImage(systemName: "paperclip")
+            cell.accessoryType = .disclosureIndicator
+            return cell
+
+        case .asyncAwait:
+            let cell = Cell.subtitle.dequeueCell(for: tableView, at: indexPath)
+            cell.textLabel?.text = "Async/Await Example"
+
+            if #available(iOS 13.0.0, *) {
+                cell.detailTextLabel?.text = "Example of an async await API call"
+                cell.accessoryType = .disclosureIndicator
+            } else {
+                cell.detailTextLabel?.text = "Example of an async await API call (Only available on iOS 13 +)"
+                cell.textLabel?.textColor = .lightGray
+                cell.detailTextLabel?.textColor = .lightGray
+                cell.accessoryType = .none
+            }
+
+            cell.detailTextLabel?.text = "Example of an async await API call"
+            cell.imageView?.image = makeImage(systemName: "hourglass")
             cell.accessoryType = .disclosureIndicator
             return cell
         }
@@ -113,6 +133,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         case .uploadExample:
             let viewController = UploadViewController()
             navigationController?.pushViewController(viewController, animated: true)
+        case .asyncAwait:
+            if #available(iOS 13.0.0, *) {
+                let viewController = AsyncAwaitViewController()
+                navigationController?.pushViewController(viewController, animated: true)
+            }
         }
     }
     

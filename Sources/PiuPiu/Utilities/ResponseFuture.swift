@@ -121,6 +121,16 @@ public class ResponseFuture<Success> {
             self.finalize()
         }
     }
+
+    /// Complete this future with the given results
+    public func complete(with result: Result<Success, Error>) {
+        switch result {
+        case .success(let success):
+            succeed(with: success)
+        case .failure(let error):
+            fail(with: error)
+        }
+    }
     
     /// Cancel this future. The cancellation and completion callbacks will be triggered on this future and no further callbacks will be triggered. This method does not cancel the URLSessionTask itself. When manually creating a wrapped ResponseFuture, you need to make sure you call cancel on the new future to continue the cancellation chain.
     public func cancel() {
@@ -577,6 +587,19 @@ public class ResponseFuture<Success> {
     public func send() {
         start()
     }
+
+    /// Return an async result
+    @available(iOS 13.0.0, *)
+    public func fetchResult() async throws -> Success {
+        let continuationResult = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Success, Error>) in
+            self.result { result in
+                continuation.resume(with: result)
+            }
+            .start()
+        }
+        
+        return continuationResult
+    }
 } 
 
 public extension ResponseFuture where Success: Sequence {
@@ -655,6 +678,14 @@ public extension ResponseFuture where Success == Response<Data?> {
     func decoded<D: Decodable>(_ type: D.Type, using decoder: JSONDecoder = JSONDecoder()) -> ResponseFuture<Response<D>> {
         return then(Response<D>.self, on: DispatchQueue.global(qos: .background)) { response -> Response<D> in
             return try response.decoded(type, using: decoder)
+        }
+    }
+
+    /// This method returns an HTTP response containing a string
+    func decodedString() -> ResponseFuture<Response<String>> {
+        return then(Response<String>.self, on: DispatchQueue.global(qos: .background)) { response -> Response<String> in
+            let data = try response.decodeString()
+            return Response(data: data, urlRequest: response.urlRequest, urlResponse: response.urlResponse)
         }
     }
 }

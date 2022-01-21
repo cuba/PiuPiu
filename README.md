@@ -39,6 +39,9 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
+### 1.12.0
+* Add async/await
+
 ### 1.11.0
 * Add a `URLRequestAdapter` and `URLResponseAdapter`
 
@@ -259,6 +262,31 @@ This is useful for a number of cases including:
 * Logging the response
 
 For a better idea of how to use this protocol, take a look at the tests found under the example project.
+
+### Async/await
+
+```swift
+let postURL = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+let postRequest = URLRequest(url: postURL, method: .get)
+
+Task {
+    do {
+        let postResponse = try await fileDispatcher.dataFuture(from: postRequest)
+            .decoded(Post.self)
+            .fetchResult()
+
+        let userURL = URL(string: "https://jsonplaceholder.typicode.com/users/\(postResponse.data.userId)")!
+        let userRequest = URLRequest(url: userURL, method: .get)
+        let userResponse = try await fileDispatcher.dataFuture(from: userRequest)
+            .decoded(User.self)
+            .fetchResult()
+
+        show(post: postResponse.data, user: userResponse.data)
+    } catch {
+        show(error)
+    }
+}
+```
 
 ### Separating concerns
 

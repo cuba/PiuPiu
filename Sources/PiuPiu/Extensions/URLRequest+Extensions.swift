@@ -144,3 +144,37 @@ public extension URLRequest {
         return url?.pathMatches(pattern: pattern) ?? false
     }
 }
+
+extension URLRequest {
+    /// A method to print the request in the console.
+    /// **Warning** This should not be used in a production environment. You should place this call behind a macro such as `DEBUG`
+    func makeRequestMarkdown() -> String {
+        var components: [String] = [
+            "## REQUEST",
+            "[\(httpMethod!)] \(url!)"
+        ]
+
+        if let headerFields = allHTTPHeaderFields {
+            components.append("### Headers")
+
+            for (key, value) in headerFields {
+                components.append("* \(key): \(value)")
+            }
+        }
+
+        if let body = httpBody {
+            components.append("### Body")
+            components.append("```json")
+
+            if let json = String(data: body, encoding: .utf8) {
+                components.append(json)
+            } else {
+                components.append(body.base64EncodedString())
+            }
+
+            components.append("```")
+        }
+
+        return components.joined(separator: "\n")
+    }
+}

@@ -27,6 +27,7 @@
 		DA28330422D867F800027DBA /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28330322D867F800027DBA /* Endpoint.swift */; };
 		DA28351522D8780600027DBA /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28351422D8780600027DBA /* PerformanceTests.swift */; };
 		DA28355622DE243E00027DBA /* RequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA28355522DE243E00027DBA /* RequestSerializerTests.swift */; };
+		DA729CD0279A2CA500894CC9 /* AsyncAwaitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA729CCF279A2CA500894CC9 /* AsyncAwaitViewController.swift */; };
 		DA78758B226A756800A626AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA78758A226A756800A626AF /* Localizable.strings */; };
 		DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA78758C226A759C00A626AF /* String+Extensions.swift */; };
 		DA80072724CC930D00FAB3F9 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */; };
@@ -97,6 +98,7 @@
 		DA28355522DE243E00027DBA /* RequestSerializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestSerializerTests.swift; sourceTree = "<group>"; };
 		DA53DAAA2289DE3300722CD8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		DA62550F25391AC10006FC43 /* PiuPiu */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PiuPiu; path = ..; sourceTree = "<group>"; };
+		DA729CCF279A2CA500894CC9 /* AsyncAwaitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncAwaitViewController.swift; sourceTree = "<group>"; };
 		DA78758A226A756800A626AF /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Example/Localizable.strings; sourceTree = "<group>"; };
 		DA78758C226A759C00A626AF /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		DA80072624CC930D00FAB3F9 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				DA28326522CD7A2F00027DBA /* UploadViewController.swift */,
 				8CC508151ED35E7D00C19524 /* SeriesRequestsViewController.swift */,
 				DA28326E22CE2C5600027DBA /* ParallelRequestsViewController.swift */,
+				DA729CCF279A2CA500894CC9 /* AsyncAwaitViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				DA78758D226A759C00A626AF /* String+Extensions.swift in Sources */,
 				DA28327222CE448E00027DBA /* CloudinaryApiManager.swift in Sources */,
 				DA28330422D867F800027DBA /* Endpoint.swift in Sources */,
+				DA729CD0279A2CA500894CC9 /* AsyncAwaitViewController.swift in Sources */,
 				DAA9F54C2262369B002CDAAF /* Post.swift in Sources */,
 				DA28326F22CE2C5600027DBA /* ParallelRequestsViewController.swift in Sources */,
 				DAA9A83322C98D9200C126E5 /* DownloadViewController.swift in Sources */,

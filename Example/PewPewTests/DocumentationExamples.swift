@@ -212,7 +212,7 @@ class DocumentationExamples: XCTestCase {
             .send()
     }
     
-    /// This method returns an HTTP resposne containing a decoded `Post` object
+    /// This method returns an HTTP response containing a decoded `Post` object
     func getPost(id: Int) -> ResponseFuture<HTTPResponse<Post>> {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
@@ -572,9 +572,33 @@ class DocumentationExamples: XCTestCase {
                 
                 // Notice we are no longer calling `safeResponse()` and yet we still get a `Result<Response<[User]>, Error>` for the joined future. This is because safeResponse() is done for us via the `safeParallelJoin`
                 
-                // Also notice that we don't call `safeResult()` before doing the join. This means that the first response is "unsafe" and will cause everythign to fail if it has an error. But this might be exactly what we want depending on our business rules.
+                // Also notice that we don't call `safeResult()` before doing the join. This means that the first response is "unsafe" and will cause everything to fail if it has an error. But this might be exactly what we want depending on our business rules.
             }
             .send()
+    }
+
+    @available(iOS 13.0.0, *)
+    func testAsyncAwaitExample() {
+        let postURL = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let postRequest = URLRequest(url: postURL, method: .get)
+
+        Task {
+            do {
+                let postResponse = try await fileDispatcher.dataFuture(from: postRequest)
+                    .decoded(Post.self)
+                    .fetchResult()
+
+                let userURL = URL(string: "https://jsonplaceholder.typicode.com/users/\(postResponse.data.userId)")!
+                let userRequest = URLRequest(url: userURL, method: .get)
+                let userResponse = try await fileDispatcher.dataFuture(from: userRequest)
+                    .decoded(User.self)
+                    .fetchResult()
+
+                show(post: postResponse.data, user: userResponse.data)
+            } catch {
+                show(error)
+            }
+        }
     }
     
     func testSafeResultMethodExample() {
@@ -588,7 +612,7 @@ class DocumentationExamples: XCTestCase {
                 // Here is what happened in order:
                 // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
                 // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
-                // * `safeResult()` method transfomed the future to `Result<HTTPResponse<Data?>, Error>`
+                // * `safeResult()` method transformed the future to `Result<HTTPResponse<Data?>, Error>`
                 
                 // Unlike the parallel call example above, the error callback will never be triggered as we do safeResult right before the success
             }
@@ -605,7 +629,7 @@ class DocumentationExamples: XCTestCase {
             .success { (posts: HTTPResponse<[Post]>) in
                 // Here is what happened in order:
                 // * `dispatcher.dataFuture(from: request)` method gave us a `Result<Data?>` future
-                // * `makeHTTPResponse()` method transfomed the future to `HTTPResponse<Data?>`
+                // * `makeHTTPResponse()` method transformed the future to `HTTPResponse<Data?>`
                 // * `decoded([Post].self)` method transformed the future to `HTTPResponse<[Post]>`
             }
             .send()
@@ -646,11 +670,18 @@ class DocumentationExamples: XCTestCase {
             }
         }
     }
-    
-    
-    
+
     private func show(_ post: Post) {
         print(post)
+    }
+
+    private func show(post: Post, user: User) {
+        print(post)
+        print(user)
+    }
+
+    private func show(_ error: Error) {
+        print(error)
     }
 }
 
