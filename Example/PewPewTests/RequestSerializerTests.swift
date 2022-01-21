@@ -15,7 +15,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         return URL(string: "https://jsonplaceholder.typicode.com")
     }
 
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(requestAdapter: self, responseAdapter: MockHTTPResponseAdapter.success)
     }()
     
@@ -26,7 +26,7 @@ class RequestSerializerTests: XCTestCase, ServerProvider {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Given
-        let networkSerializer = RequestSerializer(dispatcher: fileDispatcher, serverProvider: self)
+        let networkSerializer = RequestSerializer(dispatcher: dispatcher, serverProvider: self)
         let request = BasicRequest(method: .get, path: "/posts/1")
         
         // Then

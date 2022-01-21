@@ -13,7 +13,7 @@ import XCTest
 class ResponseFutureTests: XCTestCase {
     typealias EnrichedPost = (post: Post, markdown: NSAttributedString?)
 
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
     }()
 
@@ -26,7 +26,7 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
         
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.post.url, method: .get)
             }
@@ -93,7 +93,7 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
         
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.post.url, method: .get)
             }
@@ -138,7 +138,7 @@ class ResponseFutureTests: XCTestCase {
         
         // Then
 
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.post.url, method: .get)
             }
@@ -176,7 +176,7 @@ class ResponseFutureTests: XCTestCase {
     }
     
     private func fetchUser(forId id: Int) -> ResponseFuture<User> {
-        return fileDispatcher
+        return dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.user.url, method: .get)
             }
@@ -191,7 +191,7 @@ class ResponseFutureTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // When
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.posts.url, method: .get)
             }
@@ -229,7 +229,7 @@ class ResponseFutureTests: XCTestCase {
         
         // When
         
-        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = fileDispatcher
+        weak var weakFuture: ResponseFuture<(EnrichedPost, User)>? = dispatcher
             .dataFuture {
                 return URLRequest(url: MockJSON.post.url, method: .get)
             }
@@ -270,7 +270,7 @@ class ResponseFutureTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        fileDispatcher.dataFuture(from: urlRequest)
+        dispatcher.dataFuture(from: urlRequest)
             .seriesJoin(Response<Data>.self) { result in
                 return nil
             }
@@ -296,7 +296,7 @@ class ResponseFutureTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        fileDispatcher.dataFuture(from: urlRequest)
+        dispatcher.dataFuture(from: urlRequest)
             .replace(Response<Data>.self) { response in
                 return nil
             }
@@ -327,7 +327,7 @@ class ResponseFutureTests: XCTestCase {
             .init(childFutures: (1...10).map({ id in
                 let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
                 
-                return self.fileDispatcher.dataFuture(from: urlRequest)
+                return self.dispatcher.dataFuture(from: urlRequest)
                     .then { response in
                         return try response.decode(Post.self)
                     }
@@ -444,7 +444,7 @@ class ResponseFutureTests: XCTestCase {
     private func makePostFuture(id: Int) -> ResponseFuture<Post> {
         let urlRequest = URLRequest(url: MockJSON.post.url, method: .get)
         
-        return self.fileDispatcher.dataFuture(from: urlRequest)
+        return self.dispatcher.dataFuture(from: urlRequest)
             .then { response in
                 return try response.decode(Post.self)
             }

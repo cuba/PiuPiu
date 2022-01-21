@@ -11,7 +11,7 @@ import XCTest
 @testable import Example
 
 class PerformanceTests: XCTestCase {
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
     }()
     
@@ -59,7 +59,7 @@ class PerformanceTests: XCTestCase {
         let url = MockJSON.post.url
         let urlRequest = URLRequest(url: url, method: .get)
         
-        return self.fileDispatcher.dataFuture(from: urlRequest)
+        return self.dispatcher.dataFuture(from: urlRequest)
             .then { response in
                 return try response.decode(Post.self)
             }

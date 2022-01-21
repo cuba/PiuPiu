@@ -11,7 +11,7 @@ import XCTest
 @testable import Example
 
 class DecodingTests: XCTestCase {
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
     }()
     
@@ -22,7 +22,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // Example
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .success { response in
                 let data = try response.unwrapData()
                 
@@ -47,7 +47,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: MockJSON.posts.url, method: .get)
         
         // Example
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .success { response in
                 let string = try response.decodeString(encoding: .utf8)
                 
@@ -72,7 +72,7 @@ class DecodingTests: XCTestCase {
         let request = URLRequest(url: MockJSON.post.url, method: .get)
         
         // Example
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .success { response in
                 let posts = try response.decode(Post.self)
                 
@@ -99,7 +99,7 @@ class DecodingTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .then { response in
                 // When
                 return try response.decode(Post.self)
@@ -128,7 +128,7 @@ class DecodingTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .decoded(Post.self)
             .success { response in
                 // Then
@@ -154,7 +154,7 @@ class DecodingTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         
         // Then
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .makeHTTPResponse()
             .safeDecoded(Post.self)
             .safeResult()

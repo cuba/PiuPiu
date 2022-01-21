@@ -28,7 +28,7 @@ class DocumentationExamples: XCTestCase {
     private var post: Post?
     private var user: User?
 
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(requestAdapter: self, responseAdapter: MockHTTPResponseAdapter.success)
     }()
     
@@ -36,7 +36,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .success { response in
                 // Here we handle our response as long as nothing was thrown along the way
                 // This method is always invoked on the main queue.
@@ -83,7 +83,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .then(HTTPResponse<Data?>.self) { response -> HTTPResponse<Data?> in
                 // In this callback we handle common HTTP errors
                 
@@ -235,14 +235,14 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/users/1")!
         let request = URLRequest(url: url, method: .get)
         
-        return fileDispatcher.dataFuture(from: request)
+        return dispatcher.dataFuture(from: request)
             .validHTTPResponse
             .decoded(User.self)
     }
     
     /// This method handles common HTTP errors and returns an HTTP response.
     private func getHTTPResponse(from request: URLRequest) -> ResponseFuture<HTTPResponse<Data?>> {
-        return fileDispatcher.dataFuture(from: request)
+        return dispatcher.dataFuture(from: request)
             .then { response -> HTTPResponse<Data?> in
                 // In this callback we handle common HTTP errors
                 
@@ -270,7 +270,7 @@ class DocumentationExamples: XCTestCase {
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // When
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
                 var request = URLRequest(url: url, method: .post)
@@ -284,7 +284,7 @@ class DocumentationExamples: XCTestCase {
     }
     
     func testFullResponseFutureExample() {
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
                 return URLRequest(url: url, method: .get)
@@ -324,7 +324,7 @@ class DocumentationExamples: XCTestCase {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
                 return URLRequest(url: url, method: .get)
@@ -351,7 +351,7 @@ class DocumentationExamples: XCTestCase {
         // Expectations
         let expectation = self.expectation(description: "Success response triggered")
         
-        self.strongFuture = fileDispatcher
+        self.strongFuture = dispatcher
             .dataFuture {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
                 return URLRequest(url: url, method: .get)
@@ -403,7 +403,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .success { response in
                 // Triggered when a response is received and all callbacks succeed.
             }
@@ -414,7 +414,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .error { error in
                 // Any errors thrown in any other callback will be triggered here.
                 // Think of this as the `catch` on a `do` block.
@@ -426,7 +426,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .completion {
                 // The completion callback guaranteed to be called once
                 // for every time the `send` or `start` method is triggered on the callback.
@@ -438,7 +438,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .then([Post].self, on: .main) { response in
                 // This callback transforms the future from one form to another
                 // (i.e. it changes the return object)
@@ -453,7 +453,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .replace(EnrichedPost.self) { [weak self] response in
                 // Perform some operation operation that itself requires a future
                 // such as something heavy like markdown parsing.
@@ -472,7 +472,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .result { result in
                 // This will put both success and error object in a Result<Success, Error> callback
                 // This is useful when you need to treat success and error in a similar fashion.
@@ -487,7 +487,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .decoded(Post.self)
             .seriesJoin(Response<User>.self) { [weak self] result in
                 guard let self = self else {
@@ -502,7 +502,7 @@ class DocumentationExamples: XCTestCase {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/users/\(result.data.userId)")!
                 let request = URLRequest(url: url, method: .get)
                 
-                return self.fileDispatcher.dataFuture(from: request)
+                return self.dispatcher.dataFuture(from: request)
                     .decoded(User.self)
             }
             .success { (post: Response<Post>, user: Response<User>) in
@@ -519,7 +519,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .makeHTTPResponse()
             .decoded([Post].self)
             .safeResult()
@@ -529,7 +529,7 @@ class DocumentationExamples: XCTestCase {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
                 let request = URLRequest(url: url, method: .get)
                 
-                return self.fileDispatcher.dataFuture(from: request)
+                return self.dispatcher.dataFuture(from: request)
                     .makeHTTPResponse()
                     .decoded([User].self)
                     .safeResult()
@@ -552,7 +552,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .decoded([Post].self)
             .safeParallelJoin(Response<[User]>.self) {
                 // Joins a future with another one returning both results.
@@ -560,7 +560,7 @@ class DocumentationExamples: XCTestCase {
                 let url = URL(string: "https://jsonplaceholder.typicode.com/users")!
                 let request = URLRequest(url: url, method: .get)
                 
-                return self.fileDispatcher.dataFuture(from: request)
+                return self.dispatcher.dataFuture(from: request)
                     .decoded([User].self)
             }
             .success { (posts: Response<[Post]>, users: Result<Response<[User]>, Error>) in
@@ -584,17 +584,19 @@ class DocumentationExamples: XCTestCase {
 
         Task {
             do {
-                let postResponse = try await fileDispatcher.dataFuture(from: postRequest)
+                let postResponse = try await dispatcher.dataFuture(from: postRequest)
                     .decoded(Post.self)
                     .fetchResult()
 
+                show(postResponse.data)
+
                 let userURL = URL(string: "https://jsonplaceholder.typicode.com/users/\(postResponse.data.userId)")!
                 let userRequest = URLRequest(url: userURL, method: .get)
-                let userResponse = try await fileDispatcher.dataFuture(from: userRequest)
+                let userResponse = try await dispatcher.dataFuture(from: userRequest)
                     .decoded(User.self)
                     .fetchResult()
 
-                show(post: postResponse.data, user: userResponse.data)
+                show(userResponse.data)
             } catch {
                 show(error)
             }
@@ -605,7 +607,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .decoded([Post].self)
             .safeResult()
             .success { (posts: Result<Response<[Post]>, Error>) in
@@ -623,7 +625,7 @@ class DocumentationExamples: XCTestCase {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         let request = URLRequest(url: url, method: .get)
         
-        fileDispatcher.dataFuture(from: request)
+        dispatcher.dataFuture(from: request)
             .makeHTTPResponse()
             .decoded([Post].self)
             .success { (posts: HTTPResponse<[Post]>) in
@@ -675,8 +677,7 @@ class DocumentationExamples: XCTestCase {
         print(post)
     }
 
-    private func show(post: Post, user: User) {
-        print(post)
+    private func show(_ user: User) {
         print(user)
     }
 

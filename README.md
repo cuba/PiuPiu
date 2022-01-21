@@ -271,13 +271,13 @@ let postRequest = URLRequest(url: postURL, method: .get)
 
 Task {
     do {
-        let postResponse = try await fileDispatcher.dataFuture(from: postRequest)
+        let postResponse = try await dispatcher.dataFuture(from: postRequest)
             .decoded(Post.self)
             .fetchResult()
 
         let userURL = URL(string: "https://jsonplaceholder.typicode.com/users/\(postResponse.data.userId)")!
         let userRequest = URLRequest(url: userURL, method: .get)
-        let userResponse = try await fileDispatcher.dataFuture(from: userRequest)
+        let userResponse = try await dispatcher.dataFuture(from: userRequest)
             .decoded(User.self)
             .fetchResult()
 

@@ -11,7 +11,7 @@ import XCTest
 @testable import PiuPiu
 
 class DataDispatcherTests: XCTestCase {
-    private lazy var fileDispatcher: URLRequestDispatcher = {
+    private lazy var dispatcher: URLRequestDispatcher = {
         return URLRequestDispatcher(responseAdapter: MockHTTPResponseAdapter.success)
     }()
     
@@ -22,7 +22,7 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = MockJSON.post.url
                 return URLRequest(url: url, method: .get)
@@ -68,7 +68,7 @@ class DataDispatcherTests: XCTestCase {
         
         // We create a future and tell it to transform the response using the
         // `then` callback.
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
@@ -113,7 +113,7 @@ class DataDispatcherTests: XCTestCase {
         completionExpectation.expectedFulfillmentCount = 1
         
         // When
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
@@ -164,7 +164,7 @@ class DataDispatcherTests: XCTestCase {
         let post = Post(id: 123, userId: 123, title: "Some post", body: "Lorem ipsum ...")
         
         // When
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 var request = URLRequest(url: url, method: .post)
@@ -189,7 +189,7 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        fileDispatcher
+        dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
@@ -218,7 +218,7 @@ class DataDispatcherTests: XCTestCase {
         let completionExpectation = self.expectation(description: "Completion triggered")
         completionExpectation.expectedFulfillmentCount = 1
         
-        self.strongFuture = fileDispatcher
+        self.strongFuture = dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
@@ -244,7 +244,7 @@ class DataDispatcherTests: XCTestCase {
     }
     
     func testWeakCallbacksWeakReferenceDealocated() {
-        weak var weakFuture: ResponseFuture<Response<Data?>>? = fileDispatcher
+        weak var weakFuture: ResponseFuture<Response<Data?>>? = dispatcher
             .dataFuture {
                 let url = MockJSON.posts.url
                 return URLRequest(url: url, method: .get)
