@@ -47,11 +47,20 @@ class AsyncAwaitViewController: UIViewController {
 
         Task {
             do {
-                let response = try await fetchData()
-                textView.text = response.data
+                let postResponse = try await fetchPost(forId: 1)
+                    .fetchResult()
+                progressView.progress = 0.5
+
+                let userResponse = try await fetchUser(forId: postResponse.data.userId)
+                    .fetchResult()
+                progressView.progress = 1
+                
+                textView.text = userResponse.data
             } catch {
                 textView.text = error.localizedDescription
             }
+
+            progressView.progress = 1
         }
     }
 
@@ -61,6 +70,21 @@ class AsyncAwaitViewController: UIViewController {
                 self?.progressView.progress = task.percentTransferred ?? 0
             }
             .fetchResult()
+    }
+
+    private func fetchPost(forId id: Int) -> ResponseFuture<Response<Post>> {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/\(id)")!
+        let urlRequest = URLRequest(url: url, method: .get)
+
+        return dispatcher.dataFuture(from: urlRequest)
+            .then { response in
+                #if DEBUG
+                response.debug()
+                #endif
+
+                return response
+            }
+            .decoded(Post.self)
     }
 
     private func fetchUser(forId id: Int) -> ResponseFuture<Response<String>> {
