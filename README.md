@@ -39,7 +39,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 
 ## Updates
 
-### 1.12.0
+### 1.11.1
 * Add async/await
 
 ### 1.11.0
