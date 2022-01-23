@@ -40,7 +40,7 @@ PiuPiu adds the concept of `Futures` (aka: `Promises`) to iOS. It is intended to
 ## Updates
 
 ### 1.11.1
-* Add async/await
+* Add async/await using `fetchResult()`
 
 ### 1.11.0
 * Add a `URLRequestAdapter` and `URLResponseAdapter`
@@ -265,6 +265,10 @@ For a better idea of how to use this protocol, take a look at the tests found un
 
 ### Async/await
 
+You can use async/await to replace the `success`/`error`/`result` callbacks.
+
+The following is an example of how to use it:
+
 ```swift
 let postURL = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
 let postRequest = URLRequest(url: postURL, method: .get)
@@ -287,6 +291,8 @@ Task {
     }
 }
 ```
+
+**NOTE**: You should **not** use `success`/`error`/`result` callbacks. You may still use joins, however there is no need to use series joins with async/await anymore.
 
 ### Separating concerns
 
