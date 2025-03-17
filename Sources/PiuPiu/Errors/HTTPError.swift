@@ -9,23 +9,19 @@
 import Foundation
 
 /// An error object to cover any HTTP related errors
-public enum HTTPError: LocalizedError {
-    case clientError(StatusCode)
-    case serverError(StatusCode)
-    case invalidStatusCode(StatusCode)
-    
-    public var statusCode: StatusCode {
-        switch self {
-        case .clientError(let statusCode):
-            return statusCode
-        case .serverError(let statusCode):
-            return statusCode
-        case .invalidStatusCode(let statusCode):
-            return statusCode
-        }
+public enum HTTPError: Error, Hashable, Sendable {
+  case clientError(StatusCode)
+  case serverError(StatusCode)
+  case invalidStatusCode(Int)
+  
+  public var statusCode: UnknowableType<StatusCode> {
+    switch self {
+    case .clientError(let statusCode):
+      return .known(statusCode)
+    case .serverError(let statusCode):
+      return .known(statusCode)
+    case .invalidStatusCode(let statusCode):
+      return .unknown(statusCode)
     }
-    
-    public var errorDescription: String? {
-        return statusCode.localizedDescription
-    }
+  }
 }

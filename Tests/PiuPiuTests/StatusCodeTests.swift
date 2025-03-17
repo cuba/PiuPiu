@@ -6,19 +6,17 @@
 //  Copyright © 2021 Jacob Sikorski. All rights reserved.
 //
 
-import XCTest
+import Testing
 import PiuPiu
+import Foundation
 
-class StatusCodeTests: XCTestCase {
-    func testHTTPError() throws {
-        let statusCode = StatusCode.badRequest
-        
-        switch statusCode.httpError {
-        case .clientError(let errorStatusCode):
-            XCTAssertEqual(statusCode, errorStatusCode)
-        default:
-            XCTFail("Invalid error returned")
-        }
-        
-    }
+@Test func localizableError() async throws {
+  let statusCode = StatusCode.badRequest
+  let localized = HTTPURLResponse.localizedString(forStatusCode: statusCode.rawValue)
+  #expect(statusCode.localizedDescription == localized)
+}
+
+@Test func httpError() async throws {
+  let statusCode = StatusCode.badRequest
+  #expect(statusCode.httpError == .clientError(statusCode))
 }
