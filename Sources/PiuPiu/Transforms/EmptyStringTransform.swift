@@ -10,23 +10,23 @@ import Foundation
 
 /// Filters out empty strings and returns a nil value in both directions (to JSON and from JSON)
 public class EmptyStringTransform: Transform {
-    public init() {}
-
-    /// Filters out empty strings and returns a nil value.
-    public func from(json: String, codingPath: [CodingKey]) throws -> String? {
-        if !json.isEmpty {
-            return json
-        } else {
-            return nil
-        }
+  public init() {}
+  
+  /// Filters out empty strings and returns a nil value.
+  public func from(json: String, codingPath: [CodingKey]) throws -> String? {
+    if !json.isEmpty {
+      return json
+    } else {
+      return nil
     }
-    
-    /// Filters out empty strings and returns a nil value.
-    public func toJSON(_ value: String, codingPath: [CodingKey]) throws -> String? {
-        if !value.isEmpty {
-            return value
-        } else {
-            return nil
-        }
+  }
+  
+  /// Filters out empty strings and returns a nil value.
+  public func toJSON(_ value: String, codingPath: [CodingKey]) throws -> String? {
+    if !value.isEmpty {
+      return value
+    } else {
+      return nil
     }
+  }
 }

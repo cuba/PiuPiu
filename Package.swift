@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,8 +6,9 @@ import PackageDescription
 let package = Package(
     name: "PiuPiu",
     platforms: [
-      .iOS(.v13),
-      .macOS(.v11)
+      .macOS(.v13),
+      .iOS(.v16),
+      .watchOS(.v9)
     ],
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
@@ -24,9 +25,20 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "PiuPiu",
-            dependencies: []),
+            dependencies: [],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency")
+            ]),
         .testTarget(
             name: "PiuPiuTests",
-            dependencies: ["PiuPiu"]),
+            dependencies: [
+                "PiuPiu"
+            ],
+            resources: [
+              .copy("JSON/post.json"),
+              .copy("JSON/posts.json"),
+              .copy("JSON/user.json")
+            ]
+        ),
     ]
 )

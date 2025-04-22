@@ -9,23 +9,45 @@
 import Foundation
 
 /// An error object to cover any HTTP related errors
-public enum HTTPError: LocalizedError {
-    case clientError(StatusCode)
-    case serverError(StatusCode)
-    case invalidStatusCode(StatusCode)
-    
-    public var statusCode: StatusCode {
-        switch self {
-        case .clientError(let statusCode):
-            return statusCode
-        case .serverError(let statusCode):
-            return statusCode
-        case .invalidStatusCode(let statusCode):
-            return statusCode
-        }
+public enum HTTPError: Error, Hashable, Sendable {
+  case clientError(StatusCode)
+  case serverError(StatusCode)
+  case invalidStatusCode(Int)
+  
+  public var statusCode: Unknowable<StatusCode> {
+    switch self {
+    case .clientError(let statusCode):
+      return .known(statusCode)
+    case .serverError(let statusCode):
+      return .known(statusCode)
+    case .invalidStatusCode(let statusCode):
+      return .unknown(statusCode)
     }
-    
-    public var errorDescription: String? {
-        return statusCode.localizedDescription
+  }
+}
+
+extension HTTPError: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    switch self {
+    case .clientError(let statusCode):
+      "Client error: \(statusCode.localizedDescription) (\(statusCode.rawValue))"
+    case .serverError(let statusCode):
+      "Server error: \(statusCode.localizedDescription) (\(statusCode.rawValue))"
+    case .invalidStatusCode(let rawValue):
+      "Invalid status code: \(rawValue)"
     }
+  }
+}
+
+extension HTTPError: CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .clientError(let statusCode):
+      "Client error: \(statusCode.localizedDescription) (\(statusCode.rawValue))"
+    case .serverError(let statusCode):
+      "Server error: \(statusCode.localizedDescription) (\(statusCode.rawValue))"
+    case .invalidStatusCode(let rawValue):
+      "Invalid status code: \(rawValue)"
+    }
+  }
 }
