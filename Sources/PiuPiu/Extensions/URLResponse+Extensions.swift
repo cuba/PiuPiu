@@ -6,51 +6,69 @@
 //
 
 import Foundation
+import os.log
 
 extension URLResponse {
-    /// A method to print the response in the console.
-    /// **Warning** This should not be used in a production environment. You should place this call behind a macro such as `DEBUG`
-    func makeResponseMarkdown(with urlRequest: URLRequest, data: Data?) -> String {
-        var components: [String] = ["## RESPONSE"]
-
-        if let httpResponse = self as? HTTPURLResponse {
-            components.append("[\(urlRequest.httpMethod!)] (\(httpResponse.statusCode)) \(url!)")
-
-            components.append("### Headers")
-            for (key, value) in httpResponse.allHeaderFields {
-                components.append("* \(key): \(value)")
-            }
-        } else {
-            components.append("[\(urlRequest.httpMethod!)] \(url!)")
-        }
-
-        if let data = data {
-            components.append("### Body")
-            components.append("```json")
-            do {
-                let json = try decodeString(from: data, encoding: .utf8)
-                components.append(json)
-            } catch {
-                components.append("\(error)")
-            }
-            components.append("```")
-        }
-
-        return components.joined(separator: "\n")
+  public func log(logger: Logger, urlRequest: URLRequest, body: Data?, isDetailed: Bool) {
+    guard isDetailed else {
+      if let httpResponse = self as? HTTPURLResponse {
+        logger.debug(
+          """
+          ## Response ##
+          [\(urlRequest.httpMethod!)] (\(httpResponse.statusCode)) `\(self.url!.absoluteString, privacy: .private)`
+          """
+        )
+      } else {
+        logger.debug(
+          """
+          ## Response ## 
+          [`\(urlRequest.httpMethod!)`] `\(self.url!.absoluteString, privacy: .private)`
+          """
+        )
+      }
+      
+      return
     }
-
-    /// Attempt to deserialize the response data into a JSON string.
-    ///
-    /// - Parameter encoding: The string encoding type. The dafault is `.utf8`.
-    /// - Returns: The decoded object
-    /// - throws: `ResponseError.unexpectedEmptyResponse` if there is no data
-    /// - throws: `ResponseError.failedToDecodeDataToString` if the data cannot be transformed into a string
-    private func decodeString(from data: Data, encoding: String.Encoding = .utf8) throws -> String {
-        // Attempt to deserialize the object.
-        guard let string = String(data: data, encoding: encoding) else {
-            throw ResponseError.failedToDecodeDataToString(encoding: encoding)
-        }
-
-        return string
+    
+    let bodyString: String?
+    if let httpBody = body {
+      if let json = String(data: httpBody, encoding: .utf8) {
+        bodyString = json
+      } else {
+        bodyString = httpBody.base64EncodedString()
+      }
+    } else {
+      bodyString = nil
     }
+    
+    if let httpResponse = self as? HTTPURLResponse {
+      let headersString = httpResponse.allHeaderFields.map({ (key, value) -> String in
+        return "* `\(key)`: `\(value)`"
+      }).sorted(by: { $0 < $1} ).joined(separator: "\n")
+      
+      logger.debug(
+        """
+        ## Response ##
+        [\(urlRequest.httpMethod!)] (\(httpResponse.statusCode)) `\(self.url!.absoluteString, privacy: .private)`
+        
+        ### Headers ###
+        ```
+        \(headersString, privacy: .private)
+        ```
+        ### Body ###
+        ```
+        \(bodyString ?? "", privacy: .private)
+        ```
+        """
+      )
+    } else {
+      logger.debug(
+        """
+        ### Response: 
+        [`\(urlRequest.httpMethod!)`] `\(self.url!.absoluteString, privacy: .private)`
+        ### Body: \(bodyString ?? "", privacy: .private)
+        """
+      )
+    }
+  }
 }
